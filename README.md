@@ -1,1 +1,1 @@
-# Machine Learning with R  
+# Machine Learning Basics for Managers  
