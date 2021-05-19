@@ -1,0 +1,12 @@
+name: classification
+title:
+username:
+account: isb-iids
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3836893
+bundleId: 4576270
+url: https://isb-iids.shinyapps.io/classification/
+when: 1620543494.68513
+asMultiple: FALSE
+asStatic: FALSE
