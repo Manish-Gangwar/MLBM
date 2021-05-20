@@ -264,14 +264,14 @@ bigram.collocation <- function(text1){   # text1 from readLines() is input
     ungroup() %>%
     
     # separate & filter bigrams for stopwords
-    separate(bigrams, c("word1", "word2"), sep = " ") %>%
+    tidyr::separate(bigrams, c("word1", "word2"), sep = " ") %>%
     dplyr::filter(!(word1 %in% stop_words$word)) %>%
     dplyr::filter(!(word2 %in% stop_words$word)) #%>%
   
   bigram_df              
   
   # create a merged df
-  new_df = bigram_df %>% mutate(k1 = 0) %>% mutate(k2 = 0) # %>%
+  new_df = bigram_df %>% dplyr::mutate(k1 = 0) %>% dplyr::mutate(k2 = 0) # %>%
   
   for (i1 in 1:nrow(bigram_df)){
     
@@ -283,9 +283,9 @@ bigram.collocation <- function(text1){   # text1 from readLines() is input
     
   } # i1 loop ends
   
-  new_df1 = new_df %>% filter(n > 1) %>% mutate(coll.ratio = (n*nrow(new_df))/(k1*k2)) %>%
+  new_df1 = new_df %>% filter(n > 1) %>% dplyr::mutate(coll.ratio = (n*nrow(new_df))/(k1*k2)) %>%
     filter(coll.ratio >= 1) %>%
-    unite(bigram_united, word1, word2) %>%
+    tidyr::unite(bigram_united, word1, word2) %>%
     arrange(desc(coll.ratio)) %>% 
     dplyr::select(bigram_united, n, coll.ratio) 
   new_df1 = data.frame(new_df1)
@@ -316,7 +316,7 @@ concordance.r <- function(text1,  # corpus
     unnest_tokens(word, text1) %>% 
     
     # build an index for word positions in the corpus
-    mutate(index = 1) %>% mutate(wordnum = 1:sum(index)) %>% dplyr::select(-index) #%>%
+    dplyr::mutate(index = 1) %>% dplyr::mutate(wordnum = 1:sum(index)) %>% dplyr::select(-index) #%>%
   
   text_df
   
@@ -370,6 +370,8 @@ drop_stopwords_corpus <- function(raw_corpus, custom.stopwords=NULL, use.tidy.st
   library(tidyverse)
   library(tidytext)
   library(stringr)
+  library(tidyr)
+  library(dplyr)
   
   # setup stop.words df first
   stop.words = data.frame(word = unique(c(custom.stopwords, c("the", "a", "an", "of"))), stringsAsFactors=FALSE)
@@ -378,12 +380,12 @@ drop_stopwords_corpus <- function(raw_corpus, custom.stopwords=NULL, use.tidy.st
   
   ## piped workflow for stopword-removal from corpus
   a0 = raw_corpus %>% data_frame() %>% 
-    mutate(docID = row_number()) %>% rename(text = ".") %>% select(docID, text) %>%
+    dplyr::mutate(docID = row_number()) %>% rename(text = ".") %>% select(docID, text) %>%
     
     # sentence-tokenize and build sentence layer
     unnest_tokens(sentence, text, token = "sentences") %>% 
     # group_by(docID) %>% 
-    mutate(sentID=row_number()) %>% 
+    dplyr::mutate(sentID=row_number()) %>% 
     select(docID, sentID, sentence) %>%
     
     # word-tokenize and drop stopwords
@@ -458,7 +460,7 @@ replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
       # textdf = drop_stopwords_corpus(raw_corpus, custom.stopwords=c("and", "to")) 
       #corpus = str_replace_all(tolower(raw_corpus), c(" of ", " the ", " and "), " ") 
       
-      corpus = str_replace_all(tolower(raw_corpus[,2]), stopw_list, " ") 
+      corpus = stringr::str_replace_all(tolower(raw_corpus[,2]), stopw_list, " ") 
       textdf = data.frame(docID=seq(1:length(corpus)),nick=raw_corpus[,1], text=corpus, stringsAsFactors=FALSE)
       a1 = textdf$text %>% split_by_puncts(puncts,.) #----New
       temp <-lapply(a1$phrases, function(x) str_c(x,collapse = ","))
@@ -471,31 +473,31 @@ replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
   
   # create sentence layer and unnesting bigrams
   a0 = textdf %>% 	
-    unnest_tokens(sentence, text, token = "sentences") %>% 
+    tidytext::unnest_tokens(sentence, text, token = "sentences") %>% 
     dplyr::mutate(sentID=row_number()) %>% 
     dplyr::select(docID, sentID,nick, sentence) %>%
     
     # bigram-tokenize, count and filter by freq
-    group_by(sentID) %>% unnest_tokens(ngram, sentence, token = "ngrams", n = 2) %>% ungroup() #%>%
+    dplyr::group_by(sentID) %>% tidytext::unnest_tokens(ngram, sentence, token = "ngrams", n = 2) %>% ungroup() #%>%
   
   a0
   
   # creating frequent bigrams for replacement
   a1 = a0 %>% 
     dplyr::count(ngram, sort=TRUE) %>% dplyr::filter(n >= min_freq) %>% 
-    separate(ngram, c("word1", "word2"), sep=" ", remove=FALSE) %>% 
+    tidyr::separate(ngram, c("word1", "word2"), sep=" ", remove=FALSE) %>% 
     
     # drop all stopwords in the bigrams of interest
     dplyr::filter(!word1 %in% stop_words$word) %>%
     dplyr::filter(!word2 %in% stop_words$word) %>%
     
-    unite(bigram1, c("word1", "word2"), sep="_")	%>% 
+    tidyr::unite(bigram1, c("word1", "word2"), sep="_")	%>% 
     dplyr::select(ngram, bigram1)
   a1
   
   # merging the 2 above dfs
   a2 = dplyr::left_join(a0, a1, by=c("ngram" = "ngram")) %>%
-    separate(ngram, c("word1", "word2"), sep=" ", remove=FALSE) %>%
+    tidyr::separate(ngram, c("word1", "word2"), sep=" ", remove=FALSE) %>%
     dplyr:: select(-ngram)
   a2
   

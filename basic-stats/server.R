@@ -92,7 +92,7 @@ output$xvarselect <- renderUI({
   if (is.null(input$file)) {return(NULL)}
   else {
   checkboxGroupInput("xAttr", "Select variables",
-                     colnames(Dataset()), colnames(Dataset()))
+                     colnames(Dataset()), colnames(Dataset())[-1])
   }
 })
 

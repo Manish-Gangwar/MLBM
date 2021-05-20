@@ -25,6 +25,7 @@ shinyUI(
         htmlOutput("samsel"),
         htmlOutput("imputemiss"),
         sliderInput('sample','Set test sample percentage',10,40,25),
+      actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),
     #   fileInput("filep", "Upload new data for prediction (csv file)")
       ),   # end of sidebar panel
       

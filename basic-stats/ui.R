@@ -15,13 +15,16 @@ shinyUI(pageWithSidebar(
 
     h4(p("Data Input")),
     fileInput("file", "Upload input data (csv file with header)"),
+
     h4(p("Data Selection")),
     htmlOutput("xvarselect"),
+
     #htmlOutput("fxvarselect"),
     htmlOutput("samsel"),
     htmlOutput("imputemiss"),
     htmlOutput("winsor"),
     htmlOutput("lxvarselect"),
+    actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),
     #submitButton(text = "Apply Changes", icon("refresh")),br(),
     ),
   # Main:

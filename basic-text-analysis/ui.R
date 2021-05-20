@@ -25,7 +25,7 @@ shinyUI(fluidPage(
   # Input in sidepanel:
   sidebarPanel(
     h4(p("Data Input")),
-    fileInput("file", "Upload text file"),
+    fileInput("file", "Upload input text file"),
     uiOutput('id_var'),
     uiOutput("doc_var"),
     textInput("stopw", ("Enter stop words separated by comma(,)"), value = "will,can"),
@@ -38,7 +38,7 @@ shinyUI(fluidPage(
     actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),br(),br(),
     sliderInput("freq", "Minimum Frequency in Wordcloud:", min = 0,  max = 100, value = 2),
     
-    sliderInput("max",  "Maximum Number of Words in Wordcloud:", min = 1,  max = 300,  value = 50),  
+    sliderInput("max",  "Maximum Number of Words in Wordcloud:", min = 10,  max = 300,  value = 50),  
     
     numericInput("nodes", "Number of Central Nodes in co-occurrence graph", 4),
     numericInput("connection", "Number of Max Connection with Central Node", 5),
@@ -60,9 +60,9 @@ shinyUI(fluidPage(
                          h5("Make sure each document is separated from another document with a new line character."),
                          p("To do basic 'text analysis' in your text corpus, click on Browse in left-sidebar panel and upload the txt file. Once the file is uploaded it will do the computations in 
                             back-end with default inputs and accordingly results will be displayed in various tabs.
-                            If you wish to change the input, modify the input in left side-bar panel and click on 'Apply Changes'. Accordingly results in other tab will be refreshed
+                            If you wish to change the input, modify the input in the left panel and click 'Apply Changes'. Accordingly results in other tab will be refreshed
                            ", align = "Justify"),
-                         actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),
+                        actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),
                          h5("Note: You might observe no change in the outputs after clicking 'Apply Changes'. Wait for few seconds. As soon as all the computations
                            are over in back-end results will be refreshed",
                            align = "justify"),
@@ -78,7 +78,13 @@ shinyUI(fluidPage(
                 #          downloadButton('downloadData1', 'Download Nokia Lumia reviews txt file'),br(),br(),
                 #          p("Please note that download will not work with RStudio interface. Download will work only in web-browsers. So open this app in a web-browser and then download the example file. For opening this app in web-browser click on \"Open in Browser\" as shown below -"),
                 #          img(src = "example1.png")),
-                tabPanel("DTM",
+                
+         tabPanel("Input Data",
+                  h4("Review Input Data"), 
+                  dataTableOutput("readdata"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),
+                  
+         br(),),
+                         tabPanel("DTM",
                          verbatimTextOutput("dtmsize"),
                          h4("Sample DTM (Document Term Matrix) "),
                          DT::dataTableOutput("dtm_table"),br(), 

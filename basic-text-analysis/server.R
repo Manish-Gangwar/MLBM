@@ -57,6 +57,15 @@ shinyServer(function(input, output,session) {
     }
   })
   
+  
+  output$readdata <- renderDataTable({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      dataset()
+    }
+  }, options = list(lengthMenu = c(5, 30, 50,100), pageLength = 5))
+  
+  
   cols <- reactive({colnames(dataset())})
   
   output$pre_proc1 <- renderUI({if(is.null(dataset())){

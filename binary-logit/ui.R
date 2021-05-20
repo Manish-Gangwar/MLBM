@@ -22,6 +22,7 @@ shinyUI(pageWithSidebar(
     htmlOutput("fxvarselect"),
     htmlOutput("samsel"),
     htmlOutput("imputemiss"),
+  actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),
   #  fileInput("filep", "Upload new data for prediction (csv file with header)"),
     br()
   ),

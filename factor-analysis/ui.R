@@ -32,6 +32,7 @@ shinyUI(fluidPage(
     sliderInput("cutoffcorr", "Cut-off for correlation in factors vs variable", min = 0,  max = 1, value = 0.25),
     htmlOutput("samsel"),
     htmlOutput("imputemiss"),
+    actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),
     # selectInput("scale", "Standardize input data (usually yes)",c("yes","no"), selected = "yes"),
     br()
      # submitButton(text = "Apply Changes", icon("refresh"))

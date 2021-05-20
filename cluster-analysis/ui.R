@@ -37,6 +37,7 @@ shinyUI(fluidPage(
     htmlOutput("scale"),
     htmlOutput("imputemiss"),
     htmlOutput("winsor"),
+   actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),
     br(),
     #submitButton(text = "Apply Changes", icon("refresh"))
   ),

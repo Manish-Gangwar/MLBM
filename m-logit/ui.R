@@ -26,7 +26,7 @@ shinyUI(pageWithSidebar(
     
     htmlOutput("Alternativefeaturesvarselect"),
     htmlOutput("Individualfeaturesvarselect"),
-    
+    actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),    
    # submitButton(text = "Apply Changes", icon("refresh")),br(),
     
  #   fileInput("filep", "Upload new data for prediction (csv file with header)"),
