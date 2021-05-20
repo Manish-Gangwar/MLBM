@@ -3,7 +3,7 @@ puncts = c(",", "\\.", "!", "\\?");
 
 text.clean = function(x,html_tags,numbers)                    # text data
 { #require("tm")
-  x  =  tolower(x)
+  x  =  tolower(enc2utf8(x))
   if(html_tags){
     x  =  gsub("<.*?>", " ", x)             # regex for removing HTML tags
   }
