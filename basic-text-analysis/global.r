@@ -460,7 +460,7 @@ replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
       # textdf = drop_stopwords_corpus(raw_corpus, custom.stopwords=c("and", "to")) 
       #corpus = str_replace_all(tolower(raw_corpus), c(" of ", " the ", " and "), " ") 
       
-      corpus = stringr::str_replace_all(tolower(raw_corpus[,2]), stopw_list, " ") 
+      corpus = stringr::str_replace_all(tolower(enc2utf8(raw_corpus[,2])), stopw_list, " ") 
       textdf = data.frame(docID=seq(1:length(corpus)),nick=raw_corpus[,1], text=corpus, stringsAsFactors=FALSE)
       a1 = textdf$text %>% split_by_puncts(puncts,.) #----New
       temp <-lapply(a1$phrases, function(x) str_c(x,collapse = ","))
