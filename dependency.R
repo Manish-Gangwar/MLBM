@@ -1,42 +1,43 @@
-try(require("shiny") || install.packages("shiny"))
-try(require("devtools")||install.packages("devtools"))
-try(require("magick")||install.packages("magick"))
-try(require("text2vec") || install.packages("text2vec"))
-try(require("tm") || install.packages("tm"))
-try(require("tokenizers") || install.packages("tokenizers"))
-try(require("wordcloud") || install.packages("wordcloud"))
-try(require("slam") || install.packages("slam"))
-try(require("stringi") || install.packages("stringi"))
-try(require("tidytext") || install.packages("tidytext"))
-try(require("tidyr") || install.packages("tidyr"))
-try(require("igraph")|| install.packages("igraph"))
-try(require("visNetwork")|| install.packages('visNetwork'))
-try(require("SnowballC")||install.packages("SnowballC"))
-try(require("psych")||install.packages("psych"))
-try(require("DBI")||install.packages("DBI"))
-try(require("assertthat")||install.packages("assertthat"))
-try(require("Rcpp")||install.packages("Rcpp"))
-try(require("mnormt")||install.packages("mnormt"))
-try(require("scales")||install.packages("scales"))
-try(require("ggplot2")||install.packages("ggplot2"))
-try(require("DT")||install.packages("DT"))
-try(require("reshape2")||install.packages("reshape2"))
-try(require("wordcloud")||install.packages("wordcloud"))
-try(require("plotly")||install.packages("plotly"))
-try(require("magrittr")||install.packages("magrittr"))
-try(require("caret")||install.packages("caret"))
-try(require("rpart")||install.packages("rpart"))
-try(require("rpart.plot")||install.packages("rpart.plot"))
-try(require("randomForest")||install.packages("randomForest"))
-try(require("hydroGOF")||install.packages("hydroGOF"))
-try(require("pastecs")||install.packages("pastecs"))
-try(require("dplyr")||install.packages("dplyr"))
-try(require("Hmisc")||install.packages("Hmisc"))
-try(require("party")||install.packages("party"))
-try(require("partykit")||install.packages("partykit"))
-try(require("fmsb")||install.packages("fmsb"))
-try(require("PerformanceAnalytics")||install.packages("PerformanceAnalytics"))
-try(require("sparkline")||install.packages("sparkline"))
+if(!require("shiny")) {install.packages("shiny")}
+if(!require("shiny")) {install.packages("shiny")}
+if(!require("devtools")) {install.packages("devtools")}
+if(!require("magick")) {install.packages("magick")}
+if(!require("text2vec")) {install.packages("text2vec")}
+if(!require("tm")) {install.packages("tm")}
+if(!require("tokenizers")) {install.packages("tokenizers")}
+if(!require("wordcloud")) {install.packages("wordcloud")}
+if(!require("slam")) {install.packages("slam")}
+if(!require("stringi")) {install.packages("stringi")}
+if(!require("tidytext")) {install.packages("tidytext")}
+if(!require("tidyr")) {install.packages("tidyr")}
+if(!require("igraph")|| install.packages("igraph")}
+if(!require("visNetwork")|| install.packages('visNetwork')}
+if(!require("SnowballC")||install.packages("SnowballC")}
+if(!require("psych")||install.packages("psych")}
+if(!require("DBI")||install.packages("DBI")}
+if(!require("assertthat")||install.packages("assertthat")}
+if(!require("Rcpp")||install.packages("Rcpp")}
+if(!require("mnormt")||install.packages("mnormt")}
+if(!require("scales")||install.packages("scales")}
+if(!require("ggplot2")||install.packages("ggplot2")}
+if(!require("DT")||install.packages("DT")}
+if(!require("reshape2")||install.packages("reshape2")}
+if(!require("wordcloud")||install.packages("wordcloud")}
+if(!require("plotly")||install.packages("plotly")}
+if(!require("magrittr")||install.packages("magrittr")}
+if(!require("caret")||install.packages("caret")}
+if(!require("rpart")||install.packages("rpart")}
+if(!require("rpart.plot")||install.packages("rpart.plot")}
+if(!require("randomForest")||install.packages("randomForest")}
+if(!require("hydroGOF")||install.packages("hydroGOF")}
+if(!require("pastecs")||install.packages("pastecs")}
+if(!require("dplyr")||install.packages("dplyr")}
+if(!require("Hmisc")||install.packages("Hmisc")}
+if(!require("party")||install.packages("party")}
+if(!require("partykit")||install.packages("partykit")}
+if(!require("fmsb")||install.packages("fmsb")}
+if(!require("PerformanceAnalytics")||install.packages("PerformanceAnalytics")}
+if(!require("sparkline")||install.packages("sparkline")}
 
 if(!require("DescTools")) {install.packages("DescTools")}
 if(!require("mice")) {install.packages("mice")}
@@ -57,7 +58,7 @@ if(!require("maptpx")) {install.packages("maptpx")}
 if(!require("nFactors")) {install.packages("nFactors")}
 if(!require("qgraph")) {install.packages("qgraph")}
 if(!require("corrplot")) {install.packages("corrplot")}
-if(!require("RColorBrewer")){install.packages("RColorBrewer")}
+if(!require("RColorBrewer")}{install.packages("RColorBrewer")}
 if(!require("rfm")) {install.packages("rfm")}
 if(!require("lubridate")) {install.packages("lubridate")}
 #if(!require("ggbiplot")) {install_github("vqv/ggbiplot")}
@@ -78,7 +79,7 @@ if(!require("gridExtra")) {install.packages("gridExtra")}
 if(!require("tidyverse")) {install.packages("tidyverse")}
 if(!require("randomcoloR")) {install.packages("randomcoloR")}
 if(!require("tesseract")) {install.packages("tesseract")}
-devtools::install_github("ropenscilabs/umapr")
+#devtools::install_github("ropenscilabs/umapr")
 if (!require("umap")) {install.packages("umap")}
 
 warnings()
