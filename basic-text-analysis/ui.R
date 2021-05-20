@@ -150,7 +150,8 @@ shinyUI(fluidPage(
                          # h3("-----------------------------------------------------"),
                          # h4("Download Bigram Corpus"),
                          # verbatimTextOutput("bi_text"),
-                         # downloadButton("download_bigram","download bigram corpus"))
+                         # downloadButton("download_bigram","download bigram corpus"),
+                         br(),)
                           
           
                 
