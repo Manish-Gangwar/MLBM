@@ -10,34 +10,34 @@ if(!require("slam")) {install.packages("slam")}
 if(!require("stringi")) {install.packages("stringi")}
 if(!require("tidytext")) {install.packages("tidytext")}
 if(!require("tidyr")) {install.packages("tidyr")}
-if(!require("igraph")|| install.packages("igraph")}
-if(!require("visNetwork")|| install.packages('visNetwork')}
-if(!require("SnowballC")||install.packages("SnowballC")}
-if(!require("psych")||install.packages("psych")}
-if(!require("DBI")||install.packages("DBI")}
-if(!require("assertthat")||install.packages("assertthat")}
-if(!require("Rcpp")||install.packages("Rcpp")}
-if(!require("mnormt")||install.packages("mnormt")}
-if(!require("scales")||install.packages("scales")}
-if(!require("ggplot2")||install.packages("ggplot2")}
-if(!require("DT")||install.packages("DT")}
-if(!require("reshape2")||install.packages("reshape2")}
-if(!require("wordcloud")||install.packages("wordcloud")}
-if(!require("plotly")||install.packages("plotly")}
-if(!require("magrittr")||install.packages("magrittr")}
-if(!require("caret")||install.packages("caret")}
-if(!require("rpart")||install.packages("rpart")}
-if(!require("rpart.plot")||install.packages("rpart.plot")}
-if(!require("randomForest")||install.packages("randomForest")}
-if(!require("hydroGOF")||install.packages("hydroGOF")}
-if(!require("pastecs")||install.packages("pastecs")}
-if(!require("dplyr")||install.packages("dplyr")}
-if(!require("Hmisc")||install.packages("Hmisc")}
-if(!require("party")||install.packages("party")}
-if(!require("partykit")||install.packages("partykit")}
-if(!require("fmsb")||install.packages("fmsb")}
-if(!require("PerformanceAnalytics")||install.packages("PerformanceAnalytics")}
-if(!require("sparkline")||install.packages("sparkline")}
+if(!require("igraph")) {install.packages("igraph")}
+if(!require("visNetwork")) {install.packages('visNetwork')}
+if(!require("SnowballC")) {install.packages("SnowballC")}
+if(!require("psych")) {install.packages("psych")}
+if(!require("DBI")) {install.packages("DBI")}
+if(!require("assertthat")) {install.packages("assertthat")}
+if(!require("Rcpp")) {install.packages("Rcpp")}
+if(!require("mnormt")) {install.packages("mnormt")}
+if(!require("scales")) {install.packages("scales")}
+if(!require("ggplot2")) {install.packages("ggplot2")}
+if(!require("DT")) {install.packages("DT")}
+if(!require("reshape2")) {install.packages("reshape2")}
+if(!require("wordcloud")) {install.packages("wordcloud")}
+if(!require("plotly")) {install.packages("plotly")}
+if(!require("magrittr")) {install.packages("magrittr")}
+if(!require("caret")) {install.packages("caret")}
+if(!require("rpart")) {install.packages("rpart")}
+if(!require("rpart.plot")) {install.packages("rpart.plot")}
+if(!require("randomForest")) {install.packages("randomForest")}
+if(!require("hydroGOF")) {install.packages("hydroGOF")}
+if(!require("pastecs")) {install.packages("pastecs")}
+if(!require("dplyr")) {install.packages("dplyr")}
+if(!require("Hmisc")) {install.packages("Hmisc")}
+if(!require("party")) {install.packages("party")}
+if(!require("partykit")) {install.packages("partykit")}
+if(!require("fmsb")) {install.packages("fmsb")}
+if(!require("PerformanceAnalytics")) {install.packages("PerformanceAnalytics")}
+if(!require("sparkline")) {install.packages("sparkline")}
 
 if(!require("DescTools")) {install.packages("DescTools")}
 if(!require("mice")) {install.packages("mice")}
