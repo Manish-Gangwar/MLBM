@@ -34,23 +34,17 @@ shinyServer(function(input, output,session) {
         #colnames(Document) <- c("Doc.id","Document")
         Doc.id=seq(1:length(Document))
         calib=data.frame(Doc.id,Document)
-        print(input$file$name)
+        #print(input$file$name)
         return(calib)}
     else{
       Document = read.csv(input$file$datapath ,header=TRUE, sep = ",", stringsAsFactors = F)
-      Document[,1] <- str_to_title(Document[,1])
-      Document[,1] <- make.names(Document[,1], unique=TRUE)
-      Document[,1] <- tolower(Document[,1])
-      Document[,1] <- str_replace_all(Document[,1],"\\.","_")
-      Document<-Document[complete.cases(Document), ]
-      Document <- Document[!(duplicated(Document[,1])), ]
-      rownames(Document) <- Document[,1]
-      
-     # colnames(Document) <- c("Doc.id","Document")
-      #Doc.id=seq(1:length(Document))
-      # calib=data.frame(Doc.id,Document)
-      #print(input$file$name)
-      
+      # Document[,1] <- str_to_title(Document[,1])
+      # Document[,1] <- make.names(Document[,1], unique=TRUE)
+      # Document[,1] <- tolower(enc2utf8(Document[,1]))
+      # Document[,1] <- str_replace_all(Document[,1],"\\.","_")
+      # Document<-Document[complete.cases(Document), ]
+      # Document <- Document[!(duplicated(Document[,1])), ]
+      # rownames(Document) <- Document[,1]
       return(Document)
       }
       
@@ -96,7 +90,7 @@ shinyServer(function(input, output,session) {
     })
   
   output$id_var <- renderUI({
-    print(cols())
+    #print(cols())
     selectInput("x","Select ID Column",choices = cols())
     })
   

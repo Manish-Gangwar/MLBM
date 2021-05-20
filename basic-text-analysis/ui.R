@@ -147,10 +147,10 @@ shinyUI(fluidPage(
                          downloadButton('download_tfidf', 'download TF-IDF'),br(),
                          
                          
-                         h3("-----------------------------------------------------"),
-                         h4("Download Bigram Corpus"),
-                         verbatimTextOutput("bi_text"),
-                         downloadButton("download_bigram","download bigram corpus"))
+                         # h3("-----------------------------------------------------"),
+                         # h4("Download Bigram Corpus"),
+                         # verbatimTextOutput("bi_text"),
+                         # downloadButton("download_bigram","download bigram corpus"))
                           
           
                 
