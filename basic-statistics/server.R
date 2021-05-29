@@ -81,7 +81,7 @@ Dataset <- reactive({
         return(Dataset1)}
       else {return(Datasetf())}
     }
-    else if(input$obs=="quick run, 1,000 random obs")
+    else #if(input$obs=="quick run, 1,000 random obs")
     {
       if (nrow(Datasetf())>1000){
         set.seed(1234)
@@ -158,7 +158,7 @@ output$imputemiss <- renderUI({
 output$imout <- renderUI({
   if (is.null(input$file)) {return(NULL)}
   if (input$imputemiss == "do not impute or drop rows") {
-    p("Note: to handle missing values check options in the panel on the left.",style="color:black")}
+    p("Note: to impute or drop missing values check options in the panel on the left.",style="color:black")}
   else if ((input$imputemiss == "impute missing values")) {
     p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
   }
@@ -168,7 +168,7 @@ output$imout <- renderUI({
 output$imout1 <- renderUI({
   if (is.null(input$file)) {return(NULL)}
   if (input$imputemiss == "do not impute or drop rows") {
-    p("Note: remove missing values check options in the panel on the left.",style="color:red")}
+    p("Note: to impute or drop missing values check options in the panel on the left.",style="color:black")}
   else if ((input$imputemiss == "impute missing values")) {
     p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
   }
