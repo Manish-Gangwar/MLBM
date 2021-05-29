@@ -78,7 +78,7 @@ if(!require("plyr")) {install.packages("plyr")}
 if(!require("grid")) {install.packages("grid")}
 if(!require("scales")) {install.packages("scales")}
 if(!require("gridExtra")) {install.packages("gridExtra")}
-if(!require("tesseract")) {install.packages("tesseract")}
+#if(!require("tesseract")) {install.packages("tesseract")}
 if(!require("tidyverse")) {install.packages("tidyverse")}
 if(!require("randomcoloR")) {install.packages("randomcoloR")}
 #devtools::install_github("ropenscilabs/umapr")
