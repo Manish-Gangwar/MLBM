@@ -11,7 +11,7 @@ if (!require("corrplot")) {install.packages("corrplot")}
 if (!require("hydroGOF")) {install.packages("hydroGOF")}
 if (!require("MASS")) {install.packages("MASS")}
 if (!require("caret")) {install.packages("caret")}
-#if (!require("Rtsne")) {install.packages("Rtsne")}
+if (!require("dplyr")) {install.packages("dplyr")}
 if (!require("e1071")) {install.packages("e1071")}
 if (!require("mice")) {install.packages("mice")}
 if (!require("ggfortify")) {install.packages("ggfortify")}
@@ -25,6 +25,7 @@ library(reshape2)
 library(corrplot)
 library(hydroGOF)
 library(MASS)
+library(dplyr)
 library(e1071)
 library(caret)
 library(mice)
@@ -87,11 +88,12 @@ output$imputemiss <- renderUI({
 
 output$imout <- renderUI({
   if (is.null(input$file)) {return(NULL)}
-  if (input$imputemiss == "do not impute or drop rows") {return(NULL)}
+  if (input$imputemiss == "do not impute or drop rows") {
+    p("Note: for missing values check options in the panel on the left.",style="color:black")}
   else if ((input$imputemiss == "impute missing values")) {
-    p("Note: missing values imputed, check options in the panel on the left",style="color:red")
+    p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
   }
-  else { p("Note: missing value rows dropped, check options in the panel on the left",style="color:red") }
+  else { p("Note: missing value rows dropped, check options in the panel on the left.",style="color:black") }
 })
 
 Dataset = reactive({
@@ -145,13 +147,26 @@ nu1.Dataset = reactive({
   return(nu.data)
 })
 
+num.Dataset = reactive({
+  data = Datasetf1()
+  Class = NULL
+  for (i in 1:ncol(data)){
+    c1 = class(data[,i])
+    Class = c(Class, c1)
+  }
+  nu = which(Class %in% c("numeric"))
+  num.data = data[,nu] 
+  return(num.data)
+})
+
 # Select variables:
 output$yvarselect <- renderUI({
 #  if (identical(Datasetf(), '') || identical(Datasetf(),data.frame())) return(NULL)
   if (is.null(input$file)) {return(NULL)}
   else {
   selectInput("yAttr", "Select Y variable (must be factor/categorical)",
-                     colnames(Datasetf1()), setdiff(colnames(Datasetf1()),colnames(nu1.Dataset()))[1])
+              setdiff(colnames(Datasetf1()),colnames(num.Dataset())), 
+                     setdiff(colnames(Datasetf1()),colnames(nu1.Dataset()))[1])
   }
 })
 
@@ -189,13 +204,24 @@ output$xvarselect <- renderUI({
 })
 
 
-output$fxvarselect <- renderUI({
+output$fxvarselect1 <- renderUI({
 #  if (identical(Datasetf(), '') || identical(Datasetf(),data.frame())) return(NULL)
   if (is.null(input$file)) {return(NULL)}
   else {
-  checkboxGroupInput("fxAttr", "Select factor (categorical) variables in X",
-                     colnames(Dataset.temp()[,c(input$xAttr)]),
+  checkboxGroupInput("fxAttr1", "Select factor (categorical) variables in X",
+                     setdiff(colnames(Dataset.temp()[,c(input$xAttr)]),colnames(num.Dataset())),
                      setdiff(colnames(Dataset.temp()[,c(input$xAttr)]),c(colnames(nu1.Dataset()))) )
+  }
+})
+
+
+output$fxvarselect <- renderUI({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    selcol=setdiff(input$xAttr,colnames(num.Dataset()))
+    pickcol=setdiff(colnames(Dataset.temp()[,c(input$xAttr)]),c(colnames(nu1.Dataset())))
+    varSelectInput("fxAttr",label = "Select factor (categorical) variables in X",
+                   data = Dataset.temp()[,selcol], multiple = TRUE, selectize = TRUE, selected = pickcol  )
   }
 })
 
@@ -217,12 +243,20 @@ mydatay = reactive({
   return(mydata)
 })
 
+filtered_dataset11 <- reactive({if (is.null(input$imputemiss)) { return(NULL) }
+  else{
+    Dataset <- Dataset.temp() %>% dplyr::select(!!!input$fxAttr)
+    return(Dataset)
+  }})
+
 mydata = reactive({
   mydata = mydatay()[,c(input$yAttr,input$xAttr)]
   #mydata[,input$yAttr] = factor(mydata[,input$yAttr])
-  if (length(input$fxAttr) >= 1){
-  for (j in 1:length(input$fxAttr)){
-      mydata[,input$fxAttr[j]] = factor(mydata[,input$fxAttr[j]])
+  #fxAttr = input$fxAttr
+  fxAttr = colnames(filtered_dataset11())
+  if (length(fxAttr) >= 1){
+  for (j in 1:length(fxAttr)){
+      mydata[,fxAttr[j]] = factor(mydata[,fxAttr[j]])
   }
   }
   return(mydata)
@@ -230,7 +264,8 @@ mydata = reactive({
 
 pred.readdata = reactive({
   #fvar=setdiff(input$fxAttr,input$yAttr)
-  fvar=input$fxAttr
+  #fvar=input$fxAttr
+  fvar=colnames(filtered_dataset11())
   if ((input$yAttr %in%  colnames(Datasetp()) ) ) {
     mydata = Datasetp()#[,c(input$yAttr,input$xAttr)]
     if (length(input$fyAttr) >= 1){
@@ -261,6 +296,13 @@ output$newobs = renderPrint({
   else {
     dim(pred.readdata())
   }
+})
+
+if(!require("descriptr")) {install.packages("descriptr")}
+library(descriptr)
+output$screen_summary <- renderPrint({
+  if (is.null(input$file)) {return(NULL)}
+  else {  ds_screener(mydata())} 
 })
 
 out = reactive({

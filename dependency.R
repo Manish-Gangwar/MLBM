@@ -38,8 +38,9 @@ if(!require("partykit")) {install.packages("partykit")}
 if(!require("fmsb")) {install.packages("fmsb")}
 if(!require("PerformanceAnalytics")) {install.packages("PerformanceAnalytics")}
 if(!require("sparkline")) {install.packages("sparkline")}
-
+if (!require("shinycssloaders")) {install.packages("shinycssloaders")}  
 if(!require("DescTools")) {install.packages("DescTools")}
+if(!require("descriptr")) {install.packages("descriptr")}
 if(!require("mice")) {install.packages("mice")}
 if(!require("plot3D")) {install.packages("plot3D")}
 if(!require("ROCR")) {install.packages("ROCR")}

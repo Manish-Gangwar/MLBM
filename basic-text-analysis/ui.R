@@ -24,11 +24,11 @@ shinyUI(fluidPage(
   
   # Input in sidepanel:
   sidebarPanel(
-    h4(p("Data Input")),
+    #h4(p("Data Input")),
     fileInput("file", "Upload input text file"),
     uiOutput('id_var'),
     uiOutput("doc_var"),
-    actionButton(inputId = "apply",label = "Run Analysis", icon("refresh")),br(),br(),
+    actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),br(),br(),
     
     textInput("stopw", ("Enter stop words separated by comma(,)"), value = "will,can"),
     
@@ -48,7 +48,7 @@ shinyUI(fluidPage(
     textInput("concord.word",('Enter word for which you want to find concordance'),value = 'good'),
     checkboxInput("regx","Check for regex match"),
     sliderInput("window",'Concordance Window',min = 2,max = 100,5),
-    actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),br(),br(),
+    #actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),br(),br(),
     
   ),
   
@@ -87,7 +87,7 @@ shinyUI(fluidPage(
                   
          br(),),
                          tabPanel("DTM",
-                         verbatimTextOutput("dtmsize"),
+                          verbatimTextOutput("dtmsize"),
                          h4("Sample DTM (Document Term Matrix) "),
                          DT::dataTableOutput("dtm_table"),br(), 
                          h4("Word Cloud"),

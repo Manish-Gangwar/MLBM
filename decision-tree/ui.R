@@ -24,6 +24,7 @@ shinyUI(
         htmlOutput("fxvarselect"),
         htmlOutput("samsel"),
         htmlOutput("imputemiss"),
+      numericInput('numout','Input random number to select new training data',5898),
         sliderInput('sample','Set test sample percentage',10,40,25),
       actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),
     #   fileInput("filep", "Upload new data for prediction (csv file)")
@@ -45,8 +46,8 @@ shinyUI(
                                Please note that prediction data should have all explanatory variables similar to model data.',align="justify"),
                              p('You can also adjust the complexity parameter in decision tree model to control size of the tree. A decision tree is a decision support tool that uses a tree-like model of decisions and their possible consequences, including chance event outcomes, resource costs, and utility. It is one way to display an algorithm that only contains conditional control statements.'),
   
-                             tags$a(href="https://en.wikipedia.org/wiki/Decision_tree", "-Wikipedia",target="_blank"),
-                             br(),br(),
+                             h4(tags$a(href="https://en.wikipedia.org/wiki/Decision_tree", "Note on Decison Tree (Wikipedia)",target="_blank")),
+                             
                              #h4(p("Download Sample Input File")),
                              downloadButton('downloadData', 'download sample data'),
                              br(), br(),
@@ -60,31 +61,33 @@ shinyUI(
                              h4("Review Input Data"), 
                              dataTableOutput("readdatat"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),
                              #verbatimTextOutput("head"),#verbatimTextOutput("tail"),
-                            h4("Data Summary of Selected X Variables"),htmlOutput("imout"),verbatimTextOutput("summarydata"),
+                            h4("Data Summary of Selected Y and X Variables"),htmlOutput("imout"),
+                            verbatimTextOutput('screen_summary'),
+                            verbatimTextOutput("summarydata"),
                             h4("Missing Data Rows"),verbatimTextOutput("missing"),
                             br()),
-                    tabPanel("Data Visualization",
-                             #br(),
-                             #h4("Select variable for er's outlier test"),
-                             h4("Be patient generating plots"),
-                             plotOutput("dens"),
-                             h4("Histograms"),
-                             plotOutput("hist"),br(),
-                             h4("Bi-Variate Plots"),
-                             #(p('remove missing data variable(s) if any, or impute or drop rows - check  "Data Summary" tab and options in the panel on the left',style="color:black")),
-                             plotOutput("corplot"),
-                             br()),
+                    # tabPanel("Data Visualization",
+                    #          #br(),
+                    #          #h4("Select variable for er's outlier test"),
+                    #          h4("Be patient generating plots"),
+                    #          plotOutput("dens"),
+                    #          h4("Histograms"),
+                    #          plotOutput("hist"),br(),
+                    #          h4("Bi-Variate Plots"),
+                    #          #(p('remove missing data variable(s) if any, or impute or drop rows - check  "Data Summary" tab and options in the panel on the left',style="color:black")),
+                    #          plotOutput("corplot"),
+                    #          br()),
                     tabPanel("Model Output",
                              #br(),
                              htmlOutput("yout"),
-                             (helpText('Is variable Y a factor (catregorical)? 
-                                  If yes, please, make sure it is check-marked as a factor variable 
-                                in the left panel.')),
                              h4('Variable importance'),
-                             
+                             p('If you see an error message, some factor (categorical) variable in the test data has a new level that is not present in the training data.'),
                              verbatimTextOutput('imp'),
                              h4('Number of Rows and Columns in Training Data'),
                              verbatimTextOutput('trainobs'),
+                             (p('Is Y variable a factor (catregorical)? 
+                                  If yes, please, make sure it is check-marked as a factor variable 
+                                in the left panel.',style="color:darkblue;text-decoration: underline")),
                              h4('Model Accuracy/Error of Training Data'),
                              verbatimTextOutput("validation"),
                              h4('Number of Rows and Columns in Test Data'),
@@ -117,9 +120,12 @@ shinyUI(
                                under 'Model Results Summary' in the 'Model Output' tab."),
                             h5("Look at the corresponding CP value (corresponding to the lowest 'xerror' value) and
                               set the complexity parameter (in the left panel) close to that CP value."),
+                            (p('Is Y variable a factor (catregorical)? 
+                                  If yes, please, make sure it is check-marked as a factor variable 
+                                in the left panel.',style="color:darkblue;text-decoration: underline")),
                             plotOutput("plot3",height = 1600),
                             br(),br(), br()),
-                  tabPanel("Interactive Tree",
+                  tabPanel("Decision Tree (interactive)",
                            h4('Click on the node to see the decison path or place a cursor on the node 
                               to see details. Use scroll wheel to zoom in or out.'),
                            h5("To optimally prune the tree, find the row with the lowest 'xerror' value 

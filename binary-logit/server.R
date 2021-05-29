@@ -1,5 +1,5 @@
 #################################################
-#      Summary & Binary App                      #
+#      Binary App                      #
 #################################################
 if(!require("shiny")) {install.packages("shiny")}
 if(!require("pastecs")){install.packages("pastecs")}
@@ -12,7 +12,7 @@ if (!require("ROCR")) {install.packages("ROCR")}
 if (!require("caret")) {install.packages("caret")}
 if (!require("Rfast")) {install.packages("Rfast")}
 if (!require("e1071")) {install.packages("e1071")}
-#if (!require("Rtsne")) {install.packages("Rtsne")}
+if (!require("dplyr")) {install.packages("dplyr")}
 if (!require("fastDummies")) {install.packages("fastDummies")}
 if (!require("mice")) {install.packages("mice")}
 
@@ -27,7 +27,7 @@ library(corrplot)
 library(ROCR)
 library(caret)
 library(Rfast)
-#library(Rtsne)
+library(dplyr)
 library(fastDummies)
 library(mice)
 
@@ -35,7 +35,7 @@ library(mice)
 
 shinyServer(function(input, output,session) {
   
-Datasetf <- reactive({
+Datasetf0 <- reactive({
   if (is.null(input$file)) { return(NULL) }
   else{
     Dataset <- as.data.frame(read.csv(input$file$datapath ,header=TRUE, sep = ","))
@@ -43,62 +43,10 @@ Datasetf <- reactive({
   }
 })
 
-output$samsel <- renderUI({
-  if (is.null(input$file)) {return(NULL)}
-  else {
-    selectInput("obs", "Select sub sample", c("quick run, 1,000 obs", "10,000 obs", "full dataset"), 
-                selected = "quick run, 1,000 obs")
-  }
-})
-
-Datasetf1 <- reactive({
-  if (is.null(input$imputemiss)) {return(NULL)}
-  if (input$obs=="full dataset") { return(Datasetf()) }
-  else if(input$obs=="10,000 obs") 
-  {
-    if (nrow(Datasetf())>10000){
-      set.seed(1234)
-      testsample= sample(1:nrow(Datasetf()), 10000 )
-      Dataset1=Datasetf()[testsample,]
-      return(Dataset1)}
-    else {return(Datasetf())}
-  }
-  else (input$obs=="1,000 obs")
-  {
-    if (nrow(Datasetf())>1000){
-      set.seed(1234)
-      testsample= sample(1:nrow(Datasetf()), 1000 )
-      Dataset1=Datasetf()[testsample,]
-      return(Dataset1)}
-    else {return(Datasetf())}
-  }  
-})
-
-output$imputemiss <- renderUI({
-  if (is.null(input$file)) {return(NULL)}
-  else {
-    #if (identical(Datasetf(), '') || identical(Datasetf(),data.frame())) return(NULL)
-    if (1==0) {p("error")}
-    else {
-      selectInput("imputemiss", "Impute missing values or drop missing value rows", 
-                  c("do not impute or drop rows", "impute missing values", "drop missing value rows"), 
-                  selected = "do not impute or drop rows")
-    }}
-})
-
-output$imout <- renderUI({
-  if (is.null(input$file)) {return(NULL)}
-  if (input$imputemiss == "do not impute or drop rows") {return(NULL)}
-  else if ((input$imputemiss == "impute missing values")) {
-    p("Note: missing values imputed - check options in the panel on the left",style="color:black")
-  }
-  else { p("Note: missing values rows dropped - check options in the panel on the left",style="color:black") }
-})
-
 output$readdata <- renderDataTable({
   if (is.null(input$file)) {return(NULL)}
   else {
-    Datasetf()
+    Datasetf0()
   }
 }, options = list(lengthMenu = c(5, 30, 50, 100), pageLength = 5))
 
@@ -118,8 +66,8 @@ output$readdatap <- renderDataTable({
 }, options = list(lengthMenu = c(5, 30, 50,100), pageLength = 5))
 
 Dataset.temp = reactive({
-  if (is.null(input$file)) {return(NULL)}
-  mydata = Datasetf1()#[,c(input$yAttr,input$xAttr)]
+  mydata = Datasetf0()#[,c(input$yAttr,input$xAttr)]
+  return(mydata)
 })
 
 nu.Dataset = reactive({
@@ -136,13 +84,26 @@ nu.Dataset = reactive({
   return(nu.data)}
 })
 
+num.Dataset = reactive({
+  data = nu.Dataset()
+  Class = NULL
+  for (i in 1:ncol(data)){
+    c1 = class(data[,i])
+    Class = c(Class, c1)
+  }
+  nu = which(Class %in% c("numeric"))
+  num.data = data[,nu] 
+  return(num.data)
+})
+
 # Select variables:
 output$yvarselect <- renderUI({
   if (is.null(input$file)) {return(NULL)}
  # if (identical(Datasetf(), '') || identical(Datasetf(),data.frame())) return(NULL)
   else {
-  selectInput("yAttr", "Select Y variable (categorical)", (colnames(Dataset.temp())), 
-              setdiff(colnames(Dataset.temp()),colnames(nu.Dataset()))[1])
+  selectInput("yAttr", "Select Y variable (categorical)", 
+              setdiff(colnames(Dataset.temp()),colnames(num.Dataset())), 
+              setdiff(colnames(Dataset.temp()),colnames(nu.Dataset())))
   }
 })
 
@@ -151,7 +112,8 @@ output$xvarselect <- renderUI({
   if (is.null(input$file)) {return(NULL)}
   else {
   checkboxGroupInput("xAttr", "Select X variables",
-                     setdiff(colnames(Datasetf1()),input$yAttr), setdiff(colnames(Datasetf1()[,-1]),input$yAttr))
+                     setdiff(colnames(Dataset.temp()),input$yAttr), 
+                     setdiff(colnames(Dataset.temp()[,-1]),input$yAttr))
   }
 })
 
@@ -161,21 +123,42 @@ output$fxvarselect <- renderUI({
   else {
   checkboxGroupInput("fxAttr", "Select factor (categorical) variables in X",
                 #     setdiff(colnames(Dataset.temp()),input$yAttr),"" )
-                (colnames(Dataset.temp()[,c(input$xAttr)])),    setdiff(colnames(Dataset.temp()[,c(input$xAttr)]),c(colnames(nu.Dataset()))) )
+                setdiff(input$xAttr, colnames(num.Dataset())),    
+                setdiff(input$xAttr, colnames(nu.Dataset())) )
   }
 })
 
-Dataset = reactive({
+
+output$fxvarselect1 <- renderUI({
   if (is.null(input$file)) {return(NULL)}
   else {
+    selcol=setdiff(input$xAttr,colnames(num.Dataset()))
+    pickcol=setdiff(input$xAttr,c(colnames(nu.Dataset())))
+    varSelectInput("fxAttr",label = "Select factor (categorical) variables in X",
+                   data = Dataset.temp()[,selcol], multiple = TRUE, selectize = TRUE, selected = pickcol  )
+  }
+})
+
+output$imputemiss <- renderUI({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+      selectInput("imputemiss", "Impute missing values or drop missing value rows", 
+                  c("do not impute or drop rows", "impute missing values", "drop missing value rows"), 
+                  selected = "do not impute or drop rows")
+    }
+})
+
+Datasetf = reactive({
+  if (is.null(input$imputemiss)) {return(Dataset.temp())}
+  else {
   if (input$imputemiss == "do not impute or drop rows") 
-  { mydataimp=Datasetf1() }
+  { mydataimp=Dataset.temp() }
   else if (input$imputemiss == "impute missing values") 
-  { mydata = Datasetf1()
+  { mydata = Dataset.temp()
   mice_mod = mice(mydata, printFlag=FALSE)
   mydataimp <- complete(mice_mod) }
   else # (input$imputemiss == "drop missing value rows") 
-  { mydata = Datasetf1()
+  { mydata = Dataset.temp()
   mydataimp = na.omit(mydata)  }
   
   #mydataimp[,input$yAttr] = factor(mydataimp[,input$yAttr])
@@ -186,12 +169,12 @@ Dataset = reactive({
 basealt <- reactive({
   if (is.null(input$file)) {return(NULL)}
   else {
-    basealt = (as.data.frame(t(as.matrix(table(factor(Dataset()[,input$yAttr]) )))))
-    #funname = function(x) {gsub(" ", ".",x)}; Dataset()[,input$yAttr] = sapply(Dataset()[,input$yAttr], funname)
+    basealt = (as.data.frame(t(as.matrix(table(factor(Datasetf()[,input$yAttr]) )))))
+    #funname = function(x) {gsub(" ", ".",x)}; Datasetf()[,input$yAttr] = sapply(Datasetf()[,input$yAttr], funname)
     funname = function(x) {gsub(" ", ".",x)}; names(basealt) = sapply(names(basealt), funname)
     funname = function(x) {gsub("-", ".",x)}; names(basealt) = sapply(names(basealt), funname)
     funname = function(x) {gsub("_", ".",x)}; names(basealt) = sapply(names(basealt), funname)
-    #basealt = (as.data.frame(t(as.matrix(table(Dataset()[,input$yAttr])))))
+    #basealt = (as.data.frame(t(as.matrix(table(Datasetf()[,input$yAttr])))))
    # for (j in 1:length(basealt)){ names(basealt)[j] = sub(" ", ".", names(basealt)[j])  }
   return(basealt)}
 })
@@ -228,27 +211,82 @@ output$yout3 <- renderUI({
   p("Model predicts probability of",input$yAttr,"=", input$BaseAlternative,style="color:red")
 })
 
-mydata = reactive({
-  ydata = factor(Dataset()[,c(input$yAttr)])
+filtered_dataset11 <- reactive({if (is.null(input$file)) { return(NULL) }
+  else{
+    #Dataset <- Datasetf() %>% dplyr::select(!!!input$fxAttr)
+    Dataset = Datasetf()[,input$fxAttr]
+    return(Dataset)
+  }})
+
+Datasetf1 = reactive({
+  ydata = factor(Datasetf()[,c(input$yAttr)])
   Y=as.data.frame(dummy_cols(ydata))[,-1]
   names(Y) = colnames(basealt())
   Y1=Y[,input$BaseAlternative]
-  mydata=cbind(Y1, Dataset()[,c(input$yAttr,input$xAttr)])
+ 
+  mydata=cbind(Y1, Datasetf()[,c(input$yAttr,input$xAttr)])
   names(mydata)[1]=paste0(input$yAttr,".",input$BaseAlternative)
+  
+  fxAttr = input$fxAttr
+  #fxAttr = colnames(filtered_dataset11())
+  if (length(fxAttr) >= 1){
+  for (j in 1:length(fxAttr)){
+      mydata[,fxAttr[j]] = factor(mydata[,fxAttr[j]])
+  }}
   mydata[,input$yAttr] = factor(mydata[,input$yAttr])
-  if (length(input$fxAttr) >= 1){
-  for (j in 1:length(input$fxAttr)){
-      mydata[,input$fxAttr[j]] = factor(mydata[,input$fxAttr[j]])
-  }
-  }
   return(mydata)
   
 })
 
 
+output$samsel <- renderUI({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    selectInput("obs", "Select sub sample", c("quick run, random 1,000 obs", "random 10,000 obs", "full dataset"), 
+                selected = "quick run, random 1,000 obs")
+  }
+})
+
+mydata <- reactive({
+  if (is.null(input$file)) {return(NULL)}
+  if (input$obs=="full dataset") { return(Datasetf1()) }
+  else if(input$obs=="random 10,000 obs") 
+  {
+    if (nrow(Datasetf1())>10000){
+      set.seed(1234)
+      testsample= sample(1:nrow(Datasetf1()), 10000 )
+      Dataset1=Datasetf1()[testsample,]
+      return(Dataset1)}
+    else {return(Datasetf1())}
+  }
+  else (input$obs=="quick run, random 1,000 obs")
+  {
+    if (nrow(Datasetf1())>1000){
+      set.seed(1234)
+      testsample= sample(1:nrow(Datasetf1()), 1000 )
+      Dataset1=Datasetf1()[testsample,]
+      return(Dataset1)}
+    else {return(Datasetf1())}
+  }  
+})
+
+output$imout <- renderUI({
+  if (is.null(input$file)) {return(NULL)}
+  if (input$imputemiss == "do not impute or drop rows") {
+    p("Note: for missing values check options in the panel on the left.",style="color:black")}
+  else if ((input$imputemiss == "impute missing values")) {
+    p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
+  }
+  else { p("Note: missing value rows dropped, check options in the panel on the left.",style="color:black") }
+})
+
+
+
+
 Dataset.Predict <- reactive({
 #  fxc = setdiff(input$fxAttr, input$yAttr)
   fxc=input$fxAttr
+ # fxc = colnames(filtered_dataset11())
   mydata = pred.readdata()
   
   if (length(fxc) >= 1){
@@ -273,6 +311,14 @@ output$newobs = renderPrint({
   }
 })
 
+if(!require("descriptr")) {install.packages("descriptr")}
+library(descriptr)
+output$screen_summary <- renderPrint({
+  if (is.null(input$file)) {return(NULL)}
+  else {  ds_screener(mydata())} 
+})
+
+#out = eventReactive(input$apply,{
 out = reactive({
 data = mydata()
 Missing1=(data[!complete.cases(data),])
@@ -291,13 +337,13 @@ nu = which(Class %in% c("numeric","integer"))
 fa = which(Class %in% c("factor","character"))
 nu.data = data[,nu]; 
 #nu.data = nu.data[,-1]
-fa.data = data[,fa] 
-Summary = list(Numeric.data = round(stat.desc(nu.data)[c(4,5,6,8,9,12,13),] ,3), factor.data = describe(fa.data))
+factor.data = data[,fa] 
+Summary = list(Factor.data = describe(factor.data),Numeric.data = round(stat.desc(nu.data)[c(4,5,6,8,9,12,13),] ,3))
 # Summary = list(Numeric.data = round(stat.desc(nu.data)[c(4,5,6,8,9,12,13),] ,4), factor.data = describe(fa.data))
 
 a = seq(from = 0, to=200,by = 4)
 j = length(which(a < ncol(nu.data)))
-out = list(Dimensions = Dimensions, Summary =Summary, Tail=Tail, fa.data, nu.data, 
+out = list(Dimensions = Dimensions, Summary =Summary, Tail=Tail, factor.data, nu.data, 
            a, j, Head=Head, MissingDataRows=Missing, missing.data.rows.count=mscount)
 return(out)
 })

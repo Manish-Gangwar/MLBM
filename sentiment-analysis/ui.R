@@ -23,8 +23,8 @@ shinyUI(fluidPage(
   
   # Input in sidepanel:
   sidebarPanel(
-    fileInput("file", "Upload text file"),  
-    
+    fileInput("file", "Upload input text file"),  
+    uiOutput("doc_var"),
     selectInput("lexicon", "Sentiment Dictionary",
     c("AFINN","bing","loughran","User Defined"="userdefined"), selected = "AFINN"),
     
@@ -64,6 +64,12 @@ shinyUI(fluidPage(
                          
                        
                          ),
+                
+                tabPanel("Input Data",
+                         h4("Review Input Data"), 
+                         dataTableOutput("readdata"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),
+                         
+                         br(),),
                 
                 tabPanel("Sentiments - Plot",h4(),
                          # verbatimTextOutput('chk'),

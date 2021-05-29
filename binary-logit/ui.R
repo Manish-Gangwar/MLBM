@@ -1,5 +1,5 @@
 ####################################################
-#      Summary & Binary App                           #
+#      Binary App                           #
 ####################################################
 
 library("shiny")
@@ -36,8 +36,6 @@ shinyUI(pageWithSidebar(
                          br(),
                          p("In statistics, the logistic regression (or binary logit model) is used to model the probability of a certain class 
                            or event existing such as pass/fail, win/lose, alive/dead or healthy/sick."),
-                         tags$a(href="https://en.wikipedia.org/wiki/Logistic_regression", "-Wikipedia",target="_blank"),
-                         br(),
                          h4(p("How to use this application")),
                          p("This application requires one data input from the user. To do so, click on 'Browse' (in the panel on the left)
                             and upload the csv data input file.
@@ -52,6 +50,8 @@ shinyUI(pageWithSidebar(
                          p("Binary logit classification model trains better when observations are equal distributed between two classes (0 and 1 outcomes).",
                            align="justify"),
                          #h4(p("Download Sample Input File")),
+                         h4(tags$a(href="https://en.wikipedia.org/wiki/Logistic_regression",  
+                                   "Note on Logistic Regression (Wikipedia)",target="_blank")),
                          downloadButton('downloadData', 'download sample data'),
                          br(), br(),
                          h4('Note'),
@@ -63,15 +63,17 @@ shinyUI(pageWithSidebar(
                 tabPanel("Data Summary",#h4("Selected Variables"), verbatimTextOutput("head"),#verbatimTextOutput("tail"),
                          h4("Review Input Data"), 
                          dataTableOutput("readdata"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),
-                         h4("Data Summary of Selected X Variables"),htmlOutput("imout"),verbatimTextOutput("summary"),
+                         h4("Data Summary of Selected Y and X Variables"),htmlOutput("imout"),
+                         verbatimTextOutput("summary"),
+                         verbatimTextOutput('screen_summary'),
                          h4("Missing Data Rows"),verbatimTextOutput("missing")),
                 tabPanel("Data Visualization",br(),
                          #h4("Select variable for er's outlier test"),
                          h4("Be patient generating plots"),
-                         plotOutput("dens"),
+                        # plotOutput("dens"),
                          h4("Histograms"),
                          plotOutput("hist"),br(),
-                         h4("Bi-Variate Plots"),
+                         h4("Pair Plots"),
                          #(p('remove missing data variable(s) if any, or impute or drop rows - check  "Data Summary" tab and options in the panel on the left',style="color:black")),
                          plotOutput("corplot"),
                          br(),
@@ -92,8 +94,6 @@ shinyUI(pageWithSidebar(
                          br()),
                 
                 tabPanel("Accuracy ROC", # br(),
-                         h4("Missing Data Rows Count"),verbatimTextOutput("mscount"),
-                         htmlOutput("misswarn"),
                         # (p('remove missing data variable(s) if any, or impute or drop rows - check  "Data Summary" tab',style="color:black")),
                          
                          #verbatimTextOutput("mscount"),
@@ -110,7 +110,8 @@ shinyUI(pageWithSidebar(
                          (p('The default value of the cut-off is 0.5. Lowering cut-off increases sensitivity 
                             but reduces specificity. One may choose a cut-off that  
                             maximizes -- sensitivity + specificity.',style="color:black")),
-                         
+                        h4("Missing Data Rows Count"),verbatimTextOutput("mscount"),
+                        htmlOutput("misswarn"),
                          #(p('remove missing data variable(s) if any, or impute or drop rows - check  "Data Summary" tab',style="color:black")),
                          plotOutput("resplot3"),
                          h4("ROC Curve"),plotOutput("roc"),

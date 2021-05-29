@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1622175107706.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "B9E98A24",
+    "lastKnownWriteTime" : 1621452618,
+    "last_content_update" : 1621452618,
+    "path" : "D:/OneDrive - Indian School of Business/Laptop sync/Desktop/GitHub/Manish-Gangwar/MLBM/advanced-text-analysis-main/dependency.R",
+    "project_path" : "dependency.R",
+    "properties" : {
+        "cursorPosition" : "2,0",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -59,9 +59,10 @@ lexicon_data<-read.csv('sentiments.csv',stringsAsFactors=FALSE)# read lexcicons 
     userdictionary = read.csv(input$user_dict$datapath,header=TRUE, sep = ",", stringsAsFactors = F)
       })
 
-  dataset <- reactive({
-        if (is.null(input$file)) {return(NULL)}
+  dataset1 <- reactive({
+    if (is.null(input$file)) {return(NULL)}
     else {
+      if(file_ext(input$file$datapath)=="txt"){
       text  = readLines(input$file$datapath)
       text = text[text!=""]
       
@@ -72,11 +73,33 @@ lexicon_data<-read.csv('sentiments.csv',stringsAsFactors=FALSE)# read lexcicons 
           unnest_tokens(text, text0, token = "sentences")
       } else {
         textdf = data_frame(text = text)  
+      } }
+      else{
+        textdf = read.csv(input$file$datapath ,header=TRUE, sep = ",", stringsAsFactors = F)
       }
-      
     }
     return(textdf)
       })
+  
+  output$readdata <- renderDataTable({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      dataset1()
+    }
+  }, options = list(lengthMenu = c(5, 30, 50,100), pageLength = 5))
+  
+  output$doc_var <- renderUI({
+    if(is.null(dataset1())){  return(NULL)}
+    else{
+    selectInput("y","Select Text Column",choices = colnames(dataset1()))
+    }
+  })
+  
+  dataset <- reactive({ 
+    if(file_ext(input$file$datapath)=="txt"){ dataset=dataset1()}
+    else{dataset=data_frame(text = dataset1()[,input$y])}
+    return(dataset)
+    })
   
     stopw = reactive({
         # input = list(stopw = "have had samsung")

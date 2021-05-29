@@ -153,6 +153,13 @@ library(e1071)
     return(mydata)
   })
   
+  if(!require("descriptr")) {install.packages("descriptr")}
+  library(descriptr)
+  output$screen_summary <- renderPrint({
+    if (is.null(input$file)) {return(NULL)}
+    else {  ds_screener(mydata())} 
+  })
+  
   out = reactive({
     data = mydata()
     #data = dataforsummary()
@@ -314,7 +321,7 @@ ind.features=paste(input$IndividualfeaturesAttr,collapse = "+")
      data_frame = t(data.fit)
      data_frame = as.data.frame(cbind(nnam, data_frame))
      data.fit0= as.matrix(data_frame[order(data_frame$nnam),-1])  
-     data.fit1=as.data.frame(as.vector(data.fit0))
+     data.fit1=round(as.data.frame(as.numeric(as.vector(data.fit0))),4)
      colnames(data.fit1)="predicted.prob"
      data.try=as.data.frame( cbind(data.fit1, mydata() ))
      data.try

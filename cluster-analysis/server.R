@@ -106,12 +106,40 @@ shinyServer(function(input, output){
     return(nu.data)
   })
   
+  fac.Dataset = reactive({
+    if (is.null(input$imputemiss)) {return(NULL)}
+    data = Dataset()[,1:ncol(Dataset())]
+    Class = NULL
+    for (i in 1:ncol(data)){
+      c1 = class(data[,i])
+      Class = c(Class, c1)
+    }
+    nu = which(Class %in% c("factor","character"))
+    fac.data = data[,nu] 
+    return(fac.data)
+  })
+  
+  if(!require("descriptr")) {install.packages("descriptr")}
+  library(descriptr)
+  output$screen_summary <- renderPrint({
+    if (is.null(input$file)) {return(NULL)}
+    else {  ds_screener(  Dataset()[,1:ncol(Dataset())]   )} 
+  })
+  
   output$xvarselect <- renderUI({
     if (is.null(input$file)) {return(NULL)}
     else {
     if (identical(Dataset(), '') || identical(Dataset(),data.frame())) return(NULL)
     checkboxGroupInput("xAttr", "Select X variables",
                        colnames(Dataset()), colnames(nu.Dataset()) )
+    }
+  })
+  
+  output$colXList <- renderUI({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      varSelectInput("selXVar",label = "Select only numerical X variables",
+                     data = Dataset(), multiple = TRUE, selectize = TRUE, selected = colnames(nu.Dataset()))
     }
   })
   
@@ -194,17 +222,18 @@ shinyServer(function(input, output){
       else {
         selectInput("imputemiss", "Impute missing values or drop missing value rows", 
                     c("do not impute or drop rows", "impute missing values", "drop missing value rows"), 
-                    selected = "do not impute or drop rows")
+                    selected = "drop missing value rows")
       }}
   })
   
   output$imout <- renderUI({
     if (is.null(input$file)) {return(NULL)}
-    if (input$imputemiss == "do not impute or drop rows") {return(NULL)}
+    if (input$imputemiss == "do not impute or drop rows") {
+      p("Note: for missing values check options in the panel on the left.",style="color:black")}
     else if ((input$imputemiss == "impute missing values")) {
-      p("Note: missing values imputed, - check options in the panel on the left",style="color:black")
+      p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
     }
-    else { p("Note: missing value rows dropped, - check options in the panel on the left",style="color:black") }
+    else { p("Note: missing value rows dropped, check options in the panel on the left.",style="color:black") }
   })
   
   Datasetf2 = reactive({
@@ -247,10 +276,28 @@ shinyServer(function(input, output){
     }
   })
   
+  filtered_dataset11 <- reactive({if (is.null(input$imputemiss)) { return(NULL) }
+    else{
+      Dataset <- Dataset() %>% dplyr::select(!!!input$selXVar)
+      return(Dataset)
+    }})
+  
   Datasetf = reactive({
-    x00 = Datasetfw()#[,c(input$xAttr)]
+    x00 = filtered_dataset11()
+    fxattr = setdiff( input$selXVar, colnames(nu.Dataset()) )
+    if ( {length(fxattr) >=1} ) { x01 = fastDummies::dummy_cols(x00, remove_first_dummy = TRUE,
+                                                                remove_selected_columns = TRUE)}
+    else { x01 = x00}
+    # it doesn't always converge with dummy variables
+    return(x01)
+  })
+  
+  
+  Datasetf_org = reactive({
+    x00 = Datasetfw()[,c(input$xAttr)]
     fxattr = setdiff( input$xAttr, colnames(nu.Dataset()) )
-    if ( {length(fxattr) >=1} ) { x01 = fastDummies::dummy_cols(x00, remove_first_dummy = FALSE)}
+    if ( {length(fxattr) >=1} ) { x01 = fastDummies::dummy_cols(x00, remove_first_dummy = FALSE,
+                                                                remove_selected_columns = TRUE)}
     else { x01 = x00}
     #x02 = x01[,-c(fxattr)]
     return(x01)
@@ -305,7 +352,14 @@ shinyServer(function(input, output){
   output$sclimout <- renderUI({
     if (input$scale == "No") {return(NULL)}
     else {
-    h4("Review Standardize Input Data")
+    h4("Basic Statistics Standardize Input Data")
+    }
+  })
+  
+  output$sclimout1 <- renderUI({
+    if (input$scale == "No") {return(NULL)}
+    else {
+      h4("View Standardize Input Data")
     }
   })
   

@@ -1,0 +1,420 @@
+"","treatment","trans_therm_post","trans_therm_pre","age","party","race","voted14","voted12","voted10","sdo","canvass_minutes","middle"
+"1","Control",3,0,29,"D","African American",0,1,0,-6.6307687e-10,3,0
+"2","Treatment",100,50,35,"D","African American",1,1,0,0.07111294,13,1
+"3","Treatment",50,50,63,"D","African American",1,1,1,-0.5503377,12,1
+"4","Control",30,47,51,"N","Caucasian",1,1,0,-0.10104841,0,0
+"5","Control",50,74,26,"D","African American",1,1,0,-6.6307687e-10,1,0
+"6","Treatment",84,76,62,"D","African American",1,1,1,-0.90123713,20,0
+"7","Treatment",50,50,20,"D","African American",1,0,0,-0.75992125,20,1
+"8","Control",50,50,51,"R","Caucasian",1,1,1,0.4188695,1,1
+"9","Treatment",50,100,53,"R","Caucasian",0,1,1,-0.67408645,5,0
+"10","Treatment",89,64,66,"D","Hispanic",1,1,1,0.114484966,2,0
+"11","Control",30,36,64,"D","African American",1,1,1,0.016258249,2,0
+"12","Control",59,80,57,"D","Caucasian",1,1,1,-0.7224644,2,0
+"13","Control",50,50,61,"N","Hispanic",1,0,0,-0.20266391,1,1
+"14","Treatment",50,50,82,"D","Hispanic",1,1,1,0.8305343,19,1
+"15","Treatment",81,50,50,"D","African American",1,1,1,-0.8870376,20,1
+"16","Control",50,50,58,"D","African American",0,1,0,1.1286281,0,1
+"17","Treatment",100,100,68,"R","Caucasian",0,1,0,0.75754476,0,0
+"18","Treatment",19,14,28,"N","African American",0,1,0,-0.7265769,15,0
+"19","Control",50,50,58,"D","African American",1,0,0,1.3744235,1,1
+"20","Control",50,50,22,"N","African American",1,0,0,0.44717458,2,1
+"21","Control",50,60,40,"D","Hispanic",1,1,0,-0.8968929,3,1
+"22","Control",50,50,25,"D","African American",0,1,1,-6.6307687e-10,3,1
+"23","Treatment",50,100,23,"D","African American",0,1,0,-0.8569324,8,0
+"24","Control",65,50,41,"D","African American",1,1,1,-0.55723214,0,1
+"25","Treatment",50,44,58,"N","Caucasian",1,1,1,-0.76360375,5,0
+"26","Treatment",78,52,31,"D","African American",0,1,0,-0.026362818,7,1
+"27","Treatment",55,66,65,"D","African American",0,0,1,0.2845034,27,0
+"28","Treatment",77,68,55,"D","Caucasian",1,1,1,-0.6862214,12,0
+"29","Treatment",50,50,48,"N","African American",1,1,0,-6.6307687e-10,13,1
+"30","Treatment",50,0,81,"D","African American",1,1,1,-0.8524519,10,0
+"31","Control",50,50,19,"N","Hispanic",0,0,0,1.6558784,0,1
+"32","Treatment",50,50,43,"R","Hispanic",1,1,1,1.0523179,16,1
+"33","Control",1,0,57,"D","African American",1,1,1,-0.55236423,0,0
+"34","Treatment",84,50,57,"R","Caucasian",1,1,1,-0.19054002,0,1
+"35","Treatment",50,50,57,"R","Caucasian",1,1,1,1.5486777,7,1
+"36","Treatment",14,2,58,"D","African American",1,1,1,0.18424676,0,0
+"37","Treatment",91,98,42,"D","African American",1,1,1,-0.24786228,15,0
+"38","Control",95,100,69,"D","Caucasian",1,1,1,-0.74022317,0,0
+"39","Control",0,0,49,"D","African American",1,1,0,-6.6307687e-10,5,0
+"40","Treatment",84,50,31,"D","African American",0,0,1,-6.6307687e-10,15,1
+"41","Control",50,85,50,"D","African American",1,1,1,-0.5893375,1,0
+"42","Treatment",50,50,36,"D","African American",1,1,1,1.0293076,20,1
+"43","Control",55,50,50,"D","Caucasian",1,1,1,-0.1857587,7,1
+"44","Treatment",84,50,56,"D","Caucasian",1,1,1,-0.075249985,15,1
+"45","Control",80,71,55,"D","African American",1,1,1,0.3211099,3,0
+"46","Control",32,18,27,"D","Caucasian",0,0,0,0.9749826,1,0
+"47","Treatment",50,50,38,"N","Hispanic",1,1,0,0.5541806,20,1
+"48","Treatment",100,50,43,"D","African American",1,1,0,-6.6307687e-10,20,1
+"49","Control",50,0,23,"D","African American",1,1,1,-0.80160356,4,0
+"50","Control",50,50,37,"D","African American",1,1,1,-0.004914366,0,1
+"51","Treatment",50,0,77,"D","African American",1,1,1,0.62424725,10,0
+"52","Treatment",63,50,62,"D","African American",1,1,1,0.3349243,8,1
+"53","Control",36,50,75,"D","African American",1,1,1,-0.7545162,3,1
+"54","Control",50,37,56,"D","African American",1,1,1,-0.36848202,0,0
+"55","Treatment",12,0,26,"D","African American",0,1,0,-0.28258172,30,0
+"56","Treatment",30,30,21,"D","African American",0,1,0,0.15978323,13,0
+"57","Treatment",78,61,30,"D","African American",0,1,1,-0.28111702,0,1
+"58","Control",100,100,18,"D","African American",0,0,0,0.36108804,0,0
+"59","Control",100,100,42,"D","Hispanic",0,1,0,-0.37544543,0,0
+"60","Control",53,50,72,"D","African American",1,1,1,-0.36784092,1,1
+"61","Control",34,48,66,"D","African American",1,1,1,-0.6865147,1,1
+"62","Control",100,79,60,"D","African American",1,1,1,0.97360355,2,0
+"63","Control",0,0,24,"D","African American",1,1,0,1.5568925,10,0
+"64","Control",89,50,68,"D","Hispanic",1,1,1,-6.6307687e-10,2,1
+"65","Control",100,72,56,"D","Caucasian",1,1,1,-0.37888354,1,0
+"66","Control",50,50,46,"D","African American",0,1,1,-0.8800311,2,1
+"67","Treatment",50,50,67,"D","Caucasian",1,1,1,0.8064193,0,1
+"68","Control",67,50,43,"N","Hispanic",0,1,1,-0.45396152,0,1
+"69","Control",50,50,45,"N","Hispanic",0,1,1,1.1621321,0,1
+"70","Treatment",50,50,33,"N","Caucasian",1,1,0,-0.4007881,2,1
+"71","Control",50,0,19,"N","Hispanic",0,0,0,-0.9886114,1,0
+"72","Treatment",50,32,39,"D","African American",0,0,0,-0.28986877,13,0
+"73","Treatment",60,50,62,"D","Hispanic",1,1,1,-0.90587413,0,1
+"74","Treatment",41,50,51,"D","Hispanic",0,0,0,-0.23565078,4,1
+"75","Control",51,50,42,"D","African American",1,1,0,-0.2888234,0,1
+"76","Control",0,13,51,"D","African American",1,1,1,-0.7809291,0,0
+"77","Treatment",50,50,45,"D","African American",0,1,1,-0.6613415,19,1
+"78","Control",50,50,40,"D","African American",0,1,0,1.0520197,1,1
+"79","Treatment",99,50,53,"D","African American",1,1,1,-0.14390638,0,1
+"80","Control",96,96,54,"N","Caucasian",1,1,1,-0.8264711,0,0
+"81","Control",70,50,52,"D","African American",1,1,1,0.19754353,4,1
+"82","Control",50,50,64,"D","Caucasian",1,1,1,-0.95608795,2,1
+"83","Control",100,86,24,"D","African American",0,1,0,-0.8061451,4,0
+"84","Treatment",50,50,56,"D","African American",1,1,1,-0.25494882,0,1
+"85","Control",50,85,25,"N","Hispanic",0,1,0,-0.7506078,1,0
+"86","Control",0,0,55,"D","Hispanic",0,1,0,-6.6307687e-10,3,0
+"87","Treatment",50,50,59,"R","Caucasian",1,1,1,1.0005879,13,1
+"88","Control",50,50,66,"N","Hispanic",0,1,1,-6.6307687e-10,0,1
+"89","Treatment",50,50,46,"N","Hispanic",0,0,0,0.5682701,0,1
+"90","Control",50,50,47,"D","African American",1,1,0,0.21613075,3,1
+"91","Treatment",86,80,34,"N","Caucasian",1,1,0,0.33147147,17,0
+"92","Treatment",0,0,24,"D","African American",0,1,1,-6.6307687e-10,7,0
+"93","Treatment",50,0,46,"D","Caucasian",0,1,1,-0.29921535,0,0
+"94","Control",66,50,42,"N","Hispanic",0,1,0,-6.6307687e-10,4,1
+"95","Treatment",65,50,56,"R","Caucasian",1,1,1,-0.047878787,4,1
+"96","Treatment",80,50,77,"R","Caucasian",1,1,1,0.3319387,5,1
+"97","Treatment",83,100,55,"Other Party","Hispanic",1,1,1,0.17137635,18,0
+"98","Treatment",21,0,72,"D","African American",1,1,1,1.227022,30,0
+"99","Treatment",100,94,26,"N","Hispanic",0,0,0,-0.0149714425,0,0
+"100","Control",0,50,30,"D","African American",1,1,1,-0.42288655,5,1
+"101","Treatment",100,100,60,"D","Caucasian",0,0,0,-0.91897076,1,0
+"102","Treatment",60,50,59,"N","Caucasian",1,1,0,-0.19308983,0,1
+"103","Control",0,7,80,"D","Caucasian",1,1,1,0.7265036,8,0
+"104","Control",49,50,48,"R","Caucasian",1,1,1,-0.37450597,2,1
+"105","Control",20,22,24,"D","African American",0,0,0,1.5196706,1,0
+"106","Control",50,50,62,"D","African American",0,1,1,-0.79086286,7,1
+"107","Control",50,50,54,"D","Hispanic",0,1,0,2.0001812,2,1
+"108","Control",50,50,59,"R","Hispanic",1,1,0,1.4079595,2,1
+"109","Control",86,84,35,"D","Hispanic",1,1,0,-0.56885964,2,0
+"110","Treatment",100,50,19,"N","Caucasian",0,0,0,-0.9902062,12,1
+"111","Control",88,73,42,"N","Hispanic",1,1,0,-0.94451046,2,0
+"112","Control",80,76,58,"N","Caucasian",1,1,1,-0.7689935,3,0
+"113","Control",100,62,80,"D","Caucasian",1,1,1,-0.11013455,2,0
+"114","Control",50,80,56,"D","Caucasian",1,1,1,-0.049465146,1,0
+"115","Treatment",50,88,44,"D","African American",1,0,0,1.8571911,5,0
+"116","Control",50,50,18,"N","Hispanic",1,0,0,-0.23368335,1,1
+"117","Control",76,50,46,"D","Hispanic",1,1,0,-0.8381315,2,1
+"118","Treatment",0,0,83,"R","Hispanic",0,0,1,1.3769362,10,0
+"119","Control",0,0,77,"R","Caucasian",1,1,1,0.54031605,5,0
+"120","Control",0,0,66,"R","Hispanic",0,1,1,0.5661771,5,0
+"121","Control",50,50,64,"D","Caucasian",1,1,1,-0.55246645,2,1
+"122","Control",50,94,72,"D","Hispanic",1,1,1,-0.30883098,0,0
+"123","Control",50,50,40,"D","Hispanic",0,0,0,1.0737885,3,1
+"124","Treatment",50,50,55,"D","African American",0,1,1,0.30612943,2,1
+"125","Control",50,50,47,"N","Caucasian",1,1,0,-0.7706568,7,1
+"126","Treatment",30,50,68,"D","Hispanic",0,1,0,-0.13692568,0,1
+"127","Treatment",50,50,69,"D","Caucasian",0,1,1,-0.54983896,13,1
+"128","Control",15,0,51,"N","Hispanic",1,1,1,-0.31923667,2,0
+"129","Control",25,0,72,"D","Caucasian",1,0,1,-0.030940752,0,0
+"130","Treatment",0,0,69,"R","Hispanic",1,1,1,-0.15732946,10,0
+"131","Control",85,50,64,"D","Caucasian",1,1,1,-0.4348125,2,1
+"132","Control",50,50,47,"D","Hispanic",1,1,0,-6.6307687e-10,3,1
+"133","Treatment",50,16,41,"R","Caucasian",0,0,0,-6.6307687e-10,4,0
+"134","Treatment",75,0,38,"D","African American",1,1,1,-0.68535537,7,0
+"135","Treatment",99,77,43,"D","Caucasian",1,1,1,-0.12633571,6,0
+"136","Treatment",99,100,43,"D","Caucasian",1,1,1,-0.8248374,10,0
+"137","Control",50,71,30,"R","Hispanic",1,1,0,0.9377659,1,0
+"138","Treatment",65,50,36,"D","Hispanic",1,1,0,-0.560479,16,1
+"139","Treatment",50,50,80,"R","Caucasian",1,0,1,0.008802634,0,1
+"140","Treatment",100,100,37,"D","Hispanic",1,1,0,-0.9327848,0,0
+"141","Control",50,74,47,"R","Caucasian",1,1,1,0.29660973,4,0
+"142","Control",50,40,55,"N","Caucasian",1,1,1,-0.38907513,1,0
+"143","Control",50,50,51,"R","Hispanic",1,1,1,-0.15396352,2,1
+"144","Treatment",5,0,68,"R","Caucasian",1,1,1,1.3476001,0,0
+"145","Treatment",96,84,49,"D","African American",1,1,1,-0.27472723,0,0
+"146","Control",100,100,41,"D","African American",0,1,0,0.574492,2,0
+"147","Control",100,50,51,"D","Hispanic",0,1,0,0.8597591,2,1
+"148","Control",51,79,24,"D","Hispanic",0,0,0,0.6415805,2,0
+"149","Control",97,50,47,"D","African American",1,1,1,0.39799842,1,1
+"150","Treatment",49,0,30,"R","Caucasian",0,1,0,2.639745,0,0
+"151","Control",51,45,23,"N","Hispanic",0,1,0,-0.6860828,2,0
+"152","Control",50,50,56,"D","Caucasian",0,1,1,0.40792137,6,1
+"153","Treatment",96,100,25,"D","Hispanic",0,0,0,-6.6307687e-10,24,0
+"154","Treatment",79,80,19,"N","Hispanic",1,0,0,-0.9987807,10,0
+"155","Control",50,50,48,"D","African American",1,1,0,-6.6307687e-10,1,1
+"156","Control",50,50,28,"D","African American",1,1,1,-0.84684604,0,1
+"157","Control",100,50,53,"D","African American",1,1,1,-0.8442034,0,1
+"158","Treatment",100,0,58,"N","Hispanic",1,1,0,-6.6307687e-10,10,0
+"159","Treatment",50,50,56,"D","African American",1,1,1,-0.82778376,30,1
+"160","Control",50,50,50,"D","Caucasian",1,1,1,-0.9613579,1,1
+"161","Control",30,9,19,"R","Hispanic",1,0,0,-0.05775368,2,0
+"162","Control",37,5,41,"R","Caucasian",1,1,1,-0.12383545,2,0
+"163","Control",50,45,19,"R","Caucasian",0,0,0,0.70660675,2,0
+"164","Control",93,50,70,"D","African American",1,1,1,0.8177839,1,1
+"165","Treatment",50,50,32,"D","African American",0,1,0,-0.27605766,5,1
+"166","Control",50,82,71,"D","Caucasian",1,1,1,-0.7716079,0,0
+"167","Treatment",73,43,37,"D","African American",1,1,0,-6.6307687e-10,20,0
+"168","Control",61,90,49,"D","African American",1,1,1,-0.58990884,1,0
+"169","Control",75,50,29,"D","African American",0,0,0,-6.6307687e-10,0,1
+"170","Treatment",0,0,45,"N","Hispanic",0,0,0,-0.67127085,16,0
+"171","Treatment",50,86,73,"D","African American",1,1,0,-0.9214821,11,0
+"172","Treatment",22,50,37,"D","African American",1,1,1,-6.6307687e-10,19,1
+"173","Treatment",100,50,25,"D","African American",1,1,1,1.3089331,7,1
+"174","Treatment",50,50,57,"D","Caucasian",0,1,0,-0.4413811,4,1
+"175","Control",93,50,65,"D","African American",1,1,1,0.14742583,2,1
+"176","Control",50,51,58,"D","African American",1,1,1,0.04101003,0,1
+"177","Control",86,50,21,"N","African American",0,1,0,0.19761159,0,1
+"178","Treatment",20,0,53,"D","African American",1,1,1,0.44116682,7,0
+"179","Treatment",19,50,19,"D","African American",1,0,0,-6.6307687e-10,5,1
+"180","Treatment",100,100,19,"D","African American",0,0,0,-0.83804363,14,0
+"181","Treatment",100,50,24,"D","African American",1,1,0,-0.8324221,18,1
+"182","Control",50,50,71,"D","African American",0,1,1,-0.79849434,0,1
+"183","Control",50,50,35,"D","African American",0,0,1,-0.7505862,0,1
+"184","Control",35,30,65,"D","African American",0,1,0,0.5241814,3,0
+"185","Control",50,50,18,"N","Caucasian",0,0,0,1.5980701,2,1
+"186","Treatment",74,83,64,"D","African American",1,1,1,-0.7798166,8,0
+"187","Treatment",55,36,20,"D","African American",0,0,0,-0.34965137,25,0
+"188","Control",50,50,55,"D","African American",1,1,0,-0.39843148,3,1
+"189","Control",61,96,67,"D","Caucasian",1,1,0,-0.9253462,2,0
+"190","Treatment",0,0,33,"D","Hispanic",0,0,0,-6.6307687e-10,7,0
+"191","Control",3,24,65,"D","African American",1,1,1,-6.6307687e-10,5,0
+"192","Treatment",0,0,52,"R","Hispanic",1,1,1,-0.8177386,3,0
+"193","Treatment",79,62,22,"N","African American",0,1,0,-6.6307687e-10,2,0
+"194","Treatment",50,50,26,"D","Hispanic",0,1,1,-0.29879212,10,1
+"195","Control",50,50,58,"R","Hispanic",1,1,1,2.4233048,2,1
+"196","Control",53,90,45,"D","African American",0,1,0,0.3217783,2,0
+"197","Control",100,50,26,"N","Hispanic",0,1,0,-0.8135287,2,1
+"198","Control",50,50,51,"D","African American",0,1,1,1.399272,2,1
+"199","Control",50,50,21,"D","African American",0,1,0,-6.6307687e-10,2,1
+"200","Treatment",100,91,32,"D","Hispanic",1,1,1,-0.7755636,11,0
+"201","Treatment",50,45,61,"D","African American",1,1,1,-0.85317713,0,0
+"202","Control",71,50,59,"D","African American",0,1,0,0.01853893,3,1
+"203","Control",100,100,22,"D","Hispanic",1,1,1,-0.8495681,2,0
+"204","Control",73,83,31,"N","Hispanic",1,1,0,-0.6799826,0,0
+"205","Treatment",74,50,42,"D","African American",1,1,1,-0.4830301,0,1
+"206","Control",76,50,37,"D","Hispanic",1,1,1,-6.6307687e-10,2,1
+"207","Control",50,0,67,"N","Hispanic",1,1,1,-0.75101984,2,0
+"208","Treatment",50,59,60,"D","African American",1,1,1,-0.7755028,8,1
+"209","Treatment",100,100,55,"D","Hispanic",0,1,0,-0.8162091,2,0
+"210","Control",50,50,22,"D","African American",1,1,0,0.5789754,0,1
+"211","Control",50,16,73,"N","African American",1,1,1,-0.4828958,2,0
+"212","Control",54,50,51,"R","Asian",1,1,1,0,0,1
+"213","Treatment",8,0,40,"D","Hispanic",1,1,1,0,15,0
+"214","Treatment",42,50,50,"D","Hispanic",1,1,1,0,10,1
+"215","Control",50,50,66,"R","Caucasian",1,1,1,0,0,1
+"216","Control",43,50,68,"R","Caucasian",1,1,1,0,12,1
+"217","Treatment",50,50,29,"N","Hispanic",0,1,0,0,0,1
+"218","Treatment",50,50,23,"N","Hispanic",1,1,0,0,0,1
+"219","Treatment",80,50,36,"R","Hispanic",1,1,1,0,7,1
+"220","Treatment",100,50,77,"D","Caucasian",1,1,1,0,5,1
+"221","Treatment",100,70,49,"R","Hispanic",0,0,0,0,0,0
+"222","Treatment",95,31,65,"R","Hispanic",1,1,1,0,0,0
+"223","Treatment",100,50,75,"R","Caucasian",1,1,1,0,7,1
+"224","Control",90,90,24,"R","Hispanic",0,1,0,0,0,0
+"225","Treatment",50,50,60,"D","Hispanic",1,1,1,0,0,1
+"226","Control",50,50,55,"D","Asian",0,0,1,0,5,1
+"227","Treatment",76,50,44,"N","Hispanic",1,1,0,0,7,1
+"228","Treatment",94,50,69,"Other Party","Hispanic",0,0,0,0,15,1
+"229","Control",84,92,46,"D","Caucasian",1,1,1,0,2,0
+"230","Treatment",50,50,27,"N","Hispanic",0,0,0,0,0,1
+"231","Control",88,100,34,"N","Hispanic",0,0,0,0,1,0
+"232","Treatment",48,9,68,"D","Caucasian",1,1,1,0,10,0
+"233","Control",17,50,64,"R","Hispanic",0,1,1,0,0,1
+"234","Control",30,60,53,"D","Hispanic",1,1,1,0,6,1
+"235","Control",50,50,48,"R","Caucasian",1,1,1,0,5,1
+"236","Treatment",72,50,18,"N","Caucasian",0,0,0,0,6,1
+"237","Control",46,49,63,"N","Caucasian",1,1,1,0,0,1
+"238","Treatment",40,64,64,"D","Asian",0,1,0,0,0,0
+"239","Control",100,100,23,"N","Hispanic",1,1,0,0,0,0
+"240","Control",82,94,50,"N","Caucasian",1,1,1,0,1,0
+"241","Control",50,50,44,"R","Caucasian",0,0,1,0,4,1
+"242","Treatment",50,0,57,"D","Hispanic",0,1,0,0,12,0
+"243","Treatment",100,51,58,"D","Hispanic",1,1,1,0,26,1
+"244","Control",0,90,77,"R","Hispanic",1,0,0,0,2,0
+"245","Treatment",0,0,63,"N","Hispanic",0,1,0,0,2,0
+"246","Control",50,50,70,"R","Hispanic",1,1,1,0,7,1
+"247","Treatment",50,50,90,"D","Caucasian",1,1,1,0,3,1
+"248","Treatment",50,50,26,"N","Hispanic",0,0,0,0,30,1
+"249","Control",0,20,67,"R","Hispanic",1,1,1,0,1,0
+"250","Treatment",50,50,70,"R","Hispanic",1,1,1,0,8,1
+"251","Treatment",50,50,60,"N","Hispanic",1,1,1,0,12,1
+"252","Treatment",0,24,63,"R","Hispanic",1,1,1,0,30,0
+"253","Control",41,37,57,"R","Hispanic",0,1,0,0,2,0
+"254","Control",90,88,67,"R","Hispanic",1,1,1,0,1,0
+"255","Control",27,12,52,"N","Caucasian",0,1,0,0,0,0
+"256","Control",100,100,20,"R","Hispanic",1,0,0,0,0,0
+"257","Control",100,100,40,"N","Hispanic",0,1,0,0,2,0
+"258","Treatment",50,50,43,"Other Party","Caucasian",1,1,0,0,9,1
+"259","Treatment",86,50,40,"N","Hispanic",1,0,1,0,0,1
+"260","Treatment",15,27,60,"D","Hispanic",1,1,1,0,8,0
+"261","Control",0,50,59,"D","Caucasian",0,1,0,0,0,1
+"262","Treatment",50,50,62,"R","Caucasian",1,1,1,0,0,1
+"263","Control",50,45,57,"N","Hispanic",1,1,1,0,2,0
+"264","Treatment",93,71,41,"R","Hispanic",0,1,0,0,0,0
+"265","Control",64,50,75,"R","Hispanic",1,1,1,0,3,1
+"266","Control",50,50,51,"R","Hispanic",0,1,0,0,2,1
+"267","Treatment",79,85,20,"D","Hispanic",0,1,0,0,0,0
+"268","Treatment",83,76,43,"D","Hispanic",0,0,0,0,5,0
+"269","Treatment",80,75,39,"D","Hispanic",1,1,1,0,20,0
+"270","Control",64,46,22,"N","Hispanic",1,1,0,0,8,0
+"271","Treatment",50,50,38,"R","Hispanic",1,1,0,0,0,1
+"272","Treatment",50,52,59,"R","Hispanic",1,1,1,0,7,1
+"273","Treatment",90,89,33,"N","Caucasian",0,1,0,0,10,0
+"274","Treatment",0,0,73,"R","Hispanic",1,1,1,0,2,0
+"275","Treatment",0,0,54,"N","Hispanic",1,1,0,0,30,0
+"276","Control",50,50,60,"N","Hispanic",1,1,0,0,2,1
+"277","Treatment",70,60,67,"D","Caucasian",1,1,1,0,1,1
+"278","Treatment",50,0,74,"R","Caucasian",0,1,0,0,8,0
+"279","Treatment",52,20,50,"D","Hispanic",1,1,1,0,13,0
+"280","Treatment",100,50,46,"R","Hispanic",0,1,0,0,10,1
+"281","Treatment",96,50,74,"D","Caucasian",1,1,0,0,2,1
+"282","Treatment",100,93,26,"R","Hispanic",0,0,0,0,10,0
+"283","Control",50,50,54,"R","Hispanic",1,1,1,0,1,1
+"284","Treatment",75,80,44,"Other Party","Caucasian",0,1,0,0,9,0
+"285","Treatment",50,50,78,"D","Caucasian",1,1,1,0,25,1
+"286","Treatment",50,50,79,"D","Caucasian",1,1,1,0,25,1
+"287","Control",50,21,79,"R","Hispanic",1,1,1,0,2,0
+"288","Treatment",50,52,49,"Other Party","Hispanic",1,1,1,0,23,1
+"289","Treatment",100,100,27,"N","Hispanic",0,0,0,0,5,0
+"290","Treatment",100,50,68,"N","Hispanic",1,0,0,0,7,1
+"291","Control",71,50,45,"R","Hispanic",1,1,1,0,2,1
+"292","Control",50,50,82,"R","Hispanic",1,1,1,0,2,1
+"293","Treatment",85,95,72,"R","Caucasian",1,1,0,0,12,0
+"294","Control",50,50,52,"N","Hispanic",1,1,1,0,3,1
+"295","Treatment",85,75,57,"N","Caucasian",1,1,1,0,10,0
+"296","Control",85,50,73,"R","Caucasian",1,1,1,0,0,1
+"297","Control",50,61,65,"N","Hispanic",1,1,1,0,1,1
+"298","Control",82,78,30,"N","Caucasian",1,1,1,0,2,0
+"299","Treatment",50,100,61,"D","Caucasian",1,1,1,0,15,0
+"300","Control",100,50,42,"R","Hispanic",1,1,1,0,2,1
+"301","Control",30,35,33,"R","Hispanic",0,1,0,0,0,0
+"302","Control",50,50,51,"N","Hispanic",1,1,0,0,4,1
+"303","Control",50,50,75,"N","Hispanic",0,0,0,0,0,1
+"304","Control",28,20,53,"R","Caucasian",1,1,1,0,4,0
+"305","Control",31,50,27,"R","Hispanic",1,1,0,0,3,1
+"306","Control",0,0,77,"R","Hispanic",1,1,1,0,4,0
+"307","Control",77,95,29,"N","Hispanic",0,0,0,0,2,0
+"308","Treatment",0,0,33,"R","Hispanic",1,1,1,0,30,0
+"309","Control",73,60,61,"R","Caucasian",0,0,0,0,1,1
+"310","Control",100,80,53,"D","Caucasian",0,1,0,0,3,0
+"311","Treatment",28,31,64,"N","Caucasian",1,1,1,0,0,0
+"312","Treatment",50,29,71,"D","Caucasian",1,1,1,0,8,0
+"313","Control",46,50,46,"N","Hispanic",1,1,1,0,5,1
+"314","Control",23,16,55,"N","Caucasian",1,1,1,0,0,0
+"315","Control",100,100,50,"R","Caucasian",0,1,0,0,2,0
+"316","Control",100,100,26,"R","Hispanic",0,1,0,0,2,0
+"317","Control",51,50,46,"R","Hispanic",1,1,0,0,2,1
+"318","Control",100,100,28,"D","Caucasian",1,1,1,0,2,0
+"319","Treatment",50,50,48,"D","Caucasian",1,1,1,0,10,1
+"320","Control",50,77,59,"D","Hispanic",1,1,1,0,4,0
+"321","Treatment",50,50,62,"N","Caucasian",1,1,0,0,20,1
+"322","Control",50,50,59,"R","Hispanic",1,1,0,0,20,1
+"323","Treatment",90,57,51,"N","Hispanic",0,0,0,0,2,1
+"324","Treatment",16,0,19,"N","Hispanic",0,0,0,0,2,0
+"325","Treatment",0,0,59,"R","Hispanic",1,1,0,0,0,0
+"326","Treatment",60,50,49,"N","Hispanic",1,1,1,0,23,1
+"327","Treatment",50,47,40,"N","Hispanic",0,1,0,0,0,0
+"328","Treatment",50,50,54,"N","Hispanic",0,0,0,0,0,1
+"329","Treatment",50,50,72,"R","Caucasian",1,1,1,0,15,1
+"330","Treatment",50,50,80,"D","Caucasian",1,1,1,0,3,1
+"331","Control",50,50,23,"R","Hispanic",0,1,0,0,3,1
+"332","Control",50,4,30,"R","Hispanic",0,1,0,0,2,0
+"333","Treatment",50,50,53,"R","Hispanic",1,1,1,0,5,1
+"334","Treatment",0,10,66,"N","Hispanic",1,1,1,0,0,0
+"335","Control",0,0,70,"N","Hispanic",1,1,1,0,2,0
+"336","Control",50,50,66,"R","Hispanic",1,1,1,0,4,1
+"337","Treatment",100,100,43,"N","Hispanic",1,1,0,0,0,0
+"338","Treatment",95,26,82,"D","Hispanic",0,0,0,0,7,0
+"339","Control",50,50,60,"D","Hispanic",1,1,0,0,9,1
+"340","Control",50,40,59,"D","Hispanic",1,1,0,0,3,0
+"341","Control",50,50,67,"D","Hispanic",1,1,1,0,0,1
+"342","Control",52,50,37,"N","Hispanic",1,1,1,0,0,1
+"343","Treatment",94,84,48,"Other Party","Hispanic",0,0,0,0,15,0
+"344","Control",50,50,24,"N","Caucasian",0,0,0,0,0,1
+"345","Control",2,22,18,"D","Hispanic",0,0,0,0,0,0
+"346","Control",50,50,46,"D","Hispanic",0,1,0,0,0,1
+"347","Treatment",100,100,25,"D","Hispanic",1,1,0,0,10,0
+"348","Treatment",10,23,68,"N","Caucasian",1,1,0,0,15,0
+"349","Treatment",67,71,56,"D","Caucasian",1,1,1,0,12,0
+"350","Control",84,50,24,"D","Hispanic",1,1,1,0,2,1
+"351","Treatment",50,50,78,"D","Hispanic",1,1,1,0,10,1
+"352","Treatment",50,50,51,"R","Hispanic",1,1,1,0,7,1
+"353","Control",50,50,55,"R","Hispanic",1,1,1,0,2,1
+"354","Control",25,39,69,"R","Caucasian",1,1,1,0,1,0
+"355","Control",41,43,57,"Other Party","Hispanic",1,1,1,0,1,0
+"356","Control",43,26,51,"R","Hispanic",1,1,1,0,0,0
+"357","Control",30,45,18,"D","Hispanic",0,0,0,0,4,0
+"358","Treatment",50,50,41,"Other Party","Hispanic",0,0,0,0,7,1
+"359","Control",81,100,55,"R","Caucasian",1,1,1,0,4,0
+"360","Control",50,86,42,"D","Hispanic",1,1,1,0,3,0
+"361","Control",50,50,34,"N","Hispanic",0,1,0,0,1,1
+"362","Control",50,50,37,"D","Hispanic",0,1,0,0,2,1
+"363","Treatment",50,50,46,"N","Hispanic",0,1,1,0,1,1
+"364","Treatment",50,27,58,"D","Caucasian",1,1,1,0,1,0
+"365","Treatment",100,94,56,"D","Hispanic",1,1,1,0,10,0
+"366","Control",50,50,47,"N","Hispanic",1,0,0,0,1,1
+"367","Control",83,50,43,"N","Hispanic",1,0,0,0,1,1
+"368","Treatment",40,36,83,"R","Hispanic",1,0,0,0,10,0
+"369","Control",50,23,47,"N","Hispanic",0,1,0,0,1,0
+"370","Control",90,50,36,"R","Caucasian",0,1,0,0,1,1
+"371","Treatment",82,43,40,"N","Hispanic",0,0,1,0,20,0
+"372","Treatment",66,37,41,"N","Hispanic",0,0,0,0,23,0
+"373","Control",41,47,48,"R","Caucasian",1,1,1,0,5,0
+"374","Control",100,88,73,"N","Hispanic",1,1,1,0,7,0
+"375","Control",50,50,62,"D","African American",1,1,1,0,2,1
+"376","Treatment",50,50,54,"D","African American",1,1,1,0,2,1
+"377","Treatment",73,65,56,"D","African American",1,1,1,0,0,0
+"378","Control",60,50,66,"D","Hispanic",0,1,1,0,0,1
+"379","Control",50,50,78,"R","Hispanic",1,1,1,0,0,1
+"380","Treatment",85,73,58,"D","Hispanic",1,1,1,0,10,0
+"381","Control",10,50,65,"R","Hispanic",1,1,1,0,0,1
+"382","Control",0,50,68,"R","Hispanic",1,1,1,0,2,1
+"383","Control",50,50,60,"N","Hispanic",1,1,1,0,0,1
+"384","Treatment",50,50,68,"N","Hispanic",1,1,1,0,0,1
+"385","Control",92,82,60,"D","Hispanic",1,1,1,0,0,0
+"386","Control",45,40,45,"N","Hispanic",0,1,0,0,7,0
+"387","Treatment",50,50,66,"D","Hispanic",1,1,0,0,5,1
+"388","Treatment",50,50,64,"R","Hispanic",1,1,1,0,9,1
+"389","Treatment",100,94,55,"D","Caucasian",1,1,1,0,0,0
+"390","Control",45,23,54,"R","Hispanic",1,1,1,0,1,0
+"391","Treatment",50,40,54,"R","Hispanic",1,1,1,0,0,0
+"392","Control",50,100,21,"N","Hispanic",0,1,0,0,0,0
+"393","Control",27,0,58,"R","Hispanic",0,0,0,0,6,0
+"394","Treatment",82,90,75,"D","African American",1,1,1,0,0,0
+"395","Treatment",97,100,77,"D","Caucasian",1,1,0,0,1,0
+"396","Control",41,50,25,"N","Hispanic",1,1,0,0,3,1
+"397","Control",40,12,73,"R","Hispanic",1,1,1,0,7,0
+"398","Treatment",100,100,28,"N","Hispanic",1,0,0,0,22,0
+"399","Control",50,50,66,"R","Hispanic",1,1,1,0,3,1
+"400","Treatment",50,50,61,"R","Hispanic",1,0,0,0,0,1
+"401","Treatment",100,100,48,"R","Hispanic",0,0,0,0,0,0
+"402","Control",36,50,47,"R","Hispanic",1,1,1,0,1,1
+"403","Control",95,90,52,"R","Hispanic",1,1,1,0,5,0
+"404","Control",50,50,25,"N","Caucasian",1,0,0,0,2,1
+"405","Control",50,2,59,"N","Caucasian",1,1,1,0,1,0
+"406","Treatment",55,50,68,"R","Hispanic",1,1,1,0,3,1
+"407","Treatment",50,50,34,"D","Hispanic",1,1,0,0,15,1
+"408","Treatment",100,89,25,"N","Hispanic",1,1,0,0,0,0
+"409","Control",95,90,70,"R","Caucasian",1,1,1,0,6,0
+"410","Treatment",100,100,28,"N","Hispanic",0,1,0,0,18,0
+"411","Treatment",100,100,20,"N","Hispanic",0,0,0,0,0,0
+"412","Treatment",20,5,87,"N","Caucasian",1,1,1,0,0,0
+"413","Treatment",0,0,57,"R","Caucasian",1,1,1,0,2,0
+"414","Treatment",60,50,23,"D","Hispanic",0,1,0,0,15,1
+"415","Control",9,0,62,"D","Hispanic",1,1,0,0,11,0
+"416","Control",50,50,54,"D","Caucasian",1,1,1,0,4,1
+"417","Control",50,50,58,"R","Hispanic",1,1,1,0,4,1
+"418","Treatment",84,50,53,"D","Hispanic",1,1,1,0,22,1
+"419","Treatment",65,56,57,"D","Hispanic",1,1,1,0,9,1

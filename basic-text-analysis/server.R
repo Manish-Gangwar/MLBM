@@ -80,9 +80,8 @@ shinyServer(function(input, output,session) {
   })
   
   
-  y_col <- reactive({if(is.null(dataset())){
-    return(NULL)
-  }else{
+  y_col <- reactive({if(is.null(dataset())){  return(NULL)}
+    else{
     x <- match(input$x,cols())
     y_col <- cols()[-x]
     return(y_col)

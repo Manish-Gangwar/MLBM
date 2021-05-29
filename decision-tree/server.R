@@ -95,11 +95,12 @@ shinyServer(function(input, output,session) {
   
   output$imout <- renderUI({
     if (is.null(input$file)) {return(NULL)}
-    if (input$imputemiss == "do not impute or drop rows") {return(NULL)}
+    if (input$imputemiss == "do not impute or drop rows") {
+      p("Note: for missing values check options in the panel on the left.",style="color:black")}
     else if ((input$imputemiss == "impute missing values")) {
-      p("Note: missing values imputed",style="color:red")
+      p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
     }
-    else { p("Note: missing value rows dropped",style="color:red") }
+    else { p("Note: missing value rows dropped, check options in the panel on the left.",style="color:black") }
   })
   
   readdata = reactive({
@@ -137,7 +138,19 @@ shinyServer(function(input, output,session) {
     nu.data = data[,nu] 
     return(nu.data) }
   }) 
-
+  
+  num.Dataset = reactive({
+    data = readdata.temp()
+    Class = NULL
+    for (i in 1:ncol(data)){
+      c1 = class(data[,i])
+      Class = c(Class, c1)
+    }
+    nu = which(Class %in% c("numeric"))
+    num.data = data[,nu] 
+    return(num.data)
+  })
+  
   # Select variables:
   output$yvarselect <- renderUI({
    # if (identical(readdataf(), '') || identical(readdataf(),data.frame())) return(NULL)
@@ -175,27 +188,44 @@ shinyServer(function(input, output,session) {
       })
 
    output$fyvarselect <- renderUI({
- #   if (identical(readdataf(), '') || identical(readdataf(),data.frame())) return(NULL)
      if (is.null(input$file)) {return(NULL)}
+     else {
+     if (input$yAttr %in% colnames(num.Dataset())) {return(NULL)}
      else {
       checkboxGroupInput("fyAttr", "Select if Y is a factor (categorical) variable",
                          input$yAttr,
                          #setdiff(colnames(readdataf1()[,c(input$xAttr,input$yAttr)]),c(input$xAttr)),
                          setdiff(colnames(readdataf1()),c(colnames(nu.Dataset()))))
-    }
+    }}
   })
     
   output$fxvarselect <- renderUI({
  #   if (identical(readdataf(), '') || identical(readdataf(),data.frame())) return(NULL)
     if (is.null(input$file)) {return(NULL)}
     else {
-    checkboxGroupInput("fxAttr", "Select factor (categorical) X variables",
-                     colnames(readdata.temp()[,c(input$xAttr)]),
+    checkboxGroupInput("fxAttr1", "Select factor (categorical) X variables",
+                     setdiff(colnames(readdata.temp()[,c(input$xAttr)]), colnames(num.Dataset())   ),
                      #setdiff(colnames(readdata.temp()[,c(input$xAttr,input$yAttr)]),input$yAttr),
                      setdiff(colnames(readdata.temp()[,c(input$xAttr)]),c(colnames(nu.Dataset()))) )
                     #  setdiff(colnames(Dataset.temp()),input$yAttr),setdiff(colnames(Dataset.temp()),c(input$yAttr,colnames(nu.Dataset()))) )
     }
   })
+  
+  output$fxvarselect1 <- renderUI({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      selcol=setdiff(input$xAttr,colnames(num.Dataset()))
+      pickcol=setdiff(input$xAttr,c(colnames(nu.Dataset())))
+      varSelectInput("fxAttr",label = "Select factor (categorical) variables in X",
+                     data = readdata.temp()[,selcol], multiple = TRUE, selectize = TRUE, selected = pickcol  )
+    }
+  })
+  
+  filtered_dataset11 <- reactive({if (is.null(input$imputemiss)) { return(NULL) }
+    else{
+      Dataset <- readdata.temp() %>% dplyr::select(!!!input$fxAttr)
+      return(Dataset)
+    }})
   
   
   Dataset = reactive({
@@ -204,9 +234,11 @@ shinyServer(function(input, output,session) {
     mydata = readdata()[,c(input$yAttr,input$xAttr)]
     if (length(input$yAttr) == length(input$fyAttr)) { mydata[,input$yAttr] = as.factor(mydata[,input$yAttr]) }
    # if (is.factor(readdata()[,c(input$yAttr)])) { mydata[,input$yAttr] = as.factor(mydata[,input$yAttr]) }
-    if (length(input$fxAttr) >= 1){
-      for (j in 1:length(input$fxAttr)){
-        mydata[,input$fxAttr[j]] = as.factor(mydata[,input$fxAttr[j]])
+   # fxAttr=input$fxAttr
+    fxAttr = colnames(filtered_dataset11())
+    if (length(fxAttr) >= 1){
+      for (j in 1:length(fxAttr)){
+        mydata[,fxAttr[j]] = as.factor(mydata[,fxAttr[j]])
       }
     }
     return(mydata)
@@ -218,6 +250,13 @@ shinyServer(function(input, output,session) {
   # b = ('c')
   # setdiff(a,b)
     #------------------------------------------------#
+  
+  if(!require("descriptr")) {install.packages("descriptr")}
+  library(descriptr)
+  output$screen_summary <- renderPrint({
+    if (is.null(input$file)) {return(NULL)}
+    else {  ds_screener(Dataset())} 
+  })
   
   out = reactive({
     data = Dataset()
@@ -307,7 +346,7 @@ shinyServer(function(input, output,session) {
       }) 
   
   testsample =  reactive({
-  set.seed(5898)
+  set.seed(input$numout)
   sample(1:nrow(Dataset()), round(nrow(Dataset())*((input$sample)/100)))
          })
 
@@ -340,9 +379,11 @@ shinyServer(function(input, output,session) {
     mydata = readdata()[,c(input$yAttr,input$xAttr)]
     if (length(input$yAttr) == length(input$fyAttr)) { mydata[,input$yAttr] = as.factor(mydata[,input$yAttr]) }
     # if (is.factor(readdata()[,c(input$yAttr)])) { mydata[,input$yAttr] = as.factor(mydata[,input$yAttr]) }
-    if (length(input$fxAttr) >= 1){
-      for (j in 1:length(input$fxAttr)){
-        mydata[,input$fxAttr[j]] = as.factor(mydata[,input$fxAttr[j]])
+    # fxAttr=input$fxAttr
+    fxAttr = colnames(filtered_dataset11())
+    if (length(fxAttr) >= 1){
+      for (j in 1:length(fxAttr)){
+        mydata[,fxAttr[j]] = as.factor(mydata[,fxAttr[j]])
       }
     }
     return(mydata)
@@ -360,7 +401,8 @@ shinyServer(function(input, output,session) {
       mydata = pred.readdata()#[,c(input$xAttr)]
       }
     
-    fxc = input$fxAttr
+    #fxc = input$fxAttr
+    fxc = colnames(filtered_dataset11())
     if (length(fxc) >= 1){
       for (j in 1:length(fxc)){
         mydata[,fxc[j]] = as.factor(mydata[,fxc[j]])
