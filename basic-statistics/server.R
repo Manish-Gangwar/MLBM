@@ -81,7 +81,7 @@ Dataset <- reactive({
         return(Dataset1)}
       else {return(Datasetf())}
     }
-    else #if(input$obs=="quick run, 1,000 random obs")
+    else if(input$obs=="quick run, 1,000 random obs")
     {
       if (nrow(Datasetf())>1000){
         set.seed(1234)

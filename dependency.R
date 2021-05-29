@@ -1,3 +1,4 @@
+
 if(!require("shiny")) {install.packages("shiny")}
 if(!require("shiny")) {install.packages("shiny")}
 if(!require("devtools")) {install.packages("devtools")}
@@ -77,10 +78,9 @@ if(!require("plyr")) {install.packages("plyr")}
 if(!require("grid")) {install.packages("grid")}
 if(!require("scales")) {install.packages("scales")}
 if(!require("gridExtra")) {install.packages("gridExtra")}
+if(!require("tesseract")) {install.packages("tesseract")}
 if(!require("tidyverse")) {install.packages("tidyverse")}
 if(!require("randomcoloR")) {install.packages("randomcoloR")}
-if(!require("tesseract")) {install.packages("tesseract")}
 #devtools::install_github("ropenscilabs/umapr")
 if (!require("umap")) {install.packages("umap")}
 
-warnings()
