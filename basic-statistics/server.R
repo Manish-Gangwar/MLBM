@@ -121,13 +121,29 @@ nu.Dataset = reactive({
   }
 })
 
+
+chr.Dataset = reactive({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    data = Dataset.temp()
+    Class = NULL
+    for (i in 1:ncol(data)){
+      c1 = class(data[,i])
+      Class = c(Class, c1)
+    }
+    chr = which(Class %in% c("character"))
+    chr.data = data[,chr] 
+    return(chr.data)
+  }
+})
+
 output$fxvarselect <- renderUI({
   if (identical(Dataset(), '') || identical(Dataset(),data.frame())) return(NULL)
   if (is.null(input$file)) {return(NULL)}
   else {
   checkboxGroupInput("fxAttr", "Select factor (categorical) variables",
                     #colnames(Dataset.temp()) )
-                    colnames(Dataset.temp()), "") #setdiff(colnames(Dataset.temp()),c(colnames(nu.Dataset()))) )
+                    colnames(Dataset.temp()), colnames(chr.Dataset())) #setdiff(colnames(Dataset.temp()),c(colnames(nu.Dataset()))) )
   }
 })
 
@@ -209,10 +225,11 @@ output$winsor <- renderUI({
 
 mydata3 = reactive({
   data = mydata2()[,c(input$xAttr)]
-  if (length(input$fxAttr) >= 1){
-    for (j in 1:length(input$fxAttr)){
-      data[,input$fxAttr[j]] <- sub("^", "F.", data[,input$fxAttr[j]])
-      data[,input$fxAttr[j]] = factor(data[,input$fxAttr[j]])
+  fxattr=setdiff(input$fxAttr,colnames(chr.Dataset()))
+  if (length(fxattr) >= 1){
+    for (j in 1:length(fxattr)){
+      data[,fxattr[j]] <- sub("^", "F.", data[,fxattr[j]])
+      data[,fxattr[j]] = factor(data[,fxattr[j]])
     }
   }
   return(data)
