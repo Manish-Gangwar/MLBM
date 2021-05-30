@@ -11,11 +11,9 @@ if (!require("corrplot")) {install.packages("corrplot")}
 if (!require("hydroGOF")) {install.packages("hydroGOF")}
 #if (!require("PerformanceAnalytics")) {install.packages("PerformanceAnalytics")}
 if (!require("mice")) {install.packages("mice")}
-if (!require("glmnet")) {install.packages("glmnet")};
 if (!require("shinycssloaders")) {install.packages("shinycssloaders")};  
 
 library(shinycssloaders)
-library(glmnet)
 library(shiny)
 library(pastecs)
 library(RColorBrewer)
@@ -35,6 +33,7 @@ Datasetf <- reactive({
   if (is.null(input$file)) { return(NULL) }
   else{
     Dataset <- as.data.frame(read.csv(input$file$datapath ,header=TRUE, sep = ","))
+    for (i in 1:ncol(Dataset)){ if (class(Dataset[,i])==c("character")) {Dataset[,i]=factor(Dataset[,i])}   }
     return(Dataset)
   }
 })
@@ -198,7 +197,7 @@ output$imputemiss <- renderUI({
 output$imout <- renderUI({
   if (is.null(input$file)) {return(NULL)}
   if (input$imputemiss == "do not impute or drop rows") {
-    p("Note: for missing values check options in the panel on the left.",style="color:black")}
+    p("Note: to impute or drop missing values (if any) check options in the panel on the left.",style="color:black")}
   else if ((input$imputemiss == "impute missing values")) {
     p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
   }
@@ -260,7 +259,8 @@ if(!require("descriptr")) {install.packages("descriptr")}
 library(descriptr)
 output$screen_summary <- renderPrint({
   if (is.null(input$file)) {return(NULL)}
-  else {  ds_screener(mydata())} 
+  #else {  ds_screener(mydata())}
+  else {  str(mydata())} 
 })
 
 out = reactive({
@@ -479,23 +479,6 @@ ols = reactive({
     rhs = paste(input$xAttr, collapse = "+")
     formula= as.formula(paste(input$yAttr,"~", rhs , sep=""))
     ols = lm(formula, data = test_data())
-  return(ols)
-})
-
-elastic_net = reactive({
-  control <- trainControl(
-                          method="cv", #method = "repeatedcv",
-                          number = 5,
-                          #repeats = 5,
-                          #search = "random",
-                          verboseIter = FALSE)
-  rhs = paste(input$xAttr, collapse = "+")
-  formula= as.formula(paste(input$yAttr,"~", rhs , sep=""))
-  ols = glmnet::train(formula, data = test_data(),
-                      method = "glmnet",
-                      #preProcess = c("center", "scale"),
-                      #tuneLength = 10,
-                      trControl = control)
   return(ols)
 })
 

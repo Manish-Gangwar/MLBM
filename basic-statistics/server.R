@@ -46,9 +46,7 @@ Datasetf <- reactive({
   if (is.null(input$file)) { return(NULL) }
   else{
     Dataset <- as.data.frame(read.csv(input$file$datapath ,header=TRUE, sep = ","))
-    for (i in 1:ncol(Dataset)){
-      if (class(Dataset[,i])==c("character")) {Dataset[,i]=factor(Dataset[,i])}
-    }
+    #for (i in 1:ncol(Dataset)){if (class(Dataset[,i])==c("character")) {Dataset[,i]=factor(Dataset[,i])}}
     return(Dataset)
   }
 })
@@ -129,7 +127,7 @@ output$fxvarselect <- renderUI({
   else {
   checkboxGroupInput("fxAttr", "Select factor (categorical) variables",
                     #colnames(Dataset.temp()) )
-                    colnames(Dataset.temp()),setdiff(colnames(Dataset.temp()),c(colnames(nu.Dataset()))) )
+                    colnames(Dataset.temp()), "") #setdiff(colnames(Dataset.temp()),c(colnames(nu.Dataset()))) )
   }
 })
 
@@ -158,7 +156,7 @@ output$imputemiss <- renderUI({
 output$imout <- renderUI({
   if (is.null(input$file)) {return(NULL)}
   if (input$imputemiss == "do not impute or drop rows") {
-    p("Note: to impute or drop missing values check options in the panel on the left.",style="color:black")}
+    p("Note: to impute or drop missing values (if any) check options in the panel on the left.",style="color:black")}
   else if ((input$imputemiss == "impute missing values")) {
     p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
   }
@@ -169,6 +167,16 @@ output$imout1 <- renderUI({
   if (is.null(input$file)) {return(NULL)}
   if (input$imputemiss == "do not impute or drop rows") {
     p("Note: to impute or drop missing values check options in the panel on the left.",style="color:black")}
+  else if ((input$imputemiss == "impute missing values")) {
+    p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
+  }
+  else { p("Note: missing value rows dropped, check options in the panel on the left.",style="color:black") }
+})
+
+output$imout2 <- renderUI({
+  if (is.null(input$file)) {return(NULL)}
+  if (input$imputemiss == "do not impute or drop rows") {
+    p("Note: to impute or drop missing values check options in the panel on the left.",style="color:red")}
   else if ((input$imputemiss == "impute missing values")) {
     p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
   }
@@ -203,6 +211,7 @@ mydata3 = reactive({
   data = mydata2()[,c(input$xAttr)]
   if (length(input$fxAttr) >= 1){
     for (j in 1:length(input$fxAttr)){
+      data[,input$fxAttr[j]] <- sub("^", "F.", data[,input$fxAttr[j]])
       data[,input$fxAttr[j]] = factor(data[,input$fxAttr[j]])
     }
   }
@@ -253,7 +262,8 @@ mydata = reactive({
 
 output$screen_summary <- renderPrint({
   if (is.null(input$file)) {return(NULL)}
-  else {  ds_screener(mydata())} 
+  #else {  ds_screener(mydata())} 
+  else {  str(mydata())} 
   })
 
 out = reactive({
@@ -310,7 +320,7 @@ output$missing1 = renderDataTable({
   else {
     out()[[9]]
   }
-}, options = list(lengthMenu = c(25, 50, 100), pageLength = 25))
+}, options = list(lengthMenu = c(25, 50, 100), pageLength = 50))
 
 
 output$mscount = renderPrint({

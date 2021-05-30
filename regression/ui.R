@@ -55,11 +55,14 @@ shinyUI(pageWithSidebar(
                 tabPanel("Data Summary",#h4("Selected Variables"), verbatimTextOutput("head"),#verbatimTextOutput("tail"),
                          h4("Review Input Data"), 
                          dataTableOutput("readdata"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),
-                         h4("Data Summary of Selected Y and X Varaibles"),htmlOutput("imout"),
+                         h4("Data Summary of Selected Y and X Varaibles"),
                          
                          shinycssloaders::withSpinner(verbatimTextOutput("summary")),
                          verbatimTextOutput('screen_summary'),
-                         h4("Missing Data Rows (Sample)"),verbatimTextOutput("missing"),br()),
+                         h4("Missing Data Rows (Sample)"),
+                         htmlOutput("imout"),
+                         verbatimTextOutput("missing"),
+                         br()),
                # tabPanel("Correlation",h4("Correlation Table - Input data"), 
                tabPanel("Data Visualization",br(),
                         #h4("Select variable for er's outlier test"),
@@ -119,7 +122,7 @@ shinyUI(pageWithSidebar(
                          h4('Number of rows and columns in selected input sub sample'),
                          verbatimTextOutput('inputobs'),
                          h4('Number of rows and columns in new data'),
-                         shinycssloaders::withSpinner(verbatimTextOutput('newobs')),
+                         verbatimTextOutput('newobs'),
                          verbatimTextOutput("validationnew"),
                          h4("Download new data with predictions"),
                          downloadButton('downloadData1', 'download predictions for new data'),
@@ -134,11 +137,7 @@ shinyUI(pageWithSidebar(
                tabPanel("Standardized OLS", 
                         h4("OLS on Standardized Data"), verbatimTextOutput("olssummarystd"),
                         h4("Summary Standardized Input Data (mean=0 variance=1)"),verbatimTextOutput("summarystd"),br())
-               
-               # tabPanel("Elastic-Net", 
-               #          h4("Elastic-Net Regression"), 
-               #          shinycssloaders::withSpinner(verbatimTextOutput("elastic_net")))
-         
+                        
                 )
       ) 
     ) 

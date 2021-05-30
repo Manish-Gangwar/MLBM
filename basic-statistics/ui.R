@@ -52,8 +52,6 @@ shinyUI(pageWithSidebar(
                          h4("Review Input Data"), 
                          dataTableOutput("readdata"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),
                          h4("Data Summary of Selected Variables"),
-                         htmlOutput("imout"),
-                         
                          shinycssloaders::withSpinner(verbatimTextOutput("summary")),
                          verbatimTextOutput('screen_summary'),
                          #h4("Missing Data"),verbatimTextOutput("missing2"),
@@ -61,7 +59,8 @@ shinyUI(pageWithSidebar(
                          br()),
                 tabPanel("Missing Data",#h4("Impute Missing Values"),
                          h4("Missing Data in Selected Variables"),
-                         (p('you can remove missing data variable(s) if any, or impute or drop rows',style="color:black")),
+                         htmlOutput("imout"),
+                         #(p('you can remove missing data variable(s) if any, or impute or drop rows',style="color:black")),
                          dataTableOutput("missing1"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),
                          br()),
 
@@ -93,6 +92,7 @@ shinyUI(pageWithSidebar(
                           h4("Correlation Table"), 
                           verbatimTextOutput("correlation"),br(),
                           h4("Correlation Plot"),
+                          htmlOutput("imout2"),
                           plotOutput("corplot2"),br(),
                           br()),
        
