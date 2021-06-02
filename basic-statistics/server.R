@@ -112,7 +112,7 @@ nu.Dataset = reactive({
   data = Dataset.temp()
   Class = NULL
   for (i in 1:ncol(data)){
-    c1 = class(data[,i])
+    c1 = as.character(class(data[,i]))
     Class = c(Class, c1)
   }
   nu = which(Class %in% c("numeric","integer"))
@@ -128,7 +128,7 @@ chr.Dataset = reactive({
     data = Dataset.temp()
     Class = NULL
     for (i in 1:ncol(data)){
-      c1 = class(data[,i])
+      c1 = as.character(class(data[,i]))
       Class = c(Class, c1)
     }
     chr = which(Class %in% c("character"))

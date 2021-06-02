@@ -3,6 +3,7 @@
 ####################################################
 
 library("shiny")
+library("shinyBS")
 #library("foreign")
 
 shinyUI(pageWithSidebar(
@@ -11,7 +12,11 @@ shinyUI(pageWithSidebar(
   headerPanel( title=div(img(src="isb.png",align = "right"), h2("Logistic Regression (Binary Logit) App", style="bold")), windowTitle	='Binary Logit'),
   # Input in sidepanel:
   sidebarPanel(
-
+    tags$a(href="javascript:history.go(0)", 
+           popify(tags$i(class="fa fa-refresh fa-1x"),
+                  title = "", #Reload App", 
+                  content = "click here to refresh the app",
+                  placement = "right")),
     h4(p("Data Input")),
     fileInput("file", "Upload input data (csv file with header)"),
     h4(p("Data Selection")),
@@ -63,30 +68,32 @@ shinyUI(pageWithSidebar(
                 tabPanel("Data Summary",#h4("Selected Variables"), verbatimTextOutput("head"),#verbatimTextOutput("tail"),
                          h4("Review Input Data"), 
                          dataTableOutput("readdata"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),
-                         h4("Data Summary of Selected Y and X Variables"),htmlOutput("imout"),
-                         verbatimTextOutput("summary"),
+                         h4("Data Summary of Selected Y and X Variables"),
+                         shinycssloaders::withSpinner(verbatimTextOutput("summary")),
                          verbatimTextOutput('screen_summary'),
-                         h4("Missing Data Rows"),verbatimTextOutput("missing")),
+                         h4("Missing Data Rows (Sample)"),
+                         htmlOutput("imout"),
+                         verbatimTextOutput("missing")),
                 tabPanel("Data Visualization",br(),
                          #h4("Select variable for er's outlier test"),
                          h4("Be patient generating plots"),
                         # plotOutput("dens"),
                          h4("Histograms"),
-                         plotOutput("hist"),br(),
+                        shinycssloaders::withSpinner(plotOutput("hist")),br(),
                          h4("Pair Plots"),
                          #(p('remove missing data variable(s) if any, or impute or drop rows - check  "Data Summary" tab and options in the panel on the left',style="color:black")),
-                         plotOutput("corplot"),
+                        shinycssloaders::withSpinner(plotOutput("corplot")),
                          br(),
                          br()),
                   tabPanel("Summary Logit", # br(), h4(p('Y must be binary variable ',style="color:red")),
                         # h4("Confusion Matrix"),verbatimTextOutput("validation"),
                          h4("Summary Logistic Regression Model"),
                          htmlOutput("yout"),
-                         verbatimTextOutput("olssummary"),
+                        shinycssloaders::withSpinner(verbatimTextOutput("olssummary")),
                         p("Interpretation - one unit increase in variable X, increases the probability of outcome 
                            (Y equal to 1) over probability of not-outcome (Y not equal to 1) by multiple of 
                            exponent of 'coefficient's estimate' (exp[beta])."),
-                         br(),
+                        verbatimTextOutput("ontr"),
                          h4("Correlation Table"),verbatimTextOutput("correlation"),
                          
                          #h4('Confusion Matrix'), verbatimTextOutput("validation")),
@@ -104,7 +111,7 @@ shinyUI(pageWithSidebar(
                          htmlOutput("yout1"),
                          p("Sensitivity measures how well the model predicts 'Positive' Class = 1, 
                          and Specificity measures how well the model predicts 'Positive' Class = 0."),
-                         verbatimTextOutput("confusionmatrix"),
+                        shinycssloaders::withSpinner(verbatimTextOutput("confusionmatrix")),
                          
                          sliderInput('cutoff','Cutoff Probability',0,1,0.5),
                          (p('The default value of the cut-off is 0.5. Lowering cut-off increases sensitivity 
@@ -113,8 +120,8 @@ shinyUI(pageWithSidebar(
                         h4("Missing Data Rows Count"),verbatimTextOutput("mscount"),
                         htmlOutput("misswarn"),
                          #(p('remove missing data variable(s) if any, or impute or drop rows - check  "Data Summary" tab',style="color:black")),
-                         plotOutput("resplot3"),
-                         h4("ROC Curve"),plotOutput("roc"),
+                        shinycssloaders::withSpinner(plotOutput("resplot3")),
+                         h4("ROC Curve"),shinycssloaders::withSpinner(plotOutput("roc")),
                          br()),
                 #tabPanel("Residuals Plot",
                 #   h4("Fitted Values vs Residuals - Input Data"), plotOutput("resplot2"),

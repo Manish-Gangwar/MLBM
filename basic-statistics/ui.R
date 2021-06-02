@@ -3,6 +3,7 @@
 ####################################################
 
 library("shiny")
+library("shinyBS")
 #library("foreign")
 
 shinyUI(pageWithSidebar(
@@ -12,7 +13,11 @@ shinyUI(pageWithSidebar(
   
   # Input in sidepanel:
   sidebarPanel(
-
+    tags$a(href="javascript:history.go(0)", 
+           popify(tags$i(class="fa fa-refresh fa-1x"),
+                  title = "", #Reload App", 
+                  content = "click here to refresh the app",
+                  placement = "right")),
     h4(p("Data Input")),
     fileInput("file", "Upload input data (csv file with header)"),
 

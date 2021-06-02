@@ -15,7 +15,8 @@ if (!require("e1071")) {install.packages("e1071")}
 if (!require("dplyr")) {install.packages("dplyr")}
 if (!require("fastDummies")) {install.packages("fastDummies")}
 if (!require("mice")) {install.packages("mice")}
-
+if (!require("shinycssloaders")) {install.packages("shinycssloaders")};  
+library(shinycssloaders)
 library(shiny)
 library(e1071)
 library(pastecs)
@@ -39,6 +40,7 @@ Datasetf0 <- reactive({
   if (is.null(input$file)) { return(NULL) }
   else{
     Dataset <- as.data.frame(read.csv(input$file$datapath ,header=TRUE, sep = ","))
+    for (i in 1:ncol(Dataset)){  if (class(Dataset[,i])==c("character")) {Dataset[,i]=factor(Dataset[,i])}  }
     return(Dataset)
   }
 })
@@ -123,8 +125,8 @@ output$fxvarselect <- renderUI({
   else {
   checkboxGroupInput("fxAttr", "Select factor (categorical) variables in X",
                 #     setdiff(colnames(Dataset.temp()),input$yAttr),"" )
-                setdiff(input$xAttr, colnames(num.Dataset())),    
-                setdiff(input$xAttr, colnames(nu.Dataset())) )
+                setdiff(colnames(Dataset.temp()[,c(input$xAttr)]), colnames(num.Dataset())),    
+                setdiff(colnames(Dataset.temp()[,c(input$xAttr)]), colnames(nu.Dataset())) )
   }
 })
 
@@ -139,31 +141,9 @@ output$fxvarselect1 <- renderUI({
   }
 })
 
-output$imputemiss <- renderUI({
-  if (is.null(input$file)) {return(NULL)}
-  else {
-      selectInput("imputemiss", "Impute missing values or drop missing value rows", 
-                  c("do not impute or drop rows", "impute missing values", "drop missing value rows"), 
-                  selected = "do not impute or drop rows")
-    }
-})
-
 Datasetf = reactive({
-  if (is.null(input$imputemiss)) {return(Dataset.temp())}
-  else {
-  if (input$imputemiss == "do not impute or drop rows") 
-  { mydataimp=Dataset.temp() }
-  else if (input$imputemiss == "impute missing values") 
-  { mydata = Dataset.temp()
-  mice_mod = mice(mydata, printFlag=FALSE)
-  mydataimp <- complete(mice_mod) }
-  else # (input$imputemiss == "drop missing value rows") 
-  { mydata = Dataset.temp()
-  mydataimp = na.omit(mydata)  }
-  
-  #mydataimp[,input$yAttr] = factor(mydataimp[,input$yAttr])
-  return(mydataimp) 
-  }
+  mydata = Dataset.temp()#[,c(input$yAttr,input$xAttr)]
+  return(mydata)
 })
 
 basealt <- reactive({
@@ -222,7 +202,7 @@ Datasetf1 = reactive({
   ydata = factor(Datasetf()[,c(input$yAttr)])
   Y=as.data.frame(dummy_cols(ydata))[,-1]
   names(Y) = colnames(basealt())
-  Y1=Y[,input$BaseAlternative]
+  Y1=factor(Y[,input$BaseAlternative])
  
   mydata=cbind(Y1, Datasetf()[,c(input$yAttr,input$xAttr)])
   names(mydata)[1]=paste0(input$yAttr,".",input$BaseAlternative)
@@ -247,7 +227,7 @@ output$samsel <- renderUI({
   }
 })
 
-mydata <- reactive({
+Datasetf2 <- reactive({
   if (is.null(input$file)) {return(NULL)}
   if (input$obs=="full dataset") { return(Datasetf1()) }
   else if(input$obs=="random 10,000 obs") 
@@ -270,10 +250,37 @@ mydata <- reactive({
   }  
 })
 
+output$imputemiss <- renderUI({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    selectInput("imputemiss", "Impute missing values or drop missing value rows", 
+                c("do not impute or drop rows", "impute missing values", "drop missing value rows"), 
+                selected = "do not impute or drop rows")
+  }
+})
+
+mydata = reactive({
+  if (is.null(input$imputemiss)) {return(Datasetf2())}
+  else {
+    if (input$imputemiss == "do not impute or drop rows") 
+    { mydataimp=Datasetf2() }
+    else if (input$imputemiss == "impute missing values") 
+    { mydata = Datasetf2()
+    mice_mod = mice(mydata, printFlag=FALSE)
+    mydataimp <- complete(mice_mod) }
+    else # (input$imputemiss == "drop missing value rows") 
+    { mydata = Datasetf2()
+    mydataimp = na.omit(mydata)  }
+    
+    #mydataimp[,input$yAttr] = factor(mydataimp[,input$yAttr])
+    return(mydataimp) 
+  }
+})
+
 output$imout <- renderUI({
   if (is.null(input$file)) {return(NULL)}
   if (input$imputemiss == "do not impute or drop rows") {
-    p("Note: for missing values check options in the panel on the left.",style="color:black")}
+    p("Note: to impute or drop missing values (if any) check options in the panel on the left.",style="color:black")}
   else if ((input$imputemiss == "impute missing values")) {
     p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
   }
@@ -315,10 +322,10 @@ if(!require("descriptr")) {install.packages("descriptr")}
 library(descriptr)
 output$screen_summary <- renderPrint({
   if (is.null(input$file)) {return(NULL)}
-  else {  ds_screener(mydata())} 
+#  else {  ds_screener(mydata())}
+  else {  str(mydata())} 
 })
 
-#out = eventReactive(input$apply,{
 out = reactive({
 data = mydata()
 Missing1=(data[!complete.cases(data),])
@@ -369,6 +376,13 @@ output$tail = renderPrint({
     out()[3]
   }
 })
+
+output$ontr = renderPrint({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+  list(Input_Data_Dimension=out()[[1]],Missing_Data_Rows=out()[[10]])
+  }
+}) #verbatimTextOutput("ontr"),
 
 output$missing = renderPrint({
   if (is.null(input$file)) {return(NULL)}
@@ -538,8 +552,8 @@ output$roc = renderPlot({
 prediction = reactive({
   val = predict(ols(),newdata=Dataset.Predict(), type='response')
   #ey=round(exp(val)/(1+exp(val)),4)
-  out = data.frame( Y.log.odds = round(val,4), Dataset.Predict())
-  names(out)[1] = paste0("Prob.",input$yAttr,".",input$BaseAlternative)
+  out = data.frame( obs.id=rownames(Dataset.Predict()), Y.log.odds = round(val,4), Dataset.Predict())
+  names(out)[2] = paste0("Prob.",input$yAttr,".",input$BaseAlternative)
   return(out)
 })
 output$prediction =  renderPrint({
@@ -558,8 +572,8 @@ output$prediction <- renderDataTable({
 inputprediction = reactive({
   val = predict(ols(),newdata=mydata(), type='response')
   #ey=round(exp(val)/(1+exp(val)),4)
-  out = data.frame( Y.log.odds = round(val,4), mydata())
-  names(out)[1] = paste0("Prob.",input$yAttr,".",input$BaseAlternative)
+  out = data.frame( obs.id=rownames(mydata()) ,Y.log.odds = round(val,4), mydata())
+  names(out)[2] = paste0("Prob.",input$yAttr,".",input$BaseAlternative)
   return(out)
 })
 

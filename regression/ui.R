@@ -3,6 +3,7 @@
 ####################################################
 
 library("shiny")
+library("shinyBS")
 #library("foreign")
 
 shinyUI(pageWithSidebar(
@@ -12,7 +13,11 @@ shinyUI(pageWithSidebar(
   #titlePanel(title=div(img(src="logo.png",align='right'),"OLS App")),
   # Input in sidepanel:
   sidebarPanel(
-
+    tags$a(href="javascript:history.go(0)", 
+           popify(tags$i(class="fa fa-refresh fa-1x"),
+                  title = "",
+                  content = "click here to refresh the app",
+                  placement = "right")),
     h4(p("Data Input")),
     fileInput("file", "Upload input data (csv file with header)"),
     
@@ -137,6 +142,8 @@ shinyUI(pageWithSidebar(
                tabPanel("Standardized OLS", 
                         h4("OLS on Standardized Data"), verbatimTextOutput("olssummarystd"),
                         h4("Summary Standardized Input Data (mean=0 variance=1)"),verbatimTextOutput("summarystd"),br())
+               
+               #,tabPanel("LASSO",h4("LASSO"), verbatimTextOutput("lassosummary"),br())
                         
                 )
       ) 

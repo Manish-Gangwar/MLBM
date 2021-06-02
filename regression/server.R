@@ -9,7 +9,7 @@ if(!require("ggplot2")){install.packages("ggplot2")}
 if(!require("reshape2")){install.packages("reshape2")}
 if (!require("corrplot")) {install.packages("corrplot")}
 if (!require("hydroGOF")) {install.packages("hydroGOF")}
-#if (!require("PerformanceAnalytics")) {install.packages("PerformanceAnalytics")}
+if (!require("glmnet")) {install.packages("glmnet")}
 if (!require("mice")) {install.packages("mice")}
 if (!require("shinycssloaders")) {install.packages("shinycssloaders")};  
 
@@ -23,7 +23,7 @@ library(reshape2)
 library(corrplot)
 library(hydroGOF)
 library(mice)
-#library(PerformanceAnalytics)
+library(glmnet)
 
 # library(gplot)
 
@@ -482,6 +482,13 @@ ols = reactive({
   return(ols)
 })
 
+lasso = reactive({
+  rhs = paste(input$xAttr, collapse = "+")
+  formula= as.formula(paste(input$yAttr,"~", rhs , sep=""))
+  ols = glmnet(formula, data = test_data())
+  return(ols)
+})
+
 ols2 = reactive({
   
   drop = which(input$yAttr == colnames(out()[[5]]))
@@ -564,6 +571,13 @@ output$olssummary = renderPrint({
   summary(ols())
   }
   })
+
+output$lassosummary = renderPrint({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    summary(lasso())
+  }
+})
 
 output$olssummarystd = renderPrint({
   if (is.null(input$file)) {return(NULL)}
