@@ -112,7 +112,7 @@ nu.Dataset = reactive({
   data = Dataset.temp()
   Class = NULL
   for (i in 1:ncol(data)){
-    c1 = (class(data[,i]))
+    c1 = as.character(class(data[,i]))
     Class = c(Class, c1)
   }
   nu = which(Class %in% c("numeric","integer"))
@@ -128,10 +128,10 @@ chr.Dataset = reactive({
     data = Dataset.temp()
     Class = NULL
     for (i in 1:ncol(data)){
-      c1 = (class(data[,i]))
+      c1 = as.character(class(data[,i]))
       Class = c(Class, c1)
     }
-    chr = which(Class %in% c("character","factor"))
+    chr = which(Class %in% c("character"))
     chr.data = data[,chr] 
     return(chr.data)
   }
@@ -143,27 +143,7 @@ output$fxvarselect <- renderUI({
   else {
   checkboxGroupInput("fxAttr", "Select factor (categorical) variables",
                     #colnames(Dataset.temp()) )
-                    colnames(Dataset.temp()), chr.Dataset())#setdiff(colnames(Dataset.temp()),c(colnames(nu.Dataset()))) )
-  }
-})
-
-output$dxvarselect1 <- renderUI({
-  if (identical(Dataset(), '') || identical(Dataset(),data.frame())) return(NULL)
-  if (is.null(input$file)) {return(NULL)}
-  else {
-    checkboxGroupInput("dxAttr", "Select factor variable(s) to create dummies",
-                       #colnames(Dataset.temp()) )
-                       colnames(Dataset.temp())[,input$fxAttr],"") #setdiff(colnames(Dataset.temp()),c(colnames(nu.Dataset()))) )
-  }
-})
-
-output$dxvarselect <- renderUI({
-  if (is.null(input$file)) {return(NULL)}
-  else {
-    data=nu.Dataset()
-    data1 = data[, !names(data) %in% input$fxAttr]
-    varSelectInput("dxAttr", "Select factor variable(s) to create dummies",
-                   data = Dataset.temp()[,input$fxAttr],multiple = TRUE, selected = ""  )
+                    colnames(Dataset.temp()), colnames(chr.Dataset())) #setdiff(colnames(Dataset.temp()),c(colnames(nu.Dataset()))) )
   }
 })
 
@@ -171,7 +151,7 @@ output$lxvarselect1 <- renderUI({
   if (identical(Dataset(), '') || identical(Dataset(),data.frame())) return(NULL)
   if (is.null(input$file)) {return(NULL)}
   else {
-    checkboxGroupInput("lxAttr", "Select X variable(s) for natural log transformation",
+    checkboxGroupInput("lxAttr", "Select X variables for natural log transformation",
                        #colnames(Dataset.temp()) )
                        setdiff(colnames(nu.Dataset()),input$fxAttr), "" )
   }
@@ -220,14 +200,15 @@ output$imout2 <- renderUI({
 })
 
 mydata2 = reactive({
-  mydata=Dataset()[,input$xAttr]
   if (input$imputemiss == "do not impute or drop rows") 
-    {mydataimp=mydata}
+    {mydataimp=Dataset()}
   else if (input$imputemiss == "impute missing values") 
-    { mice_mod = mice(mydata, printFlag=FALSE)
+    { mydata = Dataset()
+  mice_mod = mice(mydata, printFlag=FALSE)
   mydataimp <- complete(mice_mod) }
   else # (input$imputemiss == "drop missing value rows") 
-  { mydataimp = na.omit(mydata)  }
+  { mydata = Dataset()
+    mydataimp = na.omit(mydata)  }
   return(mydataimp)
 })
 
@@ -241,32 +222,16 @@ output$winsor <- renderUI({
   }
 })
 
-mydata22 = reactive({
-  x00 = mydata2()
-  fxattr = c(input$dxAttr)
-  if ( {length(fxattr) >=1} ) { 
-    for (j in 1:length(fxattr)){
-      x01 = as.data.frame(x00 %>% dplyr::select(!!!fxattr[j]))
-      x02 = fastDummies::dummy_cols(x01, remove_first_dummy = FALSE,remove_selected_columns = TRUE)
-      x00 =cbind(x00,x02)
-    }}
-  return(x00)
-})
-
 
 mydata3 = reactive({
-  data = mydata22()#[,c(input$xAttr)]
-  fxattr=(input$fxAttr)
-  if (length(fxattr) >= 1){
-    for (j in 1:length(fxattr)){
-      data[,fxattr[j]] = factor(data[,fxattr[j]])
-    }}
-  fxattr=setdiff(input$fxAttr,setdiff(colnames(Dataset.temp()),c(colnames(nu.Dataset()))) )
+  data = mydata2()[,c(input$xAttr)]
+  fxattr=setdiff(input$fxAttr,colnames(chr.Dataset()))
   if (length(fxattr) >= 1){
     for (j in 1:length(fxattr)){
       data[,fxattr[j]] <- sub("^", "F.", data[,fxattr[j]])
       data[,fxattr[j]] = factor(data[,fxattr[j]])
-    }}
+    }
+  }
   return(data)
 })
 
@@ -293,27 +258,24 @@ output$lxvarselect <- renderUI({
   else {
     data=nu.Dataset()
     data1 = data[, !names(data) %in% input$fxAttr]
-    varSelectInput("lxAttr", "Select X variable(s) for natural log transformation",
+    varSelectInput("lxAttr", "Select X variables for natural log transformation",
                    data = data1,multiple = TRUE, selected = ""  )
   }
 })
 
-
 mydata = reactive({
-  data = mydata4()#[,c(input$xAttr)]
+  data = mydata4()[,c(input$xAttr)]
   if (length(input$lxAttr) >= 1){
     data1=NULL
     for (j in 1:length(input$lxAttr)){
       #data1 = as.data.frame(log(data[,input$lxAttr[j]]))
       data1 = as.data.frame(log(data %>% dplyr::select(!!!input$lxAttr[j])  ))
       names(data1) = paste0("Log(",input$lxAttr[j],")")
-      #data = cbind(data[, !names(data) %in% c(input$lxAttr[j])],data1)
-      data = cbind(data,data1)
+      data = cbind(data[, !names(data) %in% c(input$lxAttr[j])],data1)
     }
   }
   return(data)
 })
-
 
 output$screen_summary <- renderPrint({
   if (is.null(input$file)) {return(NULL)}

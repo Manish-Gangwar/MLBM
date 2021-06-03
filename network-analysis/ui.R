@@ -47,16 +47,16 @@ fluidPage(
                             
                             p("This shiny application requires following two different types of data input from the users"),
                             tags$b("1. Adjacency Matrix"),
-                            p("It represents the relationship between the nodes & input file looks like"),
+                            p("It represents the relationship between the nodes"),
                             
-                            img(src = "input_adj.png", height = 180, width = 400),
+                            img(src = "input_adj.png", height = 180, width = 600),
                             tags$br(),br(),
                             downloadButton('downloadData', 'Download example adjacecny matrix file'),
                             
                             tags$br(),
                             tags$br(),
                             tags$b("2. Demographic Data"),
-                            p("It represents demographic data of individual nodes & input file looks like"),
+                            p("It represents demographic data of individual nodes"),
                             
                             img(src = "input_demo.png", height = 180, width = 400),
                             tags$br(),br(),

@@ -27,8 +27,7 @@ shinyUI(fluidPage(
                          p("Upload data to sidebar panel and select focal user for which recommendation is require. Once you change the user, App will automatically refresh and display recommendation for respective user in different output tabs.
                            ", align = "Justify"),
                          h4(p("Input Data Format")),
-                         p("Application takes DTM (Document Term Matrix) as an input. Below is the example
-                           ", align = "Justify"),
+                         p("Application takes DTM (Document Term Matrix) as an input.", align = "Justify"),
                          img(src = "dataset.png",height = 180, width = 400),
                          hr(),
                          h4(p("Download sample text file")),
@@ -42,11 +41,11 @@ shinyUI(fluidPage(
                 )  ,
             
                 
-                tabPanel("DTM Descriptive", 
+                tabPanel("DTM Data Summary", 
                          h4("Summary Report"),
                          verbatimTextOutput("dim"),
                          br(),
-                         h4("Sample Dataset"),
+                         h4("Input Dataset"),
                          dataTableOutput("dtm_head"),
                          br(),
                          h4("Word Frequency Table"),

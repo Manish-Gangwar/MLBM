@@ -49,8 +49,8 @@ output$dim <- renderText({
   
 
 output$dtm_head <- renderDataTable({
-  return(dataset()[1:10,1:10])
-})
+  return(dataset())
+},options = list(pageLength = 10))
 
 
 output$freq_table <- renderDataTable({
@@ -67,10 +67,10 @@ output$freq_table <- renderDataTable({
     # reorder by column name
     token_freqs <- token_freqs[c("word", "freq")]  #return(as.data.frame(head(token_freqs, 10))) # 2nd output. Sorted freqs
     rownames(token_freqs) <- NULL
-    head(token_freqs,10)
+    (token_freqs)
 
   }
-})
+},options = list(pageLength = 10))
 #----------IBFC Recommendation-----------
   
   output$ibfc_re <- DT::renderDataTable({
