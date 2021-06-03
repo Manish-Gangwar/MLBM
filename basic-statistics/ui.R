@@ -27,7 +27,7 @@ shinyUI(pageWithSidebar(
     htmlOutput("samsel"),
     htmlOutput("imputemiss"),
     htmlOutput("winsor"),
-    htmlOutput("dxvarselect"),
+    #htmlOutput("dxvarselect"),
     htmlOutput("lxvarselect"),
     actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),
     #submitButton(text = "Apply Changes", icon("refresh")),br(),
