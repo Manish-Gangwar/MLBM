@@ -241,7 +241,7 @@ output$winsor <- renderUI({
   else {
     if (identical(Dataset(), '') || identical(Dataset(),data.frame())) return(NULL)
     selectInput("winsor", "Winsorize extreme values", 
-                c( "No","bottom 0.5% and top 0.5%", "bottom 1%", "top 1%", "bottom 1% and top 1%"), selected = "No")
+                c( "no","bottom 0.5% and top 0.5%", "bottom 1%", "top 1%", "bottom 1% and top 1%"), selected = "No")
   }
 })
 
