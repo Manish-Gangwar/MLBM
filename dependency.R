@@ -50,7 +50,7 @@ if(!require("Spectrum")) {install.packages("Spectrum")}
 if(!require("textrank")) {install.packages("textrank")}
 if(!require("Rtsne")) {install.packages("Rtsne")}
 if(!require("randomcoloR")) {install.packages("randomcoloR")}
-if(!require("shifnyWidgets")) {install.packages("shinyWidgets")}
+if(!require("shinyWidgets")) {install.packages("shinyWidgets")}
 if(!require("stringr")) {install.packages("stringr")}
 if(!require("e1071")) {install.packages("e1071")}
 if(!require("EnvStats")) {install.packages("EnvStats")}
