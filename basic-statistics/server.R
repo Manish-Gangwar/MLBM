@@ -573,7 +573,7 @@ plot_data1 <- reactive({
   else {
     my_data = out()[[5]]
     #my_data = mydata()
-    if (input$obs == "full dataset") { return(my_data) }
+    #if (input$obs == "full dataset") { return(my_data) }
     #set.seed(1234)
       if (nrow(my_data)>1000){ testsample= sample(1:nrow(my_data), 1000 )
         Dataset1=my_data[testsample,]
@@ -659,7 +659,8 @@ output$correlation = renderPrint({
 output$corplot = renderPlot({
   if (is.null(input$file)) {return(NULL)}
   else {
-    pairs(out()[[5]],pch=20, col="grey")
+    my_data = plot_data1()
+    pairs(my_data,pch=20, col="grey")
   }
 })
 

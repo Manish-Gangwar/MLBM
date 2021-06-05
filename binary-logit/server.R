@@ -455,11 +455,25 @@ output$correlation = renderPrint({
   }
 })
 
+plot_data1 <- reactive({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    my_data = out()[[5]]
+    #my_data = mydata()
+    #if (input$obs == "full dataset") { return(my_data) }
+    #set.seed(1234)
+    if (nrow(my_data)>1000){ testsample= sample(1:nrow(my_data), 1000 )
+    Dataset1=my_data[testsample,]
+    return(Winsorize(Dataset1,na.rm = TRUE))}
+    else {return((my_data))}
+  }
+})
+
 output$corplot = renderPlot({
   if (is.null(input$file)) {return(NULL)}
   else {
     #pairs(mydata())
-    pairs(out()[[5]],pch=20, col="grey")
+    pairs(plot_data1(),pch=20, col="grey")
   }
 })
 

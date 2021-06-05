@@ -33,10 +33,8 @@ shinyUI(pageWithSidebar(
   ),
   # Main:
   mainPanel( 
-    
+ 
     tabsetPanel(type = "tabs",
-                #
-                
                 tabPanel("Overview",
                          br(),
                          p("In statistics, the logistic regression (or binary logit model) is used to model the probability of a certain class 
@@ -74,15 +72,16 @@ shinyUI(pageWithSidebar(
                          h4("Missing Data Rows (Sample)"),
                          htmlOutput("imout"),
                          verbatimTextOutput("missing")),
-                tabPanel("Data Visualization",br(),
+                tabPanel("Data Visualization",
                          #h4("Select variable for er's outlier test"),
-                         h4("Be patient generating plots"),
+                         #h4("Be patient generating plots"),
                         # plotOutput("dens"),
                          h4("Histograms"),
                         shinycssloaders::withSpinner(plotOutput("hist")),br(),
                          h4("Pair Plots"),
                          #(p('remove missing data variable(s) if any, or impute or drop rows - check  "Data Summary" tab and options in the panel on the left',style="color:black")),
                         shinycssloaders::withSpinner(plotOutput("corplot")),
+                        h4("Correlation Table"),verbatimTextOutput("correlation"),
                          br(),
                          br()),
                   tabPanel("Summary Logit", # br(), h4(p('Y must be binary variable ',style="color:red")),
@@ -94,7 +93,7 @@ shinyUI(pageWithSidebar(
                            (Y equal to 1) over probability of not-outcome (Y not equal to 1) by multiple of 
                            exponent of 'coefficient's estimate' (exp[beta])."),
                         verbatimTextOutput("ontr"),
-                         h4("Correlation Table"),verbatimTextOutput("correlation"),
+                         
                          
                          #h4('Confusion Matrix'), verbatimTextOutput("validation")),
                          #h4("Summary OLS standardized model"), verbatimTextOutput("olssummarystd")),
