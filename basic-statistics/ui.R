@@ -24,12 +24,14 @@ shinyUI(pageWithSidebar(
     h4(p("Data Selection")),
     htmlOutput("xvarselect"),
     htmlOutput("fxvarselect",style="color:grey"),
-    htmlOutput("samsel"),
+    #htmlOutput("samsel"),
     htmlOutput("imputemiss"),
+   #actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),
+    h4(p("Advance Options")),
     htmlOutput("winsor"),
     #htmlOutput("dxvarselect"),
     htmlOutput("lxvarselect"),
-    actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),
+   htmlOutput("sqvarselect"),
     #submitButton(text = "Apply Changes", icon("refresh")),br(),
     ),
   # Main:
@@ -118,11 +120,17 @@ shinyUI(pageWithSidebar(
                 br()),
        
                 tabPanel("Download Data",br(),
-                         h4(p("Download input data with modifications as per options you selected in the panel on the left")),
-                         downloadButton('downloadDatanew', 'download input data'), br(), br(),
-                         #h5("First 10 rows of input data with dummy variable coding for factor/categorical variables"),
-                         dataTableOutput("dummydata"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),br()
-                         )
+                         numericInput('numout','Input new number to randomly draw new training and test data',5898),
+                         sliderInput('sample','Set test sample percentage',10,40,25),
+                         h4(p("training data with modifications as per options you selected in the panel on the left")),
+                         downloadButton('downloadtrain', 'download training data'), br(),br(),
+                         verbatimTextOutput("trainobs"),br(),
+                         dataTableOutput("dummytrain"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),
+                         h4(p("test data with modifications as per options you selected in the panel on the left")),
+                         downloadButton('downloadtest', 'download test data'), br(), br(),
+                         verbatimTextOutput("testobs"),br(),
+                         dataTableOutput("dummytest"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),
+                         br())
                 )
       ) 
     ) 

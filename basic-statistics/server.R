@@ -69,6 +69,8 @@ output$samsel <- renderUI({
 Dataset <- reactive({
   if (is.null(input$file)) {return(NULL)}
   else {
+  if (is.null(input$obs)) {return(Datasetf())}  
+  else {
     if (input$obs=="full dataset") { return(Datasetf()) }
     else if(input$obs=="10,000 random obs") 
     {
@@ -88,7 +90,7 @@ Dataset <- reactive({
         return(Dataset1)}
       else {return(Datasetf())}
     }  
-    }
+    }}
 })
 
 output$xvarselect <- renderUI({
@@ -176,6 +178,8 @@ output$lxvarselect1 <- renderUI({
                        setdiff(colnames(nu.Dataset()),input$fxAttr), "" )
   }
 })
+
+
 
 output$imputemiss <- renderUI({
   if (is.null(input$file)) {return(NULL)}
@@ -298,8 +302,7 @@ output$lxvarselect <- renderUI({
   }
 })
 
-
-mydata = reactive({
+mydata5 = reactive({
   data = mydata4()#[,c(input$xAttr)]
   if (length(input$lxAttr) >= 1){
     data1=NULL
@@ -307,6 +310,32 @@ mydata = reactive({
       #data1 = as.data.frame(log(data[,input$lxAttr[j]]))
       data1 = as.data.frame(log(data %>% dplyr::select(!!!input$lxAttr[j])  ))
       names(data1) = paste0("Log(",input$lxAttr[j],")")
+      #data = cbind(data[, !names(data) %in% c(input$lxAttr[j])],data1)
+      data = cbind(data,data1)
+    }
+  }
+  return(data)
+})
+
+output$sqvarselect <- renderUI({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    #selcol=setdiff(colnames(nu.Dataset()),input$lxAttr)
+    data=nu.Dataset()
+    data1 = data[, !names(data) %in% c(input$fxAttr)]
+    varSelectInput("sqAttr", "Select X square variable(s)",
+                   data = data1,multiple = TRUE, selected = ""  )
+  }
+})
+
+mydata = reactive({
+  data = mydata5()#[,c(input$xAttr)]
+  if (length(input$sqAttr) >= 1){
+    data1=NULL
+    for (j in 1:length(input$sqAttr)){
+      #data1 = as.data.frame(log(data[,input$lxAttr[j]]))
+      data1 = as.data.frame((data %>% dplyr::select(!!!input$sqAttr[j]))^2)
+      names(data1) = paste0("Sq(",input$sqAttr[j],")")
       #data = cbind(data[, !names(data) %in% c(input$lxAttr[j])],data1)
       data = cbind(data,data1)
     }
@@ -347,6 +376,65 @@ j = length(which(a < ncol(nu.data)))
 out = list(Dimensions=Dimensions, Summary=Summary, Tail=Tail, fa.data,  nu.data,  a,  j, Head=Head,
            MissingDataRows=Missing,missing.data.rows.count=mscount,Missing.Observations=Missing2)
 return(out)
+})
+
+testsample =  reactive({
+  set.seed(input$numout)
+  sample(1:nrow(mydata()), round(nrow(mydata())*((input$sample)/100)))
+})
+
+train_data = reactive({
+  mydata()[-testsample(),]
+})
+
+test_data = reactive({
+  mydata()[testsample(),]
+})
+
+output$downloadtrain <- downloadHandler(
+  filename = function() { "cleandata.csv" },
+  content = function(file) {
+    #write.csv(dummy_cols(mydata()), file, row.names=F, col.names=F)
+    write.csv((train_data()), file, row.names=F, col.names=F)
+  }
+)
+
+output$dummytrain = renderDataTable({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    #dummy_cols(mydata())
+    (train_data())
+  }
+}, options = list(lengthMenu = c(5, 30, 50,100), pageLength = 5))
+
+output$downloadtest <- downloadHandler(
+  filename = function() { "cleandata.csv" },
+  content = function(file) {
+    #write.csv(dummy_cols(mydata()), file, row.names=F, col.names=F)
+    write.csv((test_data()), file, row.names=F, col.names=F)
+  }
+)
+
+output$dummytest = renderDataTable({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    #dummy_cols(mydata())
+    (test_data())
+  }
+}, options = list(lengthMenu = c(5, 30, 50,100), pageLength = 5))
+
+output$trainobs = renderPrint({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    dim( train_data())
+  }
+})
+
+output$testobs = renderPrint({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    dim( test_data())
+  }
 })
 
 output$head = renderPrint({
@@ -605,22 +693,6 @@ output$corplot1 = renderPlot({
     }
 })
 
-
-output$downloadDatanew <- downloadHandler(
-  filename = function() { "cleandata.csv" },
-  content = function(file) {
-        #write.csv(dummy_cols(mydata()), file, row.names=F, col.names=F)
-        write.csv((mydata()), file, row.names=F, col.names=F)
-  }
-)
-
-output$dummydata = renderDataTable({
-  if (is.null(input$file)) {return(NULL)}
-  else {
-    #dummy_cols(mydata())
-    (mydata())
-  }
-}, options = list(lengthMenu = c(5, 30, 50,100), pageLength = 30))
 
 output$downloadData <- downloadHandler(
   filename = function() { "califhouse.csv" },
