@@ -126,8 +126,12 @@ shinyUI(pageWithSidebar(
                     br()),
        
                 tabPanel("Download Data",br(),
-                         numericInput('numout','Input new number to randomly draw new training and test data',5898),
-                         sliderInput('sample','Set test sample percentage',10,40,25),
+                         h4(p("Input data with modifications as per options you selected in the panel on the left")),
+                         downloadButton('downloadclean', 'download full data'), br(),br(),
+                         verbatimTextOutput("cleanobs"),br(),
+                         dataTableOutput("dummyclean"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),
+                         
+                         sliderInput('sample','Set test sample percentage',0,40,0),
                          h4(p("training data with modifications as per options you selected in the panel on the left")),
                          downloadButton('downloadtrain', 'download training data'), br(),br(),
                          verbatimTextOutput("trainobs"),br(),
@@ -136,6 +140,7 @@ shinyUI(pageWithSidebar(
                          downloadButton('downloadtest', 'download test data'), br(), br(),
                          verbatimTextOutput("testobs"),br(),
                          dataTableOutput("dummytest"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),
+                         numericInput('numout','Input new number to randomly draw new training and test data',5898),
                          br())
                 )
       ) 

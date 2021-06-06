@@ -185,12 +185,10 @@ output$imputemiss <- renderUI({
   if (is.null(input$file)) {return(NULL)}
   else {
   if (identical(Dataset(), '') || identical(Dataset(),data.frame())) return(NULL)
-  if (1==0) {p("error")}
-  else {
     selectInput("imputemiss", "Impute missing values or drop missing value rows", 
                 c("do not impute or drop rows", "impute missing values", "drop missing value rows"), 
                 selected = "do not impute or drop rows")
-  }}
+  }
 })
 
 output$imout <- renderUI({
@@ -241,7 +239,7 @@ output$winsor <- renderUI({
   else {
     if (identical(Dataset(), '') || identical(Dataset(),data.frame())) return(NULL)
     selectInput("winsor", "Winsorize extreme values", 
-                c( "no","bottom 0.5% and top 0.5%", "bottom 1%", "top 1%", "bottom 1% and top 1%"), selected = "No")
+                c( "no","bottom 0.5% and top 0.5%", "bottom 1%", "top 1%", "bottom 1% and top 1%"), selected = "no")
   }
 })
 
@@ -276,7 +274,7 @@ mydata3 = reactive({
 
 mydata4 = reactive({
   data=mydata3()
-  if (input$winsor == "No") {return(data)}
+  if (input$winsor == "no") {return(data)}
   else if (input$winsor == "bottom 1%") 
   {data[,c(colnames(nu.Dataset()))] <- lapply(data[,c(colnames(nu.Dataset()))], 
    function(x) Winsorize(x, minval = NULL, maxval = NULL, probs = c(0.01, 1), na.rm = TRUE)) } #probs = c(0.01, 0.99),
@@ -384,23 +382,41 @@ testsample =  reactive({
 })
 
 train_data = reactive({
-  mydata()[-testsample(),]
+  if (input$sample==0) {return(mydata())}
+  else {  mydata()[-testsample(),]  }
 })
 
 test_data = reactive({
-  mydata()[testsample(),]
+  if (input$sample==0) {return(NULL)}
+  else {  mydata()[testsample(),] }
 })
 
-output$downloadtrain <- downloadHandler(
-  filename = function() { "cleandata.csv" },
+output$downloadclean <- downloadHandler(
+  filename = function() { "full_data.csv" },
   content = function(file) {
+    #write.csv(dummy_cols(mydata()), file, row.names=F, col.names=F)
+    write.csv((mydata()), file, row.names=F, col.names=F)
+  }
+)
+
+output$dummyclean = renderDataTable({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    #dummy_cols(mydata())
+    (mydata())
+  }
+}, options = list(lengthMenu = c(5, 30, 50,100), pageLength = 5))
+
+output$downloadtrain <- downloadHandler(
+  filename = function() { "train_data.csv" },
+    content = function(file) {
     #write.csv(dummy_cols(mydata()), file, row.names=F, col.names=F)
     write.csv((train_data()), file, row.names=F, col.names=F)
   }
 )
 
 output$dummytrain = renderDataTable({
-  if (is.null(input$file)) {return(NULL)}
+  if (input$sample==0) {return(NULL)}
   else {
     #dummy_cols(mydata())
     (train_data())
@@ -408,30 +424,38 @@ output$dummytrain = renderDataTable({
 }, options = list(lengthMenu = c(5, 30, 50,100), pageLength = 5))
 
 output$downloadtest <- downloadHandler(
-  filename = function() { "cleandata.csv" },
-  content = function(file) {
+  filename = function() { "test_data.csv" },
+    content = function(file) {
     #write.csv(dummy_cols(mydata()), file, row.names=F, col.names=F)
     write.csv((test_data()), file, row.names=F, col.names=F)
   }
 )
 
 output$dummytest = renderDataTable({
-  if (is.null(input$file)) {return(NULL)}
+  if (input$sample==0) {return(NULL)}
   else {
     #dummy_cols(mydata())
     (test_data())
   }
 }, options = list(lengthMenu = c(5, 30, 50,100), pageLength = 5))
 
-output$trainobs = renderPrint({
+
+output$cleanobs = renderPrint({
   if (is.null(input$file)) {return(NULL)}
+  else {
+    dim( mydata())
+  }
+})
+
+output$trainobs = renderPrint({
+  if (input$sample==0) {return(NULL)}
   else {
     dim( train_data())
   }
 })
 
 output$testobs = renderPrint({
-  if (is.null(input$file)) {return(NULL)}
+  if (input$sample==0) {return(NULL)}
   else {
     dim( test_data())
   }
