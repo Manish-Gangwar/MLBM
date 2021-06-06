@@ -140,7 +140,7 @@ shinyUI(pageWithSidebar(
                          downloadButton('downloadtest', 'download test data'), br(), br(),
                          verbatimTextOutput("testobs"),br(),
                          dataTableOutput("dummytest"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),
-                         numericInput('numout','Input new number to randomly draw new training and test data',5898),
+                         numericInput('numout','Input new number to draw new set of training and test data',5898),
                          br())
                 )
       ) 
