@@ -3,6 +3,7 @@
 ####################################################
 
 library("shiny")
+library("shinyBS")
 #library("foreign")
 
 shinyUI(fluidPage(
@@ -12,9 +13,14 @@ shinyUI(fluidPage(
   
   # Input in sidepanel:
   sidebarPanel(
+    tags$a(href="javascript:history.go(0)", 
+           popify(tags$i(class="fa fa-refresh fa-1x"),
+                  title = "", #Reload App", 
+                  content = "click here to refresh the app",
+                  placement = "right")),
     h4(p("Data Input")),
-    helpText("Note: first column of the input data must be an obervation id"),
-    fileInput("file", "Upload data (csv file with observation ID and header)"),
+    helpText("Note: first column of the input csv file must be an unique obervation id",style="color:darkblue"),
+    fileInput("file", "Upload data (csv file with header)"),
     #submitButton(text = "refresh", icon("refresh")),
     #(p("Click refresh after loading data and every time you make changes",style="color:red")),
     #actionButton(inputId = "apply",label = "refresh", icon("refresh")),br(),br(),
@@ -25,21 +31,26 @@ shinyUI(fluidPage(
     #(p("Click refresh after loading data and every time you make changes",style="color:red")),
     #actionButton(inputId = "apply",label = "refresh", icon("refresh")),br(),
     h4(p("Data Selection")),
-    uiOutput("colXList"),
-    #htmlOutput("xvarselect"),
+    #uiOutput("colXList"),
+    htmlOutput("xvarselect"),
+    
     selectInput("select", "Choose cluster algorithm", c("K-Means","Hierarchical","Spectral","HDBSCAN"), selected = "K-Means"),  
     htmlOutput("Clust"),
    # htmlOutput("outcl"),
     htmlOutput("Clusth"),
-    actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),br(),br(),
+  #  actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),br(),br(),
     #selectInput("Clust", "Choose number of clusters", c(2,3,4,5,6,7,8,9), selected = 3),
     htmlOutput("scale"),
     htmlOutput("samsel"),
     #selectInput("obs", "Select sub sample", c("quick run, 10,000 obs", "full dataset"), selected = "quick run, 10,000 obs"),
     #selectInput("scale", "Standardize input data (usually yes)",c("yes","no"), selected = "yes"),
-    
+
     htmlOutput("imputemiss"),
+   h4("Advance Options"),
+   htmlOutput("fxvarselect"),
     htmlOutput("winsor"),
+   htmlOutput("winvarselect"),
+   
     br(),
     #submitButton(text = "Apply Changes", icon("refresh"))
   ),
@@ -85,11 +96,15 @@ shinyUI(fluidPage(
                          #(p("Click refresh after loading data and every time you make changes",style="color:black")),
                          #submitButton(text = "refresh", icon("refresh")),
                          #actionButton(inputId = "apply",label = "refresh", icon("refresh")),br(),
-                         h4("Data Summary of Selected X"),htmlOutput("imout"),
-                         verbatimTextOutput("summ"),
-                         br(),
-                         h4("Missing Data"),verbatimTextOutput("missing"),br(),
-                         h4("Correlation Table - Input data"), verbatimTextOutput("correlation"),
+                         h4("Data Summary of Selected X"),
+                        shinycssloaders::withSpinner(verbatimTextOutput("summ")),
+                         h4("Input Data Set"), 
+                        #verbatimTextOutput('winhead'),
+                        verbatimTextOutput('str'),
+                         h4("Missing Data"),
+                        htmlOutput("imout"),
+                        verbatimTextOutput("missing"),br(),
+                         #h4("Correlation Table - Input data"), verbatimTextOutput("correlation"),
                          #h4(p("Correlation")),
                          #(p('remove missing data variable(s) if any, or impute or drop rows - check options in the panel on the left',style="color:black")),
                          #(plotOutput("corplot",height = 850, width = 850))
@@ -98,10 +113,10 @@ shinyUI(fluidPage(
                 # tabPanel("Data Visualization",br(),
                 #          #h4("Select variable for er's outlier test"),
                 #          h4("Be patient generating plots"),
-                #          plotOutput("dens"),
+                #         # plotOutput("dens"),
                 #          h4("Histograms"),
                 #          plotOutput("hist"),br(),
-                #          h4("Bi-variate Plots"),
+                #          h4("Pair Plots"),
                 #          # (p('remove missing data variable(s) if any, or impute or drop rows. Check "Data Summary" tab and options in the panel on the left.',style="color:black")),
                 #          plotOutput("corplot"),
                 #          br(),
@@ -123,11 +138,12 @@ shinyUI(fluidPage(
                          #submitButton(text = "refresh", icon("refresh")),
                          #actionButton(inputId = "apply",label = "refresh", icon("refresh")),br(),br(),
                          #plotOutput("plotpca",height = 400, width = 850),
-                         h4("Check Missing Data Rows Count"),verbatimTextOutput("mscount"),
+                         h4("Input and Missing Data Rows Count"),verbatimTextOutput("mscount"),
                          htmlOutput("misswarn"),
                          #(p('Remove missing data variable(s) if any - check  "Data Summary" tab',style="color:red")),
-                         h4(textOutput("caption")),verbatimTextOutput("summary"), 
-                         plotOutput("plot3",height = 600),
+                         h4(textOutput("caption")),
+                        shinycssloaders::withSpinner(verbatimTextOutput("summary")), 
+                        shinycssloaders::withSpinner(plotOutput("plot3",height = 600)),
                          br(),br(),
                         htmlOutput("scldt1note"),
                          # h4("Scaled Data Boxplot (if 'Standardize data' option = yes)"),
@@ -173,7 +189,7 @@ shinyUI(fluidPage(
                         # actionButton(inputId = "apply",label = "refresh", icon("refresh")),br(),br(),
                          h4(textOutput("caption2")),verbatimTextOutput("summary1"),
                          h4("Visulaizing Clusters in 2D (top two principal components)."),
-                         plotOutput("plot", height=850), 
+                       shinycssloaders::withSpinner(plotOutput("plot", height=850)), 
                          #h4("Selected Variables Boxplot"),#plotOutput("boxx"),
                          #plotOutput("boxx2"),
 
@@ -191,7 +207,7 @@ shinyUI(fluidPage(
                          #submitButton(text = "refresh", icon("refresh")),
                          #actionButton(inputId = "apply",label = "refresh", icon("refresh")),br(),br(),
                          h4(textOutput("caption4")),
-                         plotOutput("plotumap", height=800),
+                       shinycssloaders::withSpinner(plotOutput("plotumap", height=800)),
                          br()),
                 tabPanel("t-SNE Visualization", br(),
                          # p("Step1: Select only numerical X variables in the 'Data Selection' panel on the left."),
@@ -208,7 +224,7 @@ shinyUI(fluidPage(
                          # actionButton(inputId = "apply",label = "refresh", icon("refresh")),br(),br(),
                          h4(textOutput("caption3")),
                          #plotOutput("plotumap"),
-                         plotOutput("plotrtsne",height = 800),
+                         shinycssloaders::withSpinner(plotOutput("plotrtsne",height = 800)),
                          br(),br()),
                 
                 tabPanel("Download Cluster Membership Data", br(), 

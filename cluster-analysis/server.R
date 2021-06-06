@@ -26,7 +26,8 @@ if (!require("DescTools")) {install.packages("DescTools")}
 #devtools::install_github("ropenscilabs/umapr")
 if (!require("umap")) {install.packages("umap")}
 if (!require("fastDummies")) {install.packages("fastDummies")}
-
+if (!require("shinycssloaders")) {install.packages("shinycssloaders")}; 
+library(shinycssloaders)
 source("ggbiplot.r")
 #source("tsne.R")
 #source("umap.R")
@@ -63,8 +64,8 @@ shinyServer(function(input, output){
   Dataset0 <- reactive({
     if (is.null(input$file)) { return(NULL) }
     else{
-      Dataset0 <- as.data.frame(read.csv(input$file$datapath ,header=TRUE, sep = ","))
-      return(Dataset0)
+      Dataset <- as.data.frame(read.csv(input$file$datapath ,header=TRUE, sep = ","))
+      return(Dataset)
     }
   })
  
@@ -82,7 +83,7 @@ shinyServer(function(input, output){
       Dataset1 = Dataset0()
       rownames(Dataset1) = Dataset1[,1]
       Dataset = Dataset1[,2:ncol(Dataset1)]
-      #Dataset = t(Dataset)
+      for (i in 1:ncol(Dataset)){ if (class(Dataset[,i])==c("character")) {Dataset[,i]=factor(Dataset[,i])} }
       return(Dataset)
     }
   })
@@ -114,8 +115,8 @@ shinyServer(function(input, output){
       c1 = class(data[,i])
       Class = c(Class, c1)
     }
-    nu = which(Class %in% c("factor","character"))
-    fac.data = data[,nu] 
+    fac = which(Class %in% c("factor","character"))
+    fac.data = factor(data[,fac]) 
     return(fac.data)
   })
   
@@ -123,14 +124,19 @@ shinyServer(function(input, output){
   library(descriptr)
   output$screen_summary <- renderPrint({
     if (is.null(input$file)) {return(NULL)}
-    else {  ds_screener(  Dataset()[,1:ncol(Dataset())]   )} 
+    else {  ds_screener(  Dataset0() )} 
+  })
+  
+  output$str <- renderPrint({
+    if (is.null(input$file)) {return(NULL)}
+    else {  str(  Dataset()   )} 
   })
   
   output$xvarselect <- renderUI({
     if (is.null(input$file)) {return(NULL)}
     else {
     if (identical(Dataset(), '') || identical(Dataset(),data.frame())) return(NULL)
-    checkboxGroupInput("xAttr", "Select X variables",
+    checkboxGroupInput("xAttr", "Select numerical X variables",
                        colnames(Dataset()), colnames(nu.Dataset()) )
     }
   })
@@ -138,10 +144,52 @@ shinyServer(function(input, output){
   output$colXList <- renderUI({
     if (is.null(input$file)) {return(NULL)}
     else {
-      varSelectInput("selXVar",label = "Select only numerical X variables",
+      varSelectInput("selXVar",label = "Select X variables",
                      data = Dataset(), multiple = TRUE, selectize = TRUE, selected = colnames(nu.Dataset()))
     }
   })
+  
+  int.Dataset = reactive({
+    if (is.null(input$imputemiss)) {return(NULL)}
+    data = Dataset()[,input$xAttr]
+    Class = NULL
+    for (i in 1:ncol(data)){
+      c1 = class(data[,i])
+      Class = c(Class, c1)
+    }
+    int = which(Class %in% c("integer"))
+    int.data = data[,int] 
+    return(int.data)
+  })
+  
+  output$fxvarselect1 <- renderUI({
+    #  if (identical(Datasetf0(), '') || identical(Datasetf0(),data.frame())) return(NULL)
+    if (is.null(input$file)) {return(NULL)}
+    else {
+    if (ncol(int.Dataset())==0) {return(NULL)}
+    else {
+      checkboxGroupInput("fxAttr", "Change to dummy variables",
+                         colnames(int.Dataset()),"")
+    }}
+  })
+  
+  
+  output$fxvarselect <- renderUI({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+    if (ncol(int.Dataset())==0) {return(NULL)}
+    else {
+      varSelectInput("fxAttr",label = "Change to dummy variables",
+                     data = int.Dataset(), multiple = TRUE, selectize = TRUE, selected = ""  )
+    }}
+  })
+  
+  fxAttrs <- reactive({if (is.null(input$imputemiss)) { return(NULL) }
+    else{
+      Dataset <- Dataset() %>% dplyr::select(!!!input$fxAttr)
+      #Dataset <- Dataset()[,input$fxAttr]
+      return(colnames(Dataset))
+    }})
   
   output$xvarsom <- renderUI({
     if (is.null(input$file)) {return(NULL)}
@@ -162,8 +210,8 @@ shinyServer(function(input, output){
   output$samsel <- renderUI({
     if (is.null(input$file)) {return(NULL)}
     else {
-      selectInput("obs", "Select sub sample", c("quick run, 1,000 obs", "10,000 obs", "full dataset"), 
-                  selected = "quick run, 1,000 obs")
+      selectInput("obs", "Select sub sample", c("quick run, random 1,000 obs", "random 10,000 obs", "full dataset"), 
+                  selected = "quick run, random 1,000 obs")
     }
   })
   
@@ -171,7 +219,7 @@ shinyServer(function(input, output){
     if (is.null(input$file)) {return(NULL)}
     else {
     if (input$obs=="full dataset") { return(Dataset()) }
-    else if(input$obs=="10,000 obs") 
+    else if(input$obs=="random 10,000 obs") 
                       {
                       if (nrow(Dataset())>10000){
                       set.seed(1234)
@@ -180,7 +228,7 @@ shinyServer(function(input, output){
                       return(Dataset1)}
                       else {return(Dataset())}
                       }
-    else (input$obs=="1,000 obs")
+    else (input$obs=="quick run, random 1,000 obs")
                       {
                       if (nrow(Dataset())>1000){
                       set.seed(1234)
@@ -229,7 +277,7 @@ shinyServer(function(input, output){
   output$imout <- renderUI({
     if (is.null(input$file)) {return(NULL)}
     if (input$imputemiss == "do not impute or drop rows") {
-      p("Note: for missing values check options in the panel on the left.",style="color:black")}
+      p("Note: to impute or drop missing values (if any) check options in the panel on the left.",style="color:black")}
     else if ((input$imputemiss == "impute missing values")) {
       p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
     }
@@ -249,7 +297,7 @@ shinyServer(function(input, output){
     return(mydataimp)
   })
   
-  output$winsor <- renderUI({
+  output$winsor1 <- renderUI({
     if (is.null(input$file)) {return(NULL)}
     else {
       if (identical(Dataset(), '') || identical(Dataset(),data.frame())) return(NULL)
@@ -258,8 +306,58 @@ shinyServer(function(input, output){
     }
   })
   
+  output$winsor <- renderUI({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      if (identical(Dataset(), '') || identical(Dataset(),data.frame())) return(NULL)
+      selectInput("winsor", "Winsorize extreme values", 
+                  c( "no","bottom 0.5% and top 0.5%", "bottom 1%", "top 1%", "bottom 1% and top 1%"), selected = "no")
+    }
+  })
+  
+  output$winvarselect <- renderUI({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      #selcol=setdiff(colnames(nu.Dataset()),input$lxAttr)
+      data=nu.Dataset()
+      data1 = data[, !names(data) %in% c(input$fxAttr)]
+      varSelectInput("winAttr", "Select X variable(s) to winsorize",
+                     data = data1,multiple = TRUE, selected = ""  )
+    }
+  })
+  
+  wincol <-reactive({
+    data=Datasetf2()
+    data1<-as.data.frame(data %>% dplyr::select(!!!input$winAttr))
+    return(data1)
+  })
+  
+  output$winhead = renderPrint({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      head(wincol())
+    }
+  })
   
   Datasetfw = reactive({
+    data=Datasetf2()
+    if (input$winsor == "no") {return(data)}
+    else if (input$winsor == "bottom 1%") 
+    {data[,c(colnames(wincol()))] <- lapply(data[,c(colnames(wincol()))], 
+                                            function(x) Winsorize(x, minval = NULL, maxval = NULL, probs = c(0.01, 1), na.rm = TRUE)) } #probs = c(0.01, 0.99),
+    else if (input$winsor == "top 1%") 
+    {data[,c(colnames(wincol()))] <- lapply(data[,c(colnames(wincol()))], 
+                                            function(x) Winsorize(x, minval = NULL, maxval = NULL, probs = c(0, 0.99), na.rm = TRUE)) } #probs = c(0.01, 0.99),
+    else if (input$winsor == "bottom 0.5% and top 0.5%") 
+    {data[,c(colnames(wincol()))] <- lapply(data[,c(colnames(wincol()))], 
+                                            function(x) Winsorize(x, minval = NULL, maxval = NULL, probs = c(0.005, 0.995), na.rm = TRUE)) } #probs = c(0.01, 0.99),
+    else (input$winsor == "bottom 1% and top 1%") 
+    {data[,c(colnames(wincol()))] <- lapply(data[,c(colnames(wincol()))], 
+                                            function(x) Winsorize(x, minval = NULL, maxval = NULL, probs = c(0.01, 0.99), na.rm = TRUE)) } #probs = c(0.01, 0.99),
+    return(data)
+  })
+  
+  Datasetfw1 = reactive({
     if (input$winsor=="No") {return(Datasetf2())}
     else (input$winsor=="Yes") 
     {
@@ -283,19 +381,14 @@ shinyServer(function(input, output){
     }})
   
   Datasetf = reactive({
-    x00 = filtered_dataset11()
-    fxattr = setdiff( input$selXVar, colnames(nu.Dataset()) )
-    if ( {length(fxattr) >=1} ) { x01 = fastDummies::dummy_cols(x00, remove_first_dummy = TRUE,
-                                                                remove_selected_columns = TRUE)}
-    else { x01 = x00}
-    # it doesn't always converge with dummy variables
-    return(x01)
-  })
-  
-  
-  Datasetf_org = reactive({
     x00 = Datasetfw()[,c(input$xAttr)]
-    fxattr = setdiff( input$xAttr, colnames(nu.Dataset()) )
+    fxAttrs=fxAttrs()
+     if (length(fxAttrs) >= 1){
+      for (j in 1:length(fxAttrs)){
+        x00[,fxAttrs[j]] = factor(x00[,fxAttrs[j]])
+      }}
+    #fxattr = c(setdiff(input$xAttr, colnames(nu.Dataset())))
+    fxattr = c(input$fxAttr, setdiff(input$xAttr, colnames(nu.Dataset())))
     if ( {length(fxattr) >=1} ) { x01 = fastDummies::dummy_cols(x00, remove_first_dummy = FALSE,
                                                                 remove_selected_columns = TRUE)}
     else { x01 = x00}
@@ -341,9 +434,12 @@ shinyServer(function(input, output){
   Dataset2 = reactive({
     x00 = out()[[6]]
     if (input$scale == "Yes"){
-    x0 = x00
-    x01 = scale(x0, scale = T)
-    dstd = data.frame(x01)}
+    dumx = c(input$fxAttr, setdiff(input$xAttr, colnames(nu.Dataset())))
+    ccol=setdiff(input$xAttr,dumx)
+    x0 = x00[,ccol]
+    x01 = scale(x0, scale = TRUE)
+    dcol=setdiff(colnames(x00),ccol)
+    dstd = data.frame(x01,2*x00[,dcol]-1)}
     else {dstd=data.frame(x00)}
     #colnames(dstd) = c(colnames(x01))
     return(dstd)
@@ -428,7 +524,7 @@ shinyServer(function(input, output){
   output$mscount = renderPrint({
     if (is.null(input$file)) {return(NULL)}
     else {
-      out()[8]
+      list(Input_Data_Dimensions = out()[[1]],Missing_Data_Rows = out()[[8]])
     }
   })
   
@@ -725,7 +821,8 @@ shinyServer(function(input, output){
         plot(fith) } # display dindogram
       else if (input$select == "K-Means") {
         set.seed(123)
-        fviz_nbclust(Dataset2(), kmeans, method = "silhouette", k.max = 7)
+        clsz=if (input$Clust<5) {clsz=7} else {clsz=input$Clust+3}
+        fviz_nbclust(Dataset2(), kmeans, method = "silhouette", k.max = clsz)
       }
       else if (input$select == "Spectral") {
         fits = t0()[[3]]

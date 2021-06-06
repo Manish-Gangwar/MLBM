@@ -123,6 +123,20 @@ nu.Dataset = reactive({
   }
 })
 
+num.Dataset = reactive({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    data = Dataset.temp()
+    Class = NULL
+    for (i in 1:ncol(data)){
+      c1 = (class(data[,i]))
+      Class = c(Class, c1)
+    }
+    num = which(Class %in% c("numeric","integer"))
+    num.data = data[,num] 
+    return(num.data)
+  }
+})
 
 chr.Dataset = reactive({
   if (is.null(input$file)) {return(NULL)}
@@ -272,21 +286,45 @@ mydata3 = reactive({
   return(data)
 })
 
+output$winvarselect <- renderUI({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    #selcol=setdiff(colnames(nu.Dataset()),input$lxAttr)
+    data=nu.Dataset()
+    data1 = data[, !names(data) %in% c(input$fxAttr)]
+    varSelectInput("winAttr", "Select X variable(s) to winsorize",
+                   data = data1,multiple = TRUE, selected = ""  )
+  }
+})
+
+wincol <-reactive({
+data1=mydata3()
+data2 = as.data.frame(data1 %>% dplyr::select(!!!input$winAttr))
+return(data2)
+})
+
+output$winhead = renderPrint({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    head(wincol())
+  }
+})
+
 mydata4 = reactive({
   data=mydata3()
   if (input$winsor == "no") {return(data)}
   else if (input$winsor == "bottom 1%") 
-  {data[,c(colnames(nu.Dataset()))] <- lapply(data[,c(colnames(nu.Dataset()))], 
-   function(x) Winsorize(x, minval = NULL, maxval = NULL, probs = c(0.01, 1), na.rm = TRUE)) } #probs = c(0.01, 0.99),
+  {data[,c(colnames(wincol()))] <- lapply(data[,c(colnames(wincol()))], 
+                                              function(x) Winsorize(x, minval = NULL, maxval = NULL, probs = c(0.01, 1), na.rm = TRUE)) } #probs = c(0.01, 0.99),
   else if (input$winsor == "top 1%") 
-  {data[,c(colnames(nu.Dataset()))] <- lapply(data[,c(colnames(nu.Dataset()))], 
-   function(x) Winsorize(x, minval = NULL, maxval = NULL, probs = c(0, 0.99), na.rm = TRUE)) } #probs = c(0.01, 0.99),
+  {data[,c(colnames(wincol()))] <- lapply(data[,c(colnames(wincol()))], 
+                                              function(x) Winsorize(x, minval = NULL, maxval = NULL, probs = c(0, 0.99), na.rm = TRUE)) } #probs = c(0.01, 0.99),
   else if (input$winsor == "bottom 0.5% and top 0.5%") 
-  {data[,c(colnames(nu.Dataset()))] <- lapply(data[,c(colnames(nu.Dataset()))], 
-   function(x) Winsorize(x, minval = NULL, maxval = NULL, probs = c(0.005, 0.995), na.rm = TRUE)) } #probs = c(0.01, 0.99),
+  {data[,c(colnames(wincol()))] <- lapply(data[,c(colnames(wincol()))], 
+                                              function(x) Winsorize(x, minval = NULL, maxval = NULL, probs = c(0.005, 0.995), na.rm = TRUE)) } #probs = c(0.01, 0.99),
   else (input$winsor == "bottom 1% and top 1%") 
-  {data[,c(colnames(nu.Dataset()))] <- lapply(data[,c(colnames(nu.Dataset()))], 
-   function(x) Winsorize(x, minval = NULL, maxval = NULL, probs = c(0.01, 0.99), na.rm = TRUE)) } #probs = c(0.01, 0.99),
+  {data[,c(colnames(wincol()))] <- lapply(data[,c(colnames(wincol()))], 
+                                              function(x) Winsorize(x, minval = NULL, maxval = NULL, probs = c(0.01, 0.99), na.rm = TRUE)) } #probs = c(0.01, 0.99),
   return(data)
 })
 
