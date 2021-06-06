@@ -64,7 +64,7 @@ shinyUI(pageWithSidebar(
                          shinycssloaders::withSpinner(verbatimTextOutput("summary")),
                          #verbatimTextOutput("winhead"),
                          verbatimTextOutput('screen_summary'),
-                         #h4("Missing Data"),verbatimTextOutput("missing2"),
+                         h4("Missing Data (Sample)"),verbatimTextOutput("missing2"),
                          #h4("Correlation Table"),verbatimTextOutput("correlation"),br(),
                          br()),
                

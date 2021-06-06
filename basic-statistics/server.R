@@ -525,7 +525,7 @@ output$missing1 = renderDataTable({
   else {
     out()[[9]]
   }
-}, options = list(lengthMenu = c(25, 50, 100), pageLength = 50))
+}, options = list(lengthMenu = c(10, 25, 50, 100), pageLength = 10))
 
 
 output$mscount = renderPrint({
