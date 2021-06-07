@@ -15,7 +15,8 @@
   try(require("sparkline")||install.packages("sparkline"))
   try(require("mice")||install.packages("mice"))
 #  try(require("randomForest")||install.packages("randomForest"))
-
+if (!require("shinycssloaders")) {install.packages("shinycssloaders")}; 
+library(shinycssloaders)
 library("shiny")
 library("rpart")
 library("rpart.plot")
@@ -36,97 +37,43 @@ shinyServer(function(input, output,session) {
   
   #------------------------------------------------#
   
-  readdataf <- reactive({
+  readdataf0 <- reactive({
     if (is.null(input$file)) { return(NULL) }
     else{
-      readdata <- as.data.frame(read.csv(input$file$datapath ,header=TRUE, sep = ","))
-      return(readdata)
+      Dataset <- as.data.frame(read.csv(input$file$datapath ,header=TRUE, sep = ","))
+      for (i in 1:ncol(Dataset)){
+        if (class(Dataset[,i])==c("character")) {Dataset[,i]=factor(Dataset[,i])}
+      }
+      return(Dataset)
     }
   })
   
   output$readdatat <- renderDataTable({
     if (is.null(input$file)) {return(NULL)}
     else {
-      readdataf()
+      readdataf0()
     }
   }, options = list(lengthMenu = c(5, 30, 50,100), pageLength = 5))
   
-  output$samsel <- renderUI({
-    if (is.null(input$file)) {return(NULL)}
-    else {
-      selectInput("obs", "Select sub sample", c("quick run, 1,000 obs", "10,000 obs", "full dataset"), 
-                  selected = "quick run, 1,000 obs")
-    }
-  })
-  
-  readdataf1 <- reactive({
-  #  if (identical(readdataf(), '') || identical(readdataf(),data.frame())) return(NULL)
-   if (is.null(input$imputemiss)) {return(NULL)}
-    else {
-    if (input$obs=="full dataset") { return(readdataf()) }
-    else if(input$obs=="10,000 obs") 
-    {
-      if (nrow(readdataf())>10000){
-        set.seed(1234)
-        testsample= sample(1:nrow(readdataf()), 10000 )
-        Dataset1=readdataf()[testsample,]
-        return(Dataset1)}
-      else {return(readdataf())}
-    }
-    else (input$obs=="1,000 obs")
-    {
-      if (nrow(readdataf())>1000){
-        set.seed(1234)
-        testsample= sample(1:nrow(readdataf()), 1000 )
-        Dataset1=readdataf()[testsample,]
-        return(Dataset1)}
-      else {return(readdataf())}
-    }  }
-  })
-  
-  output$imputemiss <- renderUI({
-    if (is.null(input$file)) {return(NULL)}
-    else {
-        selectInput("imputemiss", "Impute missing values or drop missing value rows", 
-                    c("do not impute or drop rows", "impute missing values", "drop missing value rows"), 
-                    selected = "do not impute or drop rows")
-      }
-  })
-  
-  output$imout <- renderUI({
-    if (is.null(input$file)) {return(NULL)}
-    if (input$imputemiss == "do not impute or drop rows") {
-      p("Note: for missing values check options in the panel on the left.",style="color:black")}
-    else if ((input$imputemiss == "impute missing values")) {
-      p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
-    }
-    else { p("Note: missing value rows dropped, check options in the panel on the left.",style="color:black") }
-  })
-  
-  readdata = reactive({
-    if (is.null(input$imputemiss)) {return(NULL)}
-    else {
-    if (input$imputemiss == "do not impute or drop rows") 
-    { mydataimp=readdataf1() }
-    else if (input$imputemiss == "impute missing values") 
-    { mydata = readdataf1()
-    mice_mod = mice(mydata, printFlag=FALSE)
-    mydataimp <- complete(mice_mod) }
-    else # (input$imputemiss == "drop missing value rows") 
-    { mydata = readdataf1()
-    mydataimp = na.omit(mydata)  }
-    return(mydataimp)}
-  })
-  
   readdata.temp = reactive({
-    if (is.null(input$imputemiss)) {return(NULL)}
+    if (is.null(input$file)) {return(NULL)}
     else {
-    mydata = readdataf1()
+    mydata = readdataf0()
+    }
+  })
+  
+  # Select variables:
+  output$yvarselect <- renderUI({
+    # if (identical(readdataf0(), '') || identical(readdataf0(),data.frame())) return(NULL)
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      selectInput("yAttr", "Select Y variable",
+                  colnames(readdataf0()), colnames(readdataf0())[2])
     }
   })
   
   nu.Dataset = reactive({
-    if (is.null(input$imputemiss)) {return(NULL)}
+    if (is.null(input$file)) {return(NULL)}
     else {
     data = readdata.temp()
     Class = NULL
@@ -139,27 +86,18 @@ shinyServer(function(input, output,session) {
     return(nu.data) }
   }) 
   
-  num.Dataset = reactive({
-    data = readdata.temp()
+  numm.Dataset = reactive({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+    data = nu.Dataset()
     Class = NULL
     for (i in 1:ncol(data)){
       c1 = class(data[,i])
       Class = c(Class, c1)
     }
-    nu = which(Class %in% c("numeric"))
-    num.data = data[,nu] 
-    return(num.data)
-  })
-  
-  # Select variables:
-  output$yvarselect <- renderUI({
-   # if (identical(readdataf(), '') || identical(readdataf(),data.frame())) return(NULL)
-    if (is.null(input$file)) {return(NULL)}
-    else {
-    selectInput("yAttr", "Select Y variable (Is it is a categorical variable? mark it as factor variable)",
-                colnames(readdataf1()), colnames(readdataf1())[1])
-               # setdiff(colnames(readdataf1()), colnames(nu.Dataset()))[1] )
-    }
+    num = which(Class %in% c("numeric"))
+    num.data = data[,num] 
+    return(num.data)}
   })
   
   output$yout <- renderUI({
@@ -179,32 +117,32 @@ shinyServer(function(input, output,session) {
     
   
   output$xvarselect <- renderUI({
-  #  if (identical(readdataf(), '') || identical(readdataf(),data.frame())) return(NULL)
+  #  if (identical(readdataf0(), '') || identical(readdataf0(),data.frame())) return(NULL)
     if (is.null(input$file)) {return(NULL)}
     else {
     checkboxGroupInput("xAttr", "Select X variables",
-                       setdiff(colnames(readdataf1()),input$yAttr), setdiff(colnames(readdataf1()[,-1]),input$yAttr))
+                       setdiff(colnames(readdataf0()),input$yAttr), setdiff(colnames(readdataf0()[,-1]),input$yAttr))
         }
       })
 
    output$fyvarselect <- renderUI({
-     if (is.null(input$file)) {return(NULL)}
+     if (is.null(input$yAttr)) {return(NULL)}
      else {
-     if (input$yAttr %in% colnames(num.Dataset())) {return(NULL)}
+     if (input$yAttr %in% colnames(numm.Dataset())) {return(NULL)}
      else {
       checkboxGroupInput("fyAttr", "Select if Y is a factor (categorical) variable",
                          input$yAttr,
-                         #setdiff(colnames(readdataf1()[,c(input$xAttr,input$yAttr)]),c(input$xAttr)),
-                         setdiff(colnames(readdataf1()),c(colnames(nu.Dataset()))))
+                         #setdiff(colnames(readdataf0()[,c(input$xAttr,input$yAttr)]),c(input$xAttr)),
+                         setdiff(colnames(readdataf0()),c(colnames(nu.Dataset()))))
     }}
   })
-    
+   
   output$fxvarselect <- renderUI({
- #   if (identical(readdataf(), '') || identical(readdataf(),data.frame())) return(NULL)
+ #   if (identical(readdataf0(), '') || identical(readdataf0(),data.frame())) return(NULL)
     if (is.null(input$file)) {return(NULL)}
     else {
-    checkboxGroupInput("fxAttr1", "Select factor (categorical) X variables",
-                     setdiff(colnames(readdata.temp()[,c(input$xAttr)]), colnames(num.Dataset())   ),
+    checkboxGroupInput("fxAttr", "Select factor (categorical) X variables",
+                     setdiff(colnames(readdata.temp()[,c(input$xAttr)]), colnames(numm.Dataset())   ),
                      #setdiff(colnames(readdata.temp()[,c(input$xAttr,input$yAttr)]),input$yAttr),
                      setdiff(colnames(readdata.temp()[,c(input$xAttr)]),c(colnames(nu.Dataset()))) )
                     #  setdiff(colnames(Dataset.temp()),input$yAttr),setdiff(colnames(Dataset.temp()),c(input$yAttr,colnames(nu.Dataset()))) )
@@ -214,10 +152,11 @@ shinyServer(function(input, output,session) {
   output$fxvarselect1 <- renderUI({
     if (is.null(input$file)) {return(NULL)}
     else {
-      selcol=setdiff(input$xAttr,colnames(num.Dataset()))
-      pickcol=setdiff(input$xAttr,c(colnames(nu.Dataset())))
+      selcol=setdiff(colnames(readdata.temp()[,c(input$xAttr)]),colnames(numm.Dataset()))
+      datas=readdata.temp()[,c(selcol)]
+      pickcol=setdiff(colnames(readdata.temp()[,c(input$xAttr)]),c(colnames(nu.Dataset())))
       varSelectInput("fxAttr",label = "Select factor (categorical) variables in X",
-                     data = readdata.temp()[,selcol], multiple = TRUE, selectize = TRUE, selected = pickcol  )
+                     data = readdata.temp()[,input$xAttr], multiple = TRUE, selectize = TRUE, selected = pickcol  )
     }
   })
   
@@ -228,14 +167,14 @@ shinyServer(function(input, output,session) {
     }})
   
   
-  Dataset = reactive({
+  readdataf = reactive({
     if (is.null(input$imputemiss)) {return(NULL)}
     else {
-    mydata = readdata()[,c(input$yAttr,input$xAttr)]
+    mydata = readdataf0()[,c(input$yAttr,input$xAttr)]
     if (length(input$yAttr) == length(input$fyAttr)) { mydata[,input$yAttr] = as.factor(mydata[,input$yAttr]) }
    # if (is.factor(readdata()[,c(input$yAttr)])) { mydata[,input$yAttr] = as.factor(mydata[,input$yAttr]) }
-   # fxAttr=input$fxAttr
-    fxAttr = colnames(filtered_dataset11())
+    fxAttr=input$fxAttr
+   # fxAttr = colnames(filtered_dataset11())
     if (length(fxAttr) >= 1){
       for (j in 1:length(fxAttr)){
         mydata[,fxAttr[j]] = as.factor(mydata[,fxAttr[j]])
@@ -245,6 +184,88 @@ shinyServer(function(input, output,session) {
     }
   })
   
+  output$warning <- renderUI({
+    if (identical(readdataf0(), '') || identical(readdataf0(),data.frame())) return(NULL)
+    if (class(readdataf()[,input$yAttr])=="integer") {
+      (p('Is Y a factor (catregorical) variable? If yes, please, make sure it is check-marked as a factor variable in the panel on the left.',style="color:red"))
+    }
+    else return(NULL)
+  }) 
+  
+  output$warning1 <- renderUI({
+    if (identical(readdataf0(), '') || identical(readdataf0(),data.frame())) return(NULL)
+    if (class(readdataf()[,input$yAttr])=="integer") {
+      (p('Is Y a factor (catregorical) variable? If yes, please, make sure it is check-marked as a factor variable in the panel on the left.',style="color:red"))
+    }
+    else return(NULL)
+  }) 
+  
+  output$imputemiss <- renderUI({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      selectInput("imputemiss", "Impute missing values or drop missing value rows", 
+                  c("do not impute or drop rows", "impute missing values", "drop missing value rows"), 
+                  selected = "do not impute or drop rows")
+    }
+  })
+  
+  output$imout <- renderUI({
+    if (is.null(input$file)) {return(NULL)}
+    if (input$imputemiss == "do not impute or drop rows") {
+      p("Note: to impute or drop missing values (if any) check options in the panel on the left.",style="color:black")}
+    else if ((input$imputemiss == "impute missing values")) {
+      p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
+    }
+    else { p("Note: missing value rows dropped, check options in the panel on the left.",style="color:black") }
+  })
+  
+  output$samsel <- renderUI({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      selectInput("obs", "Select sub sample", c("quick run, random 1,500 obs", "random 10,000 obs", "full dataset"), 
+                  selected = "quick run, random 1,500 obs")
+    }
+  })
+  
+  readdataf1 <- reactive({
+    #  if (identical(readdataf0(), '') || identical(readdataf0(),data.frame())) return(NULL)
+    if (is.null(input$imputemiss)) {return(NULL)}
+    else {
+      if (input$obs=="full dataset") { return(readdataf()) }
+      else if(input$obs=="random 10,000 obs") 
+      {
+        if (nrow(readdataf())>10000){
+          set.seed(1234)
+          testsample= sample(1:nrow(readdataf()), 10000 )
+          Dataset1=readdataf()[testsample,]
+          return(Dataset1)}
+        else {return(readdataf())}
+      }
+      else (input$obs=="1,500 obs")
+      {
+        if (nrow(readdataf())>1500){
+          set.seed(1234)
+          testsample= sample(1:nrow(readdataf()), 1500 )
+          Dataset1=readdataf()[testsample,]
+          return(Dataset1)}
+        else {return(readdataf())}
+      }  }
+  })
+  
+  Dataset = reactive({
+    if (is.null(input$imputemiss)) {return(NULL)}
+    else {
+      if (input$imputemiss == "do not impute or drop rows") 
+      { mydataimp=readdataf1() }
+      else if (input$imputemiss == "impute missing values") 
+      { mydata = readdataf1()
+      mice_mod = mice(mydata, printFlag=FALSE)
+      mydataimp <- complete(mice_mod) }
+      else # (input$imputemiss == "drop missing value rows") 
+      { mydata = readdataf1()
+      mydataimp = na.omit(mydata)  }
+      return(mydataimp)}
+  })
   
   # a = c('a','b','c')
   # b = ('c')
@@ -255,7 +276,8 @@ shinyServer(function(input, output,session) {
   library(descriptr)
   output$screen_summary <- renderPrint({
     if (is.null(input$file)) {return(NULL)}
-    else {  ds_screener(Dataset())} 
+    #else {  ds_screener(Dataset())} 
+    else {  str(Dataset())} 
   })
   
   out = reactive({
@@ -275,12 +297,12 @@ shinyServer(function(input, output,session) {
     nu = which(Class %in% c("numeric","integer"))
     fa = which(Class %in% c("factor","character"))
     nu.data = data[,nu] 
-    fa.data = data[,fa] 
-    Summary = list(Numeric.data = round(stat.desc(nu.data)[c(4,5,6,8,9,12,13),] ,3), factor.data = describe(fa.data))
+    factor.data = data[,fa] 
+    Summary = list(Numeric.data = round(stat.desc(nu.data)[c(4,5,6,8,9,12,13),] ,3), Factor.data = describe(factor.data))
     
     a = seq(from = 0, to=200,by = 4)
     j = length(which(a < ncol(nu.data)))
-    out = list(Dimensions = Dimensions,Summary =Summary ,Tail=Tail,fa.data,nu.data,a,j, Head=Head, MissingDataRows=Missing,missing.data.rows.count=mscount)
+    out = list(Dimensions = Dimensions,Summary =Summary ,Tail=Tail,factor.data,nu.data,a,j, Head=Head, MissingDataRows=Missing,missing.data.rows.count=mscount)
     return(out)
   })
   
@@ -358,6 +380,17 @@ shinyServer(function(input, output,session) {
     Dataset()[testsample(),]
   })
   
+  output$factrain = renderPrint({
+    traning_data=Dataset()[-testsample(),c(input$fyAttr,input$fxAttr)]
+    describe(traning_data)
+  })
+  
+  output$factest = renderPrint({
+    test_data=Dataset()[-testsample(),c(input$fyAttr,input$fxAttr)]
+    describe(test_data)
+  })
+  
+  
   pred.readdata <- reactive({
     if (is.null(input$filep)) { return(NULL) }
     else{
@@ -379,8 +412,8 @@ shinyServer(function(input, output,session) {
     mydata = readdata()[,c(input$yAttr,input$xAttr)]
     if (length(input$yAttr) == length(input$fyAttr)) { mydata[,input$yAttr] = as.factor(mydata[,input$yAttr]) }
     # if (is.factor(readdata()[,c(input$yAttr)])) { mydata[,input$yAttr] = as.factor(mydata[,input$yAttr]) }
-    # fxAttr=input$fxAttr
-    fxAttr = colnames(filtered_dataset11())
+     fxAttr=input$fxAttr
+    #fxAttr = colnames(filtered_dataset11())
     if (length(fxAttr) >= 1){
       for (j in 1:length(fxAttr)){
         mydata[,fxAttr[j]] = as.factor(mydata[,fxAttr[j]])
@@ -401,8 +434,8 @@ shinyServer(function(input, output,session) {
       mydata = pred.readdata()#[,c(input$xAttr)]
       }
     
-    #fxc = input$fxAttr
-    fxc = colnames(filtered_dataset11())
+    fxc = input$fxAttr
+    #fxc = colnames(filtered_dataset11())
     if (length(fxc) >= 1){
       for (j in 1:length(fxc)){
         mydata[,fxc[j]] = as.factor(mydata[,fxc[j]])
@@ -524,8 +557,8 @@ shinyServer(function(input, output,session) {
       pr <- as.party(fit.rt)    # thus, we use same object 'rp' from the raprt package
       val3 = predict(pr, newdata = Dataset.Predict()[,input$xAttr], type="response")
 
-    out = data.frame(Y.predicted = val3, Dataset.Predict())
-    names(out)[1] = paste0("Pred.",input$yAttr)
+    out = data.frame(obs.id=rownames(Dataset.Predict()),Y.predicted = val3, Dataset.Predict())
+    names(out)[2] = paste0("Pred.",input$yAttr)
     return(out)    
   })
   
@@ -533,7 +566,8 @@ shinyServer(function(input, output,session) {
       fit.rt <- fit.rt()$model
       pr <- as.party(fit.rt)    # thus, we use same object 'rp' from the raprt package
       val3 = predict(pr, newdata = Dataset()[,input$xAttr], type="response")
-      out = data.frame(Y.predicted = val3, Dataset())
+      out = data.frame(obs.id=rownames(Dataset()),Y.predicted = val3, Dataset())
+      names(out)[2] = paste0("Pred.",input$yAttr)
     return(out)    
   })
   

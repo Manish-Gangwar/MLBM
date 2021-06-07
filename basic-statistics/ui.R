@@ -27,12 +27,13 @@ shinyUI(pageWithSidebar(
     #htmlOutput("samsel"),
     htmlOutput("imputemiss"),
    #actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),
+   htmlOutput("lxvarselect"),
+   htmlOutput("sqvarselect"),
     h4(p("Advance Options")),
     htmlOutput("winsor"),
    htmlOutput("winvarselect"),
     #htmlOutput("dxvarselect"),
-    htmlOutput("lxvarselect"),
-   htmlOutput("sqvarselect"),
+
     #submitButton(text = "Apply Changes", icon("refresh")),br(),
     ),
   # Main:
@@ -85,7 +86,21 @@ shinyUI(pageWithSidebar(
        
        #source('ui/ui_dummy_en_EDA.R', local = TRUE)[[1]],
 
-                tabPanel("Histograms",
+
+              tabPanel("Uni-variate Statistics",br(),
+                #h4("Missing Data Rows"),
+                verbatimTextOutput("mscount"),
+                br(),
+                htmlOutput("outselect"), 
+                #htmlOutput("imout1"),
+                #h4("selcet a variable at the top for Rosner's outliers"),
+                shinycssloaders::withSpinner(plotOutput("hist1")),br(),
+                verbatimTextOutput("hist3"),br(),
+                plotOutput("hist2"),br(),
+                verbatimTextOutput("outlier"),
+               br()),
+       
+       tabPanel("Boxplots",
                 #h4("Select variable for er's outlier test"),
                 #h4("Be patient generating plots"),
                 #  plotOutput("dens"),
@@ -100,19 +115,6 @@ shinyUI(pageWithSidebar(
                 #htmlOutput("outselect"),
                 #verbatimTextOutput("outlier"),
                 br()),
-       
-       
-              tabPanel("Uni-variate Statistics",br(),
-                #h4("Missing Data Rows"),
-                verbatimTextOutput("mscount"),
-                htmlOutput("imout1"),br(),
-                htmlOutput("outselect"), 
-                #h4("selcet a variable at the top for Rosner's outliers"),
-                shinycssloaders::withSpinner(plotOutput("hist1")),br(),
-                verbatimTextOutput("hist3"),br(),
-                plotOutput("hist2"),br(),
-               # verbatimTextOutput("outlier")
-               br()),
        
               tabPanel("Bi-variate Statistics",
                           h4("Correlation Plot"),

@@ -3,6 +3,7 @@
 ####################################################
 
 library("shiny")
+library("shinyBS")
 #library("foreign")
 
 shinyUI(pageWithSidebar(
@@ -12,7 +13,11 @@ shinyUI(pageWithSidebar(
   #titlePanel(title=div(img(src="logo.png",align='right'),"OLS App")),
   # Input in sidepanel:
   sidebarPanel(
-
+    tags$a(href="javascript:history.go(0)", 
+           popify(tags$i(class="fa fa-refresh fa-1x"),
+                  title = "", #Reload App", 
+                  content = "click here to refresh the app",
+                  placement = "right")),
     h4(p("Data Input")),
     fileInput("file", "Upload input data (csv file with header)"),
     selectInput("select", "Choose algorithm", 
@@ -67,40 +72,44 @@ shinyUI(pageWithSidebar(
                 tabPanel("Data Summary", #h4("Selected Variables"), verbatimTextOutput("head"),#verbatimTextOutput("tail"),
                          h4("Review Input Data"), 
                          dataTableOutput("readdata"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),                         
-                         h4("Data Summary of Selecetd Y and X Variables"),htmlOutput("imout"),
+                         h4("Data Summary of Selecetd Y and X Variables"),
+                         shinycssloaders::withSpinner(verbatimTextOutput("summary")),
                          verbatimTextOutput('screen_summary'),
-                         verbatimTextOutput("summary"),
-                         h4("Missing Data"),
+                         h4("Missing Data (Sample)"),
+                         htmlOutput("imout"),
                          verbatimTextOutput("missing"),
                          #dataTableOutput("missing1"),
                          br()),
                # tabPanel("Correlation",
-               tabPanel("Data Visualization",br(),
-                        #h4("Select variable for er's outlier test"),
-                        h4("Be patient generating plots"),
-                        plotOutput("dens"),
-                        h4("Histograms"),
-                        plotOutput("hist"),br(),
-                        h4("Bi-variate Plots"),
-                       # (p('remove missing data variable(s) if any, or impute or drop rows. Check "Data Summary" tab and options in the panel on the left.',style="color:black")),
-                        plotOutput("corplot"),
-                        br(),
-                        br()),
+               # tabPanel("Data Visualization",br(),
+               #          #h4("Select variable for er's outlier test"),
+               #          h4("Be patient generating plots"),
+               #          #plotOutput("dens"),
+               #          h4("Histograms"),
+               #          plotOutput("hist"),br(),
+               #          h4("Pair Plots"),
+               #         # (p('remove missing data variable(s) if any, or impute or drop rows. Check "Data Summary" tab and options in the panel on the left.',style="color:black")),
+               #          plotOutput("corplot"),
+               #          br(),
+               #          br()),
                         
                 tabPanel("Model Output",br(), 
-                         htmlOutput("warning"),
-                         (p('Y must be factor (categorical) variable. Check mark it under "Select Y as factor (categorical) 
-                            variable" in the panel on the left.',style="color:black")),
-                         h4("Summary Model"),htmlOutput("yout") , verbatimTextOutput("olssummary"),
+                         #  (p('Y must be factor (categorical) variable. Check mark it under "Select Y as factor (categorical) 
+                      #      variable" in the panel on the left.',style="color:black")),
+                         verbatimTextOutput("ontr"),
+                         h4("Summary Model"),htmlOutput("yout") , 
+                      shinycssloaders::withSpinner(verbatimTextOutput("olssummary")),
+                         
                          h4("Correlation Table - Input data"), verbatimTextOutput("correlation"),
-                         h4("2D Visulization (PCA)"),
-                         plotOutput("pcaplot"),
+                        # h4("2D PCA Visualization (Input Data)"),
+                        # plotOutput("pcaplot"),
                          br(),br()),
                          
                 tabPanel("Prediction Input Data", br(), 
-                         (p('Y must be factor (categorical) variable. Check mark it under "Select factor (categorical) variables" in the panel on the left.',style="color:red")),
+                         htmlOutput("warning"),
+                         #(p('Y must be factor (categorical) variable. Check mark it under "Select factor (categorical) variables" in the panel on the left.',style="color:red")),
                          h4("Confusion Matrix"),
-                         verbatimTextOutput("confusion"),
+                         shinycssloaders::withSpinner(verbatimTextOutput("confusion")),
                          h4("Dowloand Input Data with Predictions"),#verbatimTextOutput("confusion"),br(),
                          downloadButton('downloadData1', 'Download predictions for input data'),
                          #h4("First 10 rows of predictions for new data (upload prediction data)"),

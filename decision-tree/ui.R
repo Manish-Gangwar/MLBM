@@ -2,6 +2,7 @@
 #   Decision Tree App (ui)           #
 ###########################################################
 library("visNetwork")
+library("shinyBS")
 shinyUI(
   fluidPage(
     
@@ -11,7 +12,11 @@ shinyUI(
     sidebarLayout(
       
       sidebarPanel(
-        # Upload data:
+        tags$a(href="javascript:history.go(0)", 
+               popify(tags$i(class="fa fa-refresh fa-1x"),
+                      title = "", #Reload App", 
+                      content = "click here to refresh the app",
+                      placement = "right")),
         h4(p(" Data Input")),
         fileInput("file", "Upload data (csv file)"),
         # h4(p("Select Response Variable")),
@@ -24,8 +29,8 @@ shinyUI(
         htmlOutput("fxvarselect"),
         htmlOutput("samsel"),
         htmlOutput("imputemiss"),
-      numericInput('numout','Input random number to select new training data',5898),
-        sliderInput('sample','Set test sample percentage',10,40,25),
+      sliderInput('sample','Set test sample percentage',10,40,25),
+       numericInput('numout','Input new number to draw new set of training and test data',5898),
       actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),
     #   fileInput("filep", "Upload new data for prediction (csv file)")
       ),   # end of sidebar panel
@@ -61,16 +66,22 @@ shinyUI(
                              h4("Review Input Data"), 
                              dataTableOutput("readdatat"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),
                              #verbatimTextOutput("head"),#verbatimTextOutput("tail"),
-                            h4("Data Summary of Selected Y and X Variables"),htmlOutput("imout"),
+                            h4("Data Summary of Selected Y and X Variables"),
+                            shinycssloaders::withSpinner(verbatimTextOutput("summarydata")),
                             verbatimTextOutput('screen_summary'),
-                            verbatimTextOutput("summarydata"),
-                            h4("Missing Data Rows"),verbatimTextOutput("missing"),
+                            h4("Factor Variables in Training Data"),
+                            verbatimTextOutput('factrain'),
+                            h4("Factor Variables in Test Data"),
+                            verbatimTextOutput('factest'),
+                            h4("Missing Data Rows (Sample)"),
+                            htmlOutput("imout"),
+                            verbatimTextOutput("missing"),
                             br()),
                     # tabPanel("Data Visualization",
                     #          #br(),
                     #          #h4("Select variable for er's outlier test"),
                     #          h4("Be patient generating plots"),
-                    #          plotOutput("dens"),
+                    #        #  plotOutput("dens"),
                     #          h4("Histograms"),
                     #          plotOutput("hist"),br(),
                     #          h4("Bi-Variate Plots"),
@@ -78,16 +89,15 @@ shinyUI(
                     #          plotOutput("corplot"),
                     #          br()),
                     tabPanel("Model Output",
-                             #br(),
+                             br(),
                              htmlOutput("yout"),
                              h4('Variable importance'),
-                             p('If you see an error message, some factor (categorical) variable in the test data has a new level that is not present in the training data.'),
+                             p("If you see an error message, some factor (categorical) variable in the test data 
+                               has a new level that is not present in the training data; check 'Data Summary' tab"),
                              verbatimTextOutput('imp'),
                              h4('Number of Rows and Columns in Training Data'),
-                             verbatimTextOutput('trainobs'),
-                             (p('Is Y variable a factor (catregorical)? 
-                                  If yes, please, make sure it is check-marked as a factor variable 
-                                in the left panel.',style="color:darkblue;text-decoration: underline")),
+                             shinycssloaders::withSpinner(verbatimTextOutput('trainobs')),
+                             htmlOutput("warning1"),
                              h4('Model Accuracy/Error of Training Data'),
                              verbatimTextOutput("validation"),
                              h4('Number of Rows and Columns in Test Data'),
@@ -105,7 +115,7 @@ shinyUI(
                              br()
                              ),
                     tabPanel('Summary of Splits',#h5('Be patient model may take some time to finish estimation'),
-                             verbatimTextOutput("mod_sum"),
+                             shinycssloaders::withSpinner(verbatimTextOutput("mod_sum")),
                              #verbatimTextOutput("summary"),
                              br()),
                     
@@ -120,19 +130,20 @@ shinyUI(
                                under 'Model Results Summary' in the 'Model Output' tab."),
                             h5("Look at the corresponding CP value (corresponding to the lowest 'xerror' value) and
                               set the complexity parameter (in the left panel) close to that CP value."),
-                            (p('Is Y variable a factor (catregorical)? 
-                                  If yes, please, make sure it is check-marked as a factor variable 
-                                in the left panel.',style="color:darkblue;text-decoration: underline")),
-                            plotOutput("plot3",height = 1600),
+                            # (p('Is Y a factor (catregorical) variable? 
+                            #       If yes, please, make sure it is check-marked as a factor variable 
+                            #     in the left panel.',style="color:darkblue;text-decoration: underline")),
+                            htmlOutput("warning"),
+                            shinycssloaders::withSpinner(plotOutput("plot3",height = 1600)),
                             br(),br(), br()),
-                  tabPanel("Decision Tree (interactive)",
+                  tabPanel("Decision Tree (Interactive)",
                            h4('Click on the node to see the decison path or place a cursor on the node 
                               to see details. Use scroll wheel to zoom in or out.'),
                            h5("To optimally prune the tree, find the row with the lowest 'xerror' value 
                                under 'Model Results Summary' in the 'Model Output' tab."),
                            h5("Look at the corresponding CP value (corresponding to the lowest 'xerror' value) and
                               set the complexity parameter (in the left panel) close to that CP value."),
-                            visNetworkOutput("plot33", height=850), 
+                           shinycssloaders::withSpinner(visNetworkOutput("plot33", height=850)), 
                             br(),br()),
                   
                        #      h4('Visualize cross-validation results'),

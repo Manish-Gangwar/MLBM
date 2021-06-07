@@ -210,29 +210,29 @@ output$imout <- renderUI({
   if (input$imputemiss == "do not impute or drop rows") {
     p("Note: to impute or drop missing values (if any) check options in the panel on the left.",style="color:black")}
   else if ((input$imputemiss == "impute missing values")) {
-    p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
+    p("Note: missing values imputed (if any) check options in the panel on the left.",style="color:black")
   }
-  else { p("Note: missing value rows dropped, check options in the panel on the left.",style="color:black") }
+  else { p("Note: missing value rows dropped (if any) check options in the panel on the left.",style="color:black") }
 })
 
 output$imout1 <- renderUI({
   if (is.null(input$file)) {return(NULL)}
   if (input$imputemiss == "do not impute or drop rows") {
-    p("Note: to impute or drop missing values check options in the panel on the left.",style="color:black")}
+    p("Note: to impute or drop missing values (if any) check options in the panel on the left.",style="color:black")}
   else if ((input$imputemiss == "impute missing values")) {
-    p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
+    p("Note: missing values imputed (if any) check options in the panel on the left.",style="color:black")
   }
-  else { p("Note: missing value rows dropped, check options in the panel on the left.",style="color:black") }
+  else { p("Note: missing value rows dropped (if any) check options in the panel on the left.",style="color:black") }
 })
 
 output$imout2 <- renderUI({
   if (is.null(input$file)) {return(NULL)}
   if (input$imputemiss == "do not impute or drop rows") {
-    p("Note: to impute or drop missing values check options in the panel on the left.",style="color:red")}
+    p("Note: to impute or drop missing values (if any) check options in the panel on the left.",style="color:black")}
   else if ((input$imputemiss == "impute missing values")) {
-    p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
+    p("Note: missing values imputed (if any) check options in the panel on the left.",style="color:black")
   }
-  else { p("Note: missing value rows dropped, check options in the panel on the left.",style="color:black") }
+  else { p("Note: missing value rows dropped (if any) check options in the panel on the left.",style="color:black") }
 })
 
 mydata2 = reactive({
@@ -554,9 +554,10 @@ output$outselect <- renderUI({
 output$outlier = renderPrint({
   if (is.null(input$file)) {return(NULL)}
   else {
-    data = out()[[5]]
-    rosnerTest(data[,input$rAttr])
-  }
+    if ( input$rAttr %in% colnames(out()[[5]]) ) {
+    data = (out()[[5]])
+    rosnerTest(na.omit(data[,input$rAttr]))
+  }}
 })
 
 output$hist = renderPlot({
@@ -569,13 +570,14 @@ output$hist = renderPlot({
 output$hist1 = renderPlot({
   if (is.null(input$rAttr)) {return(NULL)}
   else {
+    data=na.omit(mydata())
     if ( input$rAttr %in% colnames(out()[[5]]) ) {
-    densityp <- density(mydata()[,input$rAttr])
-    hist(mydata()[,input$rAttr],breaks=20,probability=TRUE,
+    densityp <- density(data[,input$rAttr])
+    hist(data[,input$rAttr],breaks=20,probability=TRUE,
          main=paste("Histogram of" ,input$rAttr), xlab=input$rAttr)
     lines(densityp)   }
     else{  
-      dt=as.data.frame(Freq(mydata()[,input$rAttr]) ) 
+      dt=as.data.frame(Freq(data[,input$rAttr]) ) 
       dotchart(dt[,2],dt[,1])
       }
   }
@@ -633,13 +635,13 @@ output$heatmap = renderPlot({
 plot_data1 <- reactive({
   if (is.null(input$file)) {return(NULL)}
   else {
-    my_data = out()[[5]]
+    my_data =(out()[[5]])
     #my_data = mydata()
     #if (input$obs == "full dataset") { return(my_data) }
     #set.seed(1234)
       if (nrow(my_data)>1000){ testsample= sample(1:nrow(my_data), 1000 )
         Dataset1=my_data[testsample,]
-        return(Winsorize(Dataset1,na.rm = TRUE))}
+        return((Winsorize(Dataset1,na.rm = TRUE)))}
       else {return((my_data))}
     }
 })
@@ -668,14 +670,14 @@ output$heatmap2 = renderPlot({
 output$corplot3 = renderPrint({
   if (is.null(input$file)) {return(NULL)}
   else {
-    round(cor(plot_data1(), use = "pairwise.complete.obs"),3)
+    round(cor(plot_data1(), use = "pairwise.complete.obs"),4)
   }
 })
 
 output$corplot2 = renderPlot({
   if (is.null(input$file)) { return(NULL) }
   else{
-    my_data = plot_data1()
+    my_data = na.omit(plot_data1())
     cor.mat <- round(cor(my_data),2)
     corrplot(cor.mat, 
              type = "lower",    # upper triangular form
@@ -690,7 +692,7 @@ output$corplot2 = renderPlot({
 output$bplot = renderPlot({ 
   if (is.null(input$file)) {return(NULL)}
   else {
-    data_wide= as.data.frame(out()[[5]])
+    data_wide= as.data.frame(na.omit(out()[[5]]))
     data_wide %>%
       gather(key="MesureType", value="Val") %>%
       ggplot( aes(x=factor(MesureType, levels = colnames(data_wide)), y=Val, fill=MesureType)) +
@@ -702,7 +704,7 @@ output$bplot = renderPlot({
 output$sbplot = renderPlot({ 
   if (is.null(input$file)) {return(NULL)}
   else {
-    data_wide= as.data.frame(scale(out()[[5]], center = T, scale = T))
+    data_wide= as.data.frame(scale(na.omit(out()[[5]]), center = T, scale = T))
     data_wide %>%
       gather(key="MesureType", value="Val") %>%
       ggplot( aes(x=factor(MesureType, levels = colnames(data_wide)), y=Val, fill=MesureType)) +
