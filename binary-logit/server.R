@@ -16,6 +16,8 @@ if (!require("dplyr")) {install.packages("dplyr")}
 if (!require("fastDummies")) {install.packages("fastDummies")}
 if (!require("mice")) {install.packages("mice")}
 if (!require("shinycssloaders")) {install.packages("shinycssloaders")};  
+if(!require("DescTools")) {install.packages("DescTools")}
+
 library(shinycssloaders)
 library(shiny)
 library(e1071)
@@ -31,8 +33,7 @@ library(Rfast)
 library(dplyr)
 library(fastDummies)
 library(mice)
-
-# library(gplot)
+library(DescTools)
 
 shinyServer(function(input, output,session) {
   
@@ -205,7 +206,7 @@ Datasetf1 = reactive({
   Y1=factor(Y[,input$BaseAlternative])
  
   mydata=cbind(Y1, Datasetf()[,c(input$yAttr,input$xAttr)])
-  names(mydata)[1]=paste0(input$yAttr,"_._",input$BaseAlternative)
+  names(mydata)[1]=paste0(input$yAttr,"_",input$BaseAlternative)
   
   fxAttr = input$fxAttr
   #fxAttr = colnames(filtered_dataset11())
@@ -222,8 +223,8 @@ Datasetf1 = reactive({
 output$samsel <- renderUI({
   if (is.null(input$file)) {return(NULL)}
   else {
-    selectInput("obs", "Select sub sample", c("quick run, random 1,000 obs", "random 10,000 obs", "full dataset"), 
-                selected = "quick run, random 1,000 obs")
+    selectInput("obs", "Select sub sample", c("quick run, random 2,000 obs", "random 10,000 obs", "full dataset"), 
+                selected = "quick run, random 2,000 obs")
   }
 })
 
@@ -239,11 +240,11 @@ Datasetf2 <- reactive({
       return(Dataset1)}
     else {return(Datasetf1())}
   }
-  else (input$obs=="quick run, random 1,000 obs")
+  else (input$obs=="quick run, random 2,000 obs")
   {
-    if (nrow(Datasetf1())>1000){
+    if (nrow(Datasetf1())>2000){
       set.seed(1234)
-      testsample= sample(1:nrow(Datasetf1()), 1000 )
+      testsample= sample(1:nrow(Datasetf1()), 2000 )
       Dataset1=Datasetf1()[testsample,]
       return(Dataset1)}
     else {return(Datasetf1())}
@@ -282,12 +283,20 @@ output$imout <- renderUI({
   if (input$imputemiss == "do not impute or drop rows") {
     p("Note: to impute or drop missing values (if any) check options in the panel on the left.",style="color:black")}
   else if ((input$imputemiss == "impute missing values")) {
-    p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
+    p("Note: missing values imputed (if any) check options in the panel on the left.",style="color:black")
   }
-  else { p("Note: missing value rows dropped, check options in the panel on the left.",style="color:black") }
+  else { p("Note: missing value rows dropped (if any) check options in the panel on the left.",style="color:black") }
 })
 
-
+output$imout1 <- renderUI({
+  if (is.null(input$file)) {return(NULL)}
+  if (input$imputemiss == "do not impute or drop rows") {
+    p("Note: to impute or drop missing values (if any) check options in the panel on the left.",style="color:red")}
+  else if ((input$imputemiss == "impute missing values")) {
+    p("Note: missing values imputed (if any) check options in the panel on the left.",style="color:black")
+  }
+  else { p("Note: missing value rows dropped (if any) check options in the panel on the left.",style="color:black") }
+})
 
 
 Dataset.Predict <- reactive({
@@ -429,7 +438,7 @@ plot_data = reactive({
 
 ols = reactive({
     rhs = paste(input$xAttr, collapse = "+")
-    formula= as.formula(paste0(input$yAttr,"_._",input$BaseAlternative,"~", rhs))
+    formula= as.formula(paste0(input$yAttr,"_",input$BaseAlternative,"~", rhs))
     ols = glm(formula, data = mydata(), family=binomial)
   return(ols)
 })
