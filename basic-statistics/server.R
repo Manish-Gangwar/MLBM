@@ -420,7 +420,7 @@ testsample =  reactive({
 })
 
 train_data = reactive({
-  if (input$sample==0) {return(mydata())}
+  if (input$sample==0) {return(NULL)}
   else {  mydata()[-testsample(),]  }
 })
 
