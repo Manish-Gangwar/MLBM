@@ -93,9 +93,7 @@ shinyUI(pageWithSidebar(
                            (Y equal to 1) over probability of not-outcome (Y not equal to 1) by multiple of 
                            exponent of 'coefficient's estimate' (exp[beta])."),
                         verbatimTextOutput("ontr"),
-                         
-                         
-                         #h4('Confusion Matrix'), verbatimTextOutput("validation")),
+                         h4('Confusion Matrix'), verbatimTextOutput("validation"),
                          #h4("Summary OLS standardized model"), verbatimTextOutput("olssummarystd")),
                          br()),
                 
