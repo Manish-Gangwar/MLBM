@@ -818,7 +818,9 @@ shinyServer(function(input, output){
       else {
       if (input$select == "Hierarchical") { 
         fith = t0()[[3]]
-        plot(fith) } # display dindogram
+        plot(fith) 
+        rect.hclust(fith,k=input$Clust, border=2:input$Clust+1)
+        } # display dindogram
       else if (input$select == "K-Means") {
         set.seed(123)
         clsz=if (input$Clust<5) {clsz=7} else {clsz=input$Clust+3}
