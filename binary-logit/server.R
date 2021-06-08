@@ -153,7 +153,7 @@ basealt <- reactive({
     #funname = function(x) {gsub(" ", ".",x)}; Datasetf()[,input$yAttr] = sapply(Datasetf()[,input$yAttr], funname)
     funname = function(x) {gsub(" ", ".",x)}; names(basealt) = sapply(names(basealt), funname)
     funname = function(x) {gsub("-", ".",x)}; names(basealt) = sapply(names(basealt), funname)
-    funname = function(x) {gsub("_", ".",x)}; names(basealt) = sapply(names(basealt), funname)
+    #funname = function(x) {gsub("_", ".",x)}; names(basealt) = sapply(names(basealt), funname)
     #basealt = (as.data.frame(t(as.matrix(table(Datasetf()[,input$yAttr])))))
    # for (j in 1:length(basealt)){ names(basealt)[j] = sub(" ", ".", names(basealt)[j])  }
   return(basealt)}
@@ -205,7 +205,7 @@ Datasetf1 = reactive({
   Y1=factor(Y[,input$BaseAlternative])
  
   mydata=cbind(Y1, Datasetf()[,c(input$yAttr,input$xAttr)])
-  names(mydata)[1]=paste0(input$yAttr,".",input$BaseAlternative)
+  names(mydata)[1]=paste0(input$yAttr,"_._",input$BaseAlternative)
   
   fxAttr = input$fxAttr
   #fxAttr = colnames(filtered_dataset11())
@@ -429,7 +429,7 @@ plot_data = reactive({
 
 ols = reactive({
     rhs = paste(input$xAttr, collapse = "+")
-    formula= as.formula(paste0(input$yAttr,".",input$BaseAlternative,"~", rhs))
+    formula= as.formula(paste0(input$yAttr,"_._",input$BaseAlternative,"~", rhs))
     ols = glm(formula, data = mydata(), family=binomial)
   return(ols)
 })
@@ -518,7 +518,7 @@ output$confusionmatrix = renderPrint({
   yfu=mydata()[,input$yAttr]
   funname = function(x) {gsub(" ", ".",x)}; yfu = sapply(yfu, funname)
   funname = function(x) {gsub("-", ".",x)}; yfu = sapply(yfu, funname)
-  funname = function(x) {gsub("_", ".",x)}; yfu = sapply(yfu, funname)
+  #funname = function(x) {gsub("_", ".",x)}; yfu = sapply(yfu, funname)
   
   data.act = as.integer(yfu==input$BaseAlternative)
   Confusion_Matrix = caret::confusionMatrix(as.factor(data.fit),as.factor(data.act), positive="1")
@@ -537,7 +537,7 @@ output$confusionmatrix1 = renderPrint({
     yfu=Dataset.Predict()[,input$yAttr]
     funname = function(x) {gsub(" ", ".",x)}; yfu = sapply(yfu, funname)
     funname = function(x) {gsub("-", ".",x)}; yfu = sapply(yfu, funname)
-    funname = function(x) {gsub("_", ".",x)}; yfu = sapply(yfu, funname)
+    #funname = function(x) {gsub("_", ".",x)}; yfu = sapply(yfu, funname)
     data.act = as.integer(yfu==input$BaseAlternative)
     Confusion_Matrix = caret::confusionMatrix(as.factor(data.fit),as.factor(data.act), positive="1")
     out=list(confusion_matrix_of_new_data=Confusion_Matrix)
@@ -608,10 +608,11 @@ output$resplot3 = renderPlot({
   else {
     xl=paste0("Predicted Probability of ",input$yAttr," = ",input$BaseAlternative)
     yl=paste0(input$yAttr," = ",input$BaseAlternative)
-    plot(ols()$fitted.values,mydata()[,1],main="Predicted Probability vs. Actual", 
+    plot(ols()$fitted.values,mydata()[,1],main="Predicted (in red) vs. Actual", 
          #xlab="Predicted Probability of Y", ylab="Actual Y", 
-         xlab=xl,ylab=yl,
+         xlab=xl,ylab=yl,yaxt="n",
          col=round(ols()$fitted.values>input$cutoff,0)+1  ) 
+    axis(2,at=c(1,2),labels=c(0,1))
     #abline(0,1)  
   }
 })
