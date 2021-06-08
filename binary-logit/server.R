@@ -288,17 +288,6 @@ output$imout <- renderUI({
   else { p("Note: missing value rows dropped (if any) check options in the panel on the left.",style="color:black") }
 })
 
-output$imout1 <- renderUI({
-  if (is.null(input$file)) {return(NULL)}
-  if (input$imputemiss == "do not impute or drop rows") {
-    p("Note: to impute or drop missing values (if any) check options in the panel on the left.",style="color:red")}
-  else if ((input$imputemiss == "impute missing values")) {
-    p("Note: missing values imputed (if any) check options in the panel on the left.",style="color:black")
-  }
-  else { p("Note: missing value rows dropped (if any) check options in the panel on the left.",style="color:black") }
-})
-
-
 Dataset.Predict <- reactive({
 #  fxc = setdiff(input$fxAttr, input$yAttr)
   fxc=input$fxAttr
@@ -370,6 +359,14 @@ output$misswarn <- renderUI({
     if (out()[[10]]>0) { 
   p('remove missing data variable(s) if any, or impute or drop rows - check "Data Summary" tab',style="color:red")
   }}
+})
+
+output$misswarn1 <- renderUI({
+  if (is.null(input$file)) {return(NULL)}
+  else { 
+    if (out()[[10]]>0) { 
+      p('remove missing data variable(s) if any, or impute or drop rows - check "Data Summary" tab',style="color:red")
+    }}
 })
 
 output$head = renderPrint({

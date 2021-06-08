@@ -94,7 +94,7 @@ shinyUI(pageWithSidebar(
                            exponent of 'coefficient's estimate' (exp[beta])."),
                         verbatimTextOutput("ontr"),
                          h4('Confusion Matrix'), verbatimTextOutput("validation"),
-                        htmlOutput("imout1"),
+                        htmlOutput("misswarn1"),
                          #h4("Summary OLS standardized model"), verbatimTextOutput("olssummarystd")),
                          br()),
                 
