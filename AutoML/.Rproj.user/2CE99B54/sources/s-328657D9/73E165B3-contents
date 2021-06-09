@@ -1,0 +1,9 @@
+' ---   MLBM Lec01 apps  --- '
+
+#---- OCR App ------#
+source("https://raw.githubusercontent.com/sudhir-voleti/ocr-shinyapp/master/dependency-ocr-shinyapp.R")
+runGitHub("ocr-shinyapp","sudhir-voleti")
+
+# data pre-proc app
+source("https://raw.githubusercontent.com/sudhir-voleti/data_pre-process_shinyapp/main/dependencies.R")
+runGitHub("data_pre-process_shinyapp","sudhir-voleti","main")

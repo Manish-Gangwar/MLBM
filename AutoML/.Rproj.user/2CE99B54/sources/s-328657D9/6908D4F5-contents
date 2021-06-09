@@ -1,0 +1,51 @@
+
+
+df0 <- read.csv("C://Users//31202//Desktop//titanic.csv")
+y <- df0$Survived
+X <- df0[,-1]
+h2o.init()
+h2o_df <- as.h2o(df0)
+temp <-  as.data.frame(h2o.describe(h2o_df))
+
+df0 <- data.frame(y,X)
+aml <- h2o_automl(df0,classifn = "clf",train_propn_ui = 0.7,max_runtime_secs_ui = 10)
+
+
+'Results Leaderboard Tab.'
+## Viewing the leaderboard of different models.
+lb <- aml@leaderboard; lb
+lb_df = as.data.frame(lb)
+print(lb_df)  # show as HTML table
+
+# plot leaderboard AUC scores for models estimated.
+if (classifn == 'clf'){
+  plot1 = ggplot(data=lb_df, aes(seq(1:nrow(lb_df)), auc)) + 
+    geom_line(colour = 'red') + 
+    geom_point(colour = "blue") + 
+    xlab("model number in leaderboard")
+} else {
+  plot1 = ggplot(data=lb_df, aes(seq(1:nrow(lb_df)), rmse)) + 
+    geom_line(colour = 'red') + 
+    geom_point(colour = "blue") + 
+    xlab("model number in leaderboard")
+}
+plot(plot1) # show below leaderboard table
+
+'Best model tab'
+# get details of the best fitting model
+best_model = aml@leader
+cat("==== +++++++ Auto-ML recommended top model is: +++++++ ====\n\n")
+print(best_model)
+
+## get the i^th model from the leaderboard
+oth_model = h2o.getModel(as.vector(lb$model_id[i]))
+cat("===== Auto-ML recommended", i,"th model is: =====\n\n")
+print(oth_model)
+
+
+'Prediction Tab'
+## Show Preds from best model (or oth_model) as UI chooses
+pred_out = h2o.predict(best_model, h2o_df)
+pred_out_df = as.data.frame(pred_out)
+pred_out_df %>% head(15)  # display as HTML. Also as downloadable.
+

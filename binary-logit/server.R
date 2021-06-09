@@ -17,6 +17,7 @@ if (!require("fastDummies")) {install.packages("fastDummies")}
 if (!require("mice")) {install.packages("mice")}
 if (!require("shinycssloaders")) {install.packages("shinycssloaders")};  
 if(!require("DescTools")) {install.packages("DescTools")}
+if(!require("shinyBS")) {install.packages("shinyBS")}
 
 library(shinycssloaders)
 library(shiny)
@@ -51,7 +52,8 @@ output$readdata <- renderDataTable({
   else {
     Datasetf0()
   }
-}, options = list(lengthMenu = c(5, 30, 50, 100), pageLength = 5))
+}, options = list(lengthMenu = list(c(5,25,50,-1),c("5","25","50","All")),
+                                    autoWidth = TRUE),)
 
 pred.readdata <- reactive({
   if (is.null(input$filep)) { return(NULL) }
@@ -66,7 +68,8 @@ output$readdatap <- renderDataTable({
   else {
     pred.readdata()
   }
-}, options = list(lengthMenu = c(5, 30, 50,100), pageLength = 5))
+}, options = list(lengthMenu = list(c(5,25,50,-1),c("5","25","50","All")),
+                  autoWidth = TRUE),)
 
 Dataset.temp = reactive({
   mydata = Datasetf0()#[,c(input$yAttr,input$xAttr)]

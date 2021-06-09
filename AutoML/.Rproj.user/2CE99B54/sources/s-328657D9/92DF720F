@@ -1,0 +1,26 @@
+{
+    "id": "92DF720F",
+    "path": "D:/R Projects/AutoML App/h2o autoML NB for shinyapp.Rmd",
+    "project_path": "h2o autoML NB for shinyapp.Rmd",
+    "type": "r_markdown",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1622520310994.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "45,0",
+        "scrollLine": "43"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1622529861,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1622529861269,
+    "read_only": false,
+    "read_only_alternatives": []
+}

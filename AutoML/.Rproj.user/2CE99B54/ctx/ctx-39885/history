@@ -1,0 +1,72 @@
+suppressPackageStartupMessages({
+library(magrittr)
+library(ggplot2)
+library(h2o)
+})
+# intialize the h2o instance
+path0 = "C:/Users/31202/Desktop/"
+# user inputs DF file
+churnData = read.csv(paste0(path0, 'kaggle_Telco_Customer_Churn_cleaned.csv'), header=TRUE)
+str(churnData)
+data = churnData[1:2000,]  # taking a subset for demo
+y = data$Churn  # UI selects Y variable for classifiers
+X = data[,c(3:21)] # UI drops irrelevant variables from input DF
+df0 = data.frame(y,X)  # DF created for use in rest of the app
+pred_data = churnData[2001:3000, 3:21] # create fresh data for prediction
+# more UI inputs needed
+train_propn_ui = 0.7 # from UI, else 70% default. Slider as usual.
+max_runtime_secs_ui = 30  # UI. slider from 10 to 100 secs. default=30
+i = 3 # Have i=2 as default and a dropdown from 1-10 to select model_id number
+classifn = 'TRUE'  # UI for classifn, else regn
+# Partition input Data
+set.seed(222)
+ind <- sample(2, nrow(df0), replace = TRUE,
+prob = c(train_propn_ui, (1 - train_propn_ui))) # from UI
+train <- df0[ind==1,]
+test <- df0[ind==2,]
+# build H2O frames
+train_h2o = as.h2o(train)
+h2o.init()
+# The following two commands remove any previously installed H2O packages for R.
+if ("package:h2o" %in% search()) { detach("package:h2o", unload=TRUE) }
+if ("h2o" %in% rownames(installed.packages())) { remove.packages("h2o") }
+# Next, we download packages that H2O depends on.
+pkgs <- c("RCurl","jsonlite")
+for (pkg in pkgs) {
+if (! (pkg %in% rownames(installed.packages()))) { install.packages(pkg) }
+}
+# Now we download, install and initialize the H2O package for R.
+install.packages("h2o", type="source", repos="http://h2o-release.s3.amazonaws.com/h2o/rel-zipf/3/R")
+pkgs <- c("RCurl","jsonlite")
+for (pkg in pkgs) {
+if (! (pkg %in% rownames(installed.packages()))) { install.packages(pkg) }
+}
+pkgs <- c("RCurl","jsonlite")
+for (pkg in pkgs) {
+if (! (pkg %in% rownames(installed.packages()))) { install.packages(pkg) }
+}
+# Now we download, install and initialize the H2O package for R.
+install.packages("h2o", type="source", repos="http://h2o-release.s3.amazonaws.com/h2o/rel-zipf/3/R")
+# Finally, let's load H2O and start up an H2O cluster
+library(h2o)
+h2o.init()
+h20.stop()
+h2o.stop()
+# The following two commands remove any previously installed H2O packages for R.
+if ("package:h2o" %in% search()) { detach("package:h2o", unload=TRUE) }
+if ("h2o" %in% rownames(installed.packages())) { remove.packages("h2o") }
+# Next, we download packages that H2O depends on.
+pkgs <- c("RCurl","jsonlite")
+for (pkg in pkgs) {
+if (! (pkg %in% rownames(installed.packages()))) { install.packages(pkg) }
+}
+# Now we download, install and initialize the H2O package for R.
+install.packages("h2o", type="source", repos="http://h2o-release.s3.amazonaws.com/h2o/rel-zipf/3/R")
+# Finally, let's load H2O and start up an H2O cluster
+library(h2o)
+install.packages("h2o")
+# Finally, let's load H2O and start up an H2O cluster
+library(h2o)
+h2o.init()
+demo(h2o.kmeans)
+.rs.restartR()

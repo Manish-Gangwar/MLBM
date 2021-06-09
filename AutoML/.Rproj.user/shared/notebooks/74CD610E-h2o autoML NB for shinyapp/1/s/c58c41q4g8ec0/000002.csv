@@ -1,0 +1,8 @@
+"0","suppressPackageStartupMessages({"
+"0","  library(magrittr)"
+"0","  library(ggplot2)"
+"0","  library(h2o)"
+"0","})"
+"2","package ‘ggplot2’ was built under R version 4.0.5"
+"2","package ‘h2o’ was built under R version 4.0.5"
+"0","    # intialize the h2o instance"
