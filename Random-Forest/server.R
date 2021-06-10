@@ -103,6 +103,13 @@ server <- function(input, output,session) {
     p("selected Y = ",input$sel_y,style="color:red")
   })
   
+  output$yout21 <- renderUI({
+    if (identical(tr_data(), '') || identical(tr_data(),data.frame())) return(NULL)
+    if (input$task == 'clf') {
+      p("Note the 'Positive' Class for Senstivity and Specificity")
+    }
+    })
+  
   output$pca_plot <- renderPlot({
     if(input$task=="clf"){
       y <- tr_data()[,input$sel_y]
@@ -149,7 +156,7 @@ server <- function(input, output,session) {
   })
   
   output$mod_sum <- renderPrint({
-    data()[[1]]
+    return(data()[[1]])
   })
   
   output$train_res <- renderUI({
@@ -187,7 +194,7 @@ server <- function(input, output,session) {
     if (is.null(input$tr_data)) {return(NULL)}
     else {
     if(input$task=="clf"){
-      data()[[2]]
+      return(data()[[2]])
     }else{
       cat("RMSE on Train data is ",data()[[2]])
     }
@@ -198,7 +205,7 @@ server <- function(input, output,session) {
     if (is.null(input$tr_data)) {return(NULL)}
     else {
     if(input$task=="clf"){
-      data()[[3]]
+      return(data()[[3]])
     }else{
       cat("RMSE on Test data is ",data()[[3]])
     }

@@ -51,7 +51,7 @@ shinyUI(fluidPage(
                htmlOutput("chry"),
                actionButton("apply","Train model"),
                h4("Model Summary"),
-               #helpText("Training may take a while, upto a minute"),
+               helpText("be patient it may take a while to run multiple trees"),
                shinycssloaders::withSpinner(verbatimTextOutput("mod_sum")),
                
                #h4("Confusion Matrix (Train Set)"),
@@ -62,15 +62,19 @@ shinyUI(fluidPage(
               # tags$div(id="demo",class="collapse",),
               h4("Training Data"), 
               verbatimTextOutput("conf_train"),
+              htmlOutput("yout21"),
               h4("Test Data"), 
                #h4("Confuison Matrix (Test Set)"),
               # HTML('<button data-toggle="collapse" data-target="#demo1">Detailed Result</button>'),
               #uiOutput("test_res"),
               #plotOutput('conf_test_plot'),
-              verbatimTextOutput("conf_test")
+              verbatimTextOutput("conf_test"),br(),
+             # h4("ROC Curve"),
+             p("ROC for each Class"),
+              plotOutput("roc"),
+
                #tags$div(id="demo1",class="collapse",)
-               
-      ),
+              br() ),
       # tabPanel("RF Plots",value=3,
       #        #  h4('PCA plot'),
       #          plotOutput("pca_plot"),
@@ -85,8 +89,9 @@ shinyUI(fluidPage(
                #plotOutput("n_tree"),
                #h4("Variable Importance"),
                plotOutput("var_imp"),
-               DT::dataTableOutput("var_imp_tb")
-               ),
+               DT::dataTableOutput("var_imp_tb"),
+               #verbatimTextOutput("roc_val"),
+               br()),
       tabPanel("Prediction New Data",value=1,
                h4("Upload new data for prediction, it should have all selected X varaibles (csv file with header) "),
                fileInput("test_data","Upload prediction data (csv file with header)",placeholder = "No File Selected"),
