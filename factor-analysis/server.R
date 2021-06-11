@@ -39,8 +39,8 @@ shinyServer(function(input, output) {
   output$samsel <- renderUI({
     if (is.null(input$file)) {return(NULL)}
     else {
-      selectInput("obs", "Select sub sample", c("quick run, 1,000 obs", "10,000 obs", "full dataset"), 
-                  selected = "quick run, 1,000 obs")
+      selectInput("obs", "Select sub sample", c("quick run, 2,000 obs", "10,000 obs", "full dataset"), 
+                  selected = "quick run, 2,000 obs")
     }
   })
   
@@ -68,11 +68,11 @@ shinyServer(function(input, output) {
           return(Dataset1)}
         else {return(Datasetf())}
       }
-      else (input$obs=="1,000 obs")
+      else (input$obs=="2,000 obs")
       {
-        if (nrow(Datasetf())>1000){
+        if (nrow(Datasetf())>2000){
           set.seed(1234)
-          testsample= sample(1:nrow(Datasetf()), 1000 )
+          testsample= sample(1:nrow(Datasetf()), 2000 )
           Dataset1=Datasetf()[testsample,]
           return(Dataset1)}
         else {return(Datasetf())}
@@ -141,13 +141,6 @@ shinyServer(function(input, output) {
     return(fac.data)
   })
   
-  if(!require("descriptr")) {install.packages("descriptr")}
-  library(descriptr)
-  output$screen_summary <- renderPrint({
-    if (is.null(input$file)) {return(NULL)}
-    else {  ds_screener(  Dataset()[,1:ncol(Dataset())]  )} 
-  })
-  
   output$readdata <- renderDataTable({
     if (is.null(input$file)) {return(NULL)}
     else {
@@ -188,6 +181,18 @@ filtered_dataset1 = reactive({
 # output$table22 <- renderTable ({ 
 #   round(cor(Dataset()),2) 
 #                                       })
+
+output$summ <- renderPrint({
+  if (is.null(input$file)) {return(NULL)}
+  else {  str(  filtered_dataset1()  )} 
+})
+
+if(!require("descriptr")) {install.packages("descriptr")}
+library(descriptr)
+output$screen_summary <- renderPrint({
+  if (is.null(input$file)) {return(NULL)}
+  else {  ds_screener(  filtered_dataset1()  )} 
+})
 
 out = reactive({
   if (is.null(input$imputemiss)) {return(NULL)}

@@ -120,18 +120,6 @@ shinyServer(function(input, output){
     return(fac.data)
   })
   
-  if(!require("descriptr")) {install.packages("descriptr")}
-  library(descriptr)
-  output$screen_summary <- renderPrint({
-    if (is.null(input$file)) {return(NULL)}
-    else {  ds_screener(  Dataset0() )} 
-  })
-  
-  output$str <- renderPrint({
-    if (is.null(input$file)) {return(NULL)}
-    else {  str(  Dataset()   )} 
-  })
-  
   output$xvarselect <- renderUI({
     if (is.null(input$file)) {return(NULL)}
     else {
@@ -210,8 +198,8 @@ shinyServer(function(input, output){
   output$samsel <- renderUI({
     if (is.null(input$file)) {return(NULL)}
     else {
-      selectInput("obs", "Select sub sample", c("quick run, random 1,000 obs", "random 10,000 obs", "full dataset"), 
-                  selected = "quick run, random 1,000 obs")
+      selectInput("obs", "Select sub sample", c("quick run, random 2,000 obs", "random 10,000 obs", "full dataset"), 
+                  selected = "quick run, random 2,000 obs")
     }
   })
   
@@ -228,11 +216,11 @@ shinyServer(function(input, output){
                       return(Dataset1)}
                       else {return(Dataset())}
                       }
-    else (input$obs=="quick run, random 1,000 obs")
+    else (input$obs=="quick run, random 2,000 obs")
                       {
-                      if (nrow(Dataset())>1000){
+                      if (nrow(Dataset())>2000){
                       set.seed(1234)
-                      testsample= sample(1:nrow(Dataset()), 1000 )
+                      testsample= sample(1:nrow(Dataset()), 2000 )
                       Dataset1=Dataset()[testsample,]
                       return(Dataset1)}
                       else {return(Dataset())}
@@ -394,6 +382,18 @@ shinyServer(function(input, output){
     else { x01 = x00}
     #x02 = x01[,-c(fxattr)]
     return(x01)
+  })
+  
+  if(!require("descriptr")) {install.packages("descriptr")}
+  library(descriptr)
+  output$screen_summary <- renderPrint({
+    if (is.null(input$file)) {return(NULL)}
+    else {  ds_screener(  Datasetf() )} 
+  })
+  
+  output$str <- renderPrint({
+    if (is.null(input$file)) {return(NULL)}
+    else {  str(  Datasetf()   )} 
   })
   
   out = reactive({
@@ -818,9 +818,7 @@ shinyServer(function(input, output){
       else {
       if (input$select == "Hierarchical") { 
         fith = t0()[[3]]
-        plot(fith) 
-        rect.hclust(fith,k=input$Clust, border=2:input$Clust+1)
-        } # display dindogram
+        plot(fith) } # display dindogram
       else if (input$select == "K-Means") {
         set.seed(123)
         clsz=if (input$Clust<5) {clsz=7} else {clsz=input$Clust+3}

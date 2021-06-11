@@ -16,6 +16,7 @@
   try(require("mice")||install.packages("mice"))
 #  try(require("randomForest")||install.packages("randomForest"))
 if (!require("shinycssloaders")) {install.packages("shinycssloaders")}; 
+if(!require("shinyBS")) {install.packages("shinyBS")}
 library(shinycssloaders)
 library("shiny")
 library("rpart")
@@ -222,8 +223,8 @@ shinyServer(function(input, output,session) {
   output$samsel <- renderUI({
     if (is.null(input$file)) {return(NULL)}
     else {
-      selectInput("obs", "Select sub sample", c("quick run, random 1,500 obs", "random 10,000 obs", "full dataset"), 
-                  selected = "quick run, random 1,500 obs")
+      selectInput("obs", "Select sub sample", c("quick run, random 2,000 obs", "random 10,000 obs", "full dataset"), 
+                  selected = "quick run, random 2,000 obs")
     }
   })
   
@@ -241,11 +242,11 @@ shinyServer(function(input, output,session) {
           return(Dataset1)}
         else {return(readdataf())}
       }
-      else (input$obs=="1,500 obs")
+      else (input$obs=="2,000 obs")
       {
-        if (nrow(readdataf())>1500){
+        if (nrow(readdataf())>2000){
           set.seed(1234)
-          testsample= sample(1:nrow(readdataf()), 1500 )
+          testsample= sample(1:nrow(readdataf()), 2000 )
           Dataset1=readdataf()[testsample,]
           return(Dataset1)}
         else {return(readdataf())}
@@ -306,6 +307,14 @@ shinyServer(function(input, output,session) {
     return(out)
   })
   
+  output$misswarn <- renderUI({
+    if (is.null(input$file)) {return(NULL)}
+    else { 
+      if (out()[[10]]>0) { 
+        p('remove missing data variable(s) if any to see the correaltion plot" tab',style="color:red")
+      }}
+  })
+  
   output$summarydata = renderPrint({
     if (is.null(input$file)) {return(NULL)}
     else {
@@ -355,11 +364,31 @@ shinyServer(function(input, output,session) {
     }
   })
   
+  output$correlation = renderPrint({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      round(cor(out()[[5]], use = "pairwise.complete.obs"),4)
+    }
+  })
+  
   output$corplot = renderPlot({
     if (is.null(input$file)) {return(NULL)}
     else {
       #pairs(Dataset())
       pairs(out()[[5]],pch=20, col="grey")
+    }
+  })
+  
+  output$corplot1 = renderPlot({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      my_data = out()[[5]]
+      cor.mat <- round(cor(my_data),2)
+      corrplot(cor.mat, 
+               type = "upper",    # upper triangular form
+               order = "hclust",  # ordered by hclust groups
+               tl.col = "black",  # text label color
+               tl.srt = 45)  
     }
   })
   
@@ -381,13 +410,19 @@ shinyServer(function(input, output,session) {
   })
   
   output$factrain = renderPrint({
+    if (is.null(input$file)) {return(NULL)}
+    else {
     traning_data=Dataset()[-testsample(),c(input$fyAttr,input$fxAttr)]
     describe(traning_data)
+    }
   })
   
   output$factest = renderPrint({
+    if (is.null(input$file)) {return(NULL)}
+    else {
     test_data=Dataset()[-testsample(),c(input$fyAttr,input$fxAttr)]
     describe(test_data)
+    }
   })
   
   
