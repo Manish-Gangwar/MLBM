@@ -15,7 +15,7 @@ library("shinyBS")
 
 shinyUI(fluidPage(
   #titlePanel(title=div(img(src="logo.png",align='right'),"Factor analysis")),
-  headerPanel(title=div(img(src="logo.png",align = "right"), h2("Factor analysis App", style="bold")), windowTitle	='Factor analysis'),
+  headerPanel(title=div(img(src="logo.png",align = "right"), h2("Factor Analysis App", style="bold")), windowTitle	='Factor analysis'),
   # Input in sidepanel:
   sidebarPanel(
     tags$a(href="javascript:history.go(0)", 

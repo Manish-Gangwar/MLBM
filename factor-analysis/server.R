@@ -639,8 +639,7 @@ output$scores <- renderDataTable({
       #                             }
 })  
   
-# my edits 16-sept-2017 below
-  output$downloadDataX <- downloadHandler(
+output$downloadDataX <- downloadHandler(
     filename = function() { "Fac_scores.csv" },
     content = function(file) {
       write.csv(data.frame(rownames(filtered_dataset()), (fit())$scores), file, row.names = F)
@@ -648,9 +647,9 @@ output$scores <- renderDataTable({
 	)
 
 output$downloadData <- downloadHandler(
-  filename = function() { "Big_five_Survey_data.csv" },
+  filename = function() { "mtcars_dataset.csv" },
   content = function(file) {
-    write.csv(read.csv("data/Big_five_Survey_data.csv"), file, row.names=F, col.names=F)
+    write.csv(read.csv("data/mtcars_dataset.csv"), file, row.names=F, col.names=F)
   }
 )
   
