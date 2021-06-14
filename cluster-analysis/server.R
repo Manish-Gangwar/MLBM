@@ -267,9 +267,9 @@ shinyServer(function(input, output){
     if (input$imputemiss == "do not impute or drop rows") {
       p("Note: to impute or drop missing values (if any) check options in the panel on the left.",style="color:black")}
     else if ((input$imputemiss == "impute missing values")) {
-      p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
+      p("Note: missing values imputed (if any) check options in the panel on the left.",style="color:black")
     }
-    else { p("Note: missing value rows dropped, check options in the panel on the left.",style="color:black") }
+    else { p("Note: missing value rows dropped (if any) check options in the panel on the left.",style="color:black") }
   })
   
   Datasetf2 = reactive({

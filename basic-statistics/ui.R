@@ -64,7 +64,7 @@ shinyUI(pageWithSidebar(
                          h4("Data Summary of Selected Variables"),
                          shinycssloaders::withSpinner(verbatimTextOutput("summary")),
                          #verbatimTextOutput("winhead"),
-                         verbatimTextOutput('screen_summary'),
+                         verbatimTextOutput('summ'),
                          h4("Missing Data (Sample)"),verbatimTextOutput("missing2"),
                          #h4("Correlation Table"),verbatimTextOutput("correlation"),br(),
                          br()),
@@ -74,6 +74,7 @@ shinyUI(pageWithSidebar(
                          htmlOutput("imout"),
                          #(p('you can remove missing data variable(s) if any, or impute or drop rows',style="color:black")),
                          dataTableOutput("missing1"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),
+                         verbatimTextOutput('screen_summary'),
                          br()),
 
                 #          h4("Correlation Visulization"),

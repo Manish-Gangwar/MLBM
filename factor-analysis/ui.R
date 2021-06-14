@@ -10,6 +10,7 @@ library("corrplot")
 library("dplyr")
 library("DT")
 library("Hmisc")
+library("shinyBS")
 #library("foreign")
 
 shinyUI(fluidPage(
@@ -17,6 +18,11 @@ shinyUI(fluidPage(
   headerPanel(title=div(img(src="logo.png",align = "right"), h2("Factor analysis App", style="bold")), windowTitle	='Factor analysis'),
   # Input in sidepanel:
   sidebarPanel(
+    tags$a(href="javascript:history.go(0)", 
+           popify(tags$i(class="fa fa-refresh fa-1x"),
+                  title = "", #Reload App", 
+                  content = "click here to refresh the app",
+                  placement = "right")),
     # Upload data:
     h4(p("Data Input")),
     helpText("Note: first column of the input data must be an obervation id",style="color:darkblue"),

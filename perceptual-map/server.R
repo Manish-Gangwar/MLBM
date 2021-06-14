@@ -3,9 +3,10 @@
 #################################################
 try(require("shiny")||install.packages("shiny"))
 try(require("fmsb")||install.packages("fmsb"))
-
+if(!require("shinyBS")) {install.packages("shinyBS")}
 library("shiny")
 library("fmsb")
+library("shinyBS")
 
 build.spiderplot = function(dat, title){  # input DF with top 2 rows being maxmins
   
@@ -48,7 +49,7 @@ JSM <- function(inp1, prefs,k0,k1){
        
        type ="n",xlim=c(-1.5,1.5), ylim=c(-1.5,1.5), # plot parms
        
-       main ="Joint Space map ") # plot title
+       main ="Perceptual Map ") # plot title
   
   abline(h=0); abline(v=0) # build horiz & vert axes
   
@@ -119,17 +120,36 @@ shinyServer(function(input, output) {
     if (identical(Dataset(), '') || identical(Dataset(),data.frame())) return(NULL)
     # Variable selection:
     
-    checkboxGroupInput("Attr", "Choose Attributes (At least 3 attributes must be selected)",
+    checkboxGroupInput("Attr", "Choose Attributes",
                        rownames(Dataset()), rownames(Dataset()))
     
   })
   
-  #++_____________++
+  output$readdata <- renderDataTable({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      Dataset()
+    }
+  }, options = list(lengthMenu = c(5, 30, 50,100), pageLength = 5))
+  
+  output$summ <- renderPrint({
+    if (is.null(input$file)) {return(NULL)}
+    else {  str(  (Dataset())  )} 
+  })
+  
+  if(!require("descriptr")) {install.packages("descriptr")}
+  library(descriptr)
+  output$screen_summary <- renderPrint({
+    if (is.null(input$file)) {return(NULL)}
+    else {  ds_screener(  (Dataset())  )} 
+  })
+  
+    #++_____________++
   output$varselect2 <- renderUI({
     if (identical(Dataset(), '') || identical(Dataset(),data.frame())) return(NULL)
     # Variable selection:
     
-    checkboxGroupInput("rows", "Choose Firms (At least 2 Firms must be selected) - Only for Spider Chart",
+    checkboxGroupInput("rows", "",
                        colnames(Dataset()), colnames(Dataset()))
     
   })

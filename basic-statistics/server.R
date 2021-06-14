@@ -19,6 +19,8 @@ if(!require("mice")) {install.packages("mice")}
 if(!require("DescTools")) {install.packages("DescTools")}
 if(!require("descriptr")) {install.packages("descriptr")}
 if (!require("shinycssloaders")) {install.packages("shinycssloaders")}; 
+if(!require("shinyBS")) {install.packages("shinyBS")}
+
 library(shinycssloaders)
 library(tidyr)
 library(shiny)
@@ -35,7 +37,7 @@ library(magrittr)
 library(dplyr)
 library(ggpubr)
 library(mice)
-library(DescTools)
+library(DescTools)#Winsorize
 library(descriptr)
 
 # library(gplot)
@@ -61,8 +63,8 @@ output$readdata <- renderDataTable({
 output$samsel <- renderUI({
   if (is.null(input$file)) {return(NULL)}
   else {
-    selectInput("obs", "Select sub sample", c("quick run, 1,000 random obs", "10,000 random obs", "full dataset"), 
-                selected = "quick run, 1,000 random obs")
+    selectInput("obs", "Select sub sample", c("quick run, 2,000 random obs", "10,000 random obs", "full dataset"), 
+                selected = "quick run, 2,000 random obs")
   }
 })
 
@@ -83,9 +85,9 @@ Dataset <- reactive({
     }
     else #if(input$obs=="quick run, 1,000 random obs")
     {
-      if (nrow(Datasetf())>1000){
+      if (nrow(Datasetf())>2000){
         set.seed(1234)
-        testsample= sample(1:nrow(Datasetf()), 1000 )
+        testsample= sample(1:nrow(Datasetf()), 2000 )
         Dataset1=Datasetf()[testsample,]
         return(Dataset1)}
       else {return(Datasetf())}
@@ -380,11 +382,18 @@ mydata = reactive({
 })
 
 
-output$screen_summary <- renderPrint({
+output$summ <- renderPrint({
   if (is.null(input$file)) {return(NULL)}
   #else {  ds_screener(mydata())} 
   else {  str(mydata())} 
   })
+
+if(!require("descriptr")) {install.packages("descriptr")}
+library(descriptr)
+output$screen_summary <- renderPrint({
+  if (is.null(input$file)) {return(NULL)}
+  else {  ds_screener(  mydata())} 
+})
 
 out = reactive({
 data = mydata()

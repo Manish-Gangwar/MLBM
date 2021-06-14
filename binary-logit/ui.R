@@ -67,10 +67,10 @@ shinyUI(pageWithSidebar(
                          h4("Review Input Data"), 
                          dataTableOutput("readdata"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),
                          h4("Data Summary of Selected Y and X Variables"),
+                         htmlOutput("imout"),
                          shinycssloaders::withSpinner(verbatimTextOutput("summary")),
                          verbatimTextOutput('screen_summary'),
                          h4("Missing Data Rows (Sample)"),
-                         htmlOutput("imout"),
                          verbatimTextOutput("missing")),
                 tabPanel("Data Visualization",
                          #h4("Select variable for er's outlier test"),
@@ -150,9 +150,10 @@ shinyUI(pageWithSidebar(
 
                
                tabPanel("Prediction New Data",
-                         h4("Upload new data for prediction, it should have all selected X varaibles (csv file with header) "),
                          fileInput("filep", ""),
-                         h4("New data"),
+                        p("Upload new data for prediction, it should have all selected X varaibles (csv file with header)",style="color:red"),
+                        
+                        h4("Review new data for prediction"),
                          dataTableOutput("readdatap"),tags$head(tags$style("tfoot {display: table-header-group;}")),br(),br(),
                         h4('Number of rows and columns in selected input sub sample'),
                         verbatimTextOutput('inputobs'),

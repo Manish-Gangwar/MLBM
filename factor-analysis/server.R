@@ -10,6 +10,7 @@ if (!require("corrplot")) {install.packages("corrplot")}
 if (!require("dplyr")) {install.packages("dplyr")}
 if (!require("DT")) {install.packages("DT")}
 if (!require("mice")) {install.packages("mice")}
+if(!require("shinyBS")) {install.packages("shinyBS")}
 
 if (!require("tidyr")) {install.packages("tidyr")} # gather()
 library("tidyr")
@@ -23,6 +24,7 @@ library("dplyr")
 library("DT")
 library("Hmisc")
 library("mice")
+library("shinyBS")
 
 
 

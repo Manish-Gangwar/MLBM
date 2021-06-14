@@ -52,8 +52,7 @@ output$readdata <- renderDataTable({
   else {
     Datasetf0()
   }
-}, options = list(lengthMenu = list(c(5,25,50,-1),c("5","25","50","All")),
-                                    autoWidth = TRUE),)
+}, options = list(lengthMenu = c(5, 30, 50, 100), pageLength = 5))
 
 pred.readdata <- reactive({
   if (is.null(input$filep)) { return(NULL) }
@@ -68,8 +67,7 @@ output$readdatap <- renderDataTable({
   else {
     pred.readdata()
   }
-}, options = list(lengthMenu = list(c(5,25,50,-1),c("5","25","50","All")),
-                  autoWidth = TRUE),)
+}, options = list(lengthMenu = c(5, 30, 50,100), pageLength = 5))
 
 Dataset.temp = reactive({
   mydata = Datasetf0()#[,c(input$yAttr,input$xAttr)]
@@ -579,7 +577,7 @@ prediction = reactive({
   names(out)[2] = paste0("Prob.",input$yAttr,".",input$BaseAlternative)
   return(out)
 })
-output$prediction =  renderPrint({
+output$prediction1 =  renderPrint({
   if (is.null(input$filep)) {return(NULL)}
   head(prediction(),10)
 })
@@ -600,7 +598,7 @@ inputprediction = reactive({
   return(out)
 })
 
-output$inputprediction =  renderPrint({
+output$inputprediction1 =  renderPrint({
   if (is.null(input$file)) {return(NULL)}
   head(inputprediction(),10)
 })
@@ -677,8 +675,8 @@ output$resplot4 = renderPlot({
 output$downloadData1 <- downloadHandler(
   filename = function() { "Predicted Data.csv" },
   content = function(file) {
-    if (identical(Dataset(), '') || identical(Dataset(),data.frame())) return(NULL)
-    write.csv(predicted(), file, row.names=F, col.names=F)
+    #if (identical(Dataset(), '') || identical(Dataset(),data.frame())) return(NULL)
+    write.csv(prediction(), file, row.names=F, col.names=F)
   }
 )
 output$downloadData <- downloadHandler(
@@ -690,8 +688,8 @@ output$downloadData <- downloadHandler(
 output$downloadData2 <- downloadHandler(
   filename = function() { "Input Data With Prediction.csv" },
   content = function(file) {
-    if (identical(Dataset(), '') || identical(Dataset(),data.frame())) return(NULL)
-    write.csv(inputpredicted(), file, row.names=F, col.names=F)
+    #if (identical(Dataset(), '') || identical(Dataset(),data.frame())) return(NULL)
+    write.csv(inputprediction(), file, row.names=F, col.names=F)
   }
 )
 
