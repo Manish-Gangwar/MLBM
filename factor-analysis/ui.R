@@ -100,6 +100,7 @@ downloadButton('downloadData', 'download sample data'),
                   #          plotOutput("corplot"),
                   #          br(),br(),
                   #          br()),
+                tabPanel("Factor vs Variables",plotOutput("plot20",height = 850, width = 850)),
                 tabPanel("Factor Analysis", #br(),
                          (verbatimTextOutput("mscount")),
                          htmlOutput("misswarn"),
@@ -118,7 +119,7 @@ downloadButton('downloadData', 'download sample data'),
                           # (p("Remove missing data variable(s) if any, check 'Data Summary' tab", style="color:red")),
                           # (plotOutput("corplot",height = 850, width = 850))
                           br(),br()),
-                tabPanel("Factor vs Variables",plotOutput("plot20",height = 850, width = 850)),
+                
                 tabPanel("Loadings",br(),dataTableOutput("loadings"),br(),br()),
                 
 #                tabPanel("Scores",tableOutput("scores")),   # origi code
