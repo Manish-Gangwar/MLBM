@@ -574,7 +574,7 @@ output$loadings <- renderDataTable({
   # rownames((fit())$loadings) = colnames(Dataset())  # edit 2
   b2 <- unclass((fit())$loadings); rownames(b2) <- NULL;  
   b1 <- data.frame(colnames(filtered_dataset()), round(b2,2));
-  names(b1)[1] <- "Variable"# [2:ncol(Dataset())];rownames(b1) <- colnames(Dataset())  # edit 2  
+  names(b1)[1] <- "Observation"# [2:ncol(Dataset())];rownames(b1) <- colnames(Dataset())  # edit 2  
   #-------#
   if(is.null(fname())){return(b1)}
   else{

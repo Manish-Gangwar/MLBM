@@ -15,7 +15,10 @@ server <- function(input, output,session) {
   #-----Data upload----#
   df_data <- reactive({
     req(input$file)
-    df = read.csv(input$file$datapath)
+    Dataset1 = read.csv(input$file$datapath)
+    rownames(Dataset1) = Dataset1[,1]
+    #Dataset = Dataset1[,2:ncol(Dataset1)]
+    return(Dataset1)
   })
   
   #--1.Main Panel O/P
@@ -31,7 +34,7 @@ server <- function(input, output,session) {
   
   nu.Dataset = reactive({
     if (is.null(input$file)) {return(NULL)}
-    data = df_data()[,1:ncol(df_data())]
+    data = df_data()[,2:ncol(df_data())]
     Class = NULL
     for (i in 1:ncol(data)){
       c1 = class(data[,i])
@@ -67,6 +70,13 @@ server <- function(input, output,session) {
     })
   })
   
+  output$summ <- renderPrint({
+    if (is.null(input$file)) {return(NULL)}
+    else {  
+      data=df_data() %>% dplyr::select(!!!input$selVar) %>% drop_na()
+      str(  data  )} 
+  })
+  
   output$dim1 <- renderPrint({
     data=df_data() %>% dplyr::select(!!!input$selVar) %>% drop_na()
     cat("final dataset has ",dim(data)[1],"rows and ",dim(data)[2]," columns")
@@ -88,11 +98,24 @@ server <- function(input, output,session) {
     build_pca_loadings_heatmap(df1, k=input$k)
   })
   #----PCA Scores Tab--#
-  output$scores_dt <- DT::renderDataTable({
+  scores_dt <- reactive({
     df1 = list0()[[2]]
     scores <- pca_outputs(df1)[[2]]
-    scores[, 1:input$k]
+    sc1=data.frame(rownames(df_data()), scores[, 1:input$k])
+    colnames(sc1)[1]="Obs_id"
+    return(sc1)
   })
+  
+  output$scores_dt <- DT::renderDataTable({
+    scores_dt()
+  })
+  
+  output$downloadDataX <- downloadHandler(
+    filename = function() { "pca_scores.csv" },
+    content = function(file) {
+      write.csv(scores_dt(), file, row.names = F)
+    }
+  )
   
   output$bi_plot <- renderPlotly({
     X = list0()[[2]]

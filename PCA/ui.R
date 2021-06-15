@@ -12,7 +12,7 @@ shinyUI(fluidPage(
                       content = "click here to refresh the app",
                       placement = "right")),
         conditionalPanel(condition = "input.tabselected==1",
-                        # helpText("Note: first column of the input data must be an obervation id",style="color:darkblue"),
+                         helpText("Note: first column of the input data must be unique obervation id",style="color:darkblue"),
                          fileInput("file", "Upload Input File"),
                          uiOutput("colList"),
                          numericInput("k","Select number of components",min = 2,max=50,value=2)
@@ -36,8 +36,9 @@ shinyUI(fluidPage(
                      h4("Review Input Dataset"),
                      DT::dataTableOutput("samp_data"),
                      hr(),
-                    p("removed all missing value rows and factor variables from the analysis (if any)",style="color:red"),
-                    verbatimTextOutput("dim1"),
+                    h4("Selected Input Data for PCA"),
+                    p("removed missing value rows and factor variables from the analysis (if any)",style="color:red"),
+                    verbatimTextOutput("summ"),
                     # h4("Missingness Map"),
                      plotOutput("miss_plot")
                      
@@ -47,15 +48,19 @@ shinyUI(fluidPage(
                     plotlyOutput("cum_var_exp") 
                      
             ),
-            tabPanel("PCA Scores",value=1,
-                     DT::dataTableOutput("scores_dt"),
-                     plotlyOutput("bi_plot")
+            
+            tabPanel("PCA Loadings",value=1,br(),
+                     DT::dataTableOutput("loadings_dt"),
+                     plotlyOutput("loading_hm")
             ),
             
-            tabPanel("PCA Loadings",value=1,
-                    DT::dataTableOutput("loadings_dt"),
-                    plotlyOutput("loading_hm")
+            tabPanel("PCA Scores",value=1,br(),
+                     downloadButton('downloadDataX', 'download pca scores'), br(),br(),
+                     DT::dataTableOutput("scores_dt"),
+                    # plotlyOutput("bi_plot")
             ),
+            
+
             id = "tabselected"
         )
     )
