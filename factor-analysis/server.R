@@ -402,11 +402,11 @@ output$xaxis <- renderUI({
       list = c(list, temp)
     }
     
-    selectInput("xaxis", "Choose factor for plotting on X axis",
+    selectInput("xaxis", "Choose X axis for factor map",
                 list, selected = "Factor 1")
   }else{
       temp = fname()
-       selectInput("xaxis", "Choose factor for plotting on X axis",
+       selectInput("xaxis", "Choose X axis for factor map",
                 temp, selected = temp[1])
     
   }
@@ -429,12 +429,12 @@ output$yaxis <- renderUI({
         list = c(list, temp)
       }
       list2 = setdiff(list,input$xaxis)
-      selectInput("yaxis", "Choose Factor for plotting on Y axis",
+      selectInput("yaxis", "Choose Y axis for factor map",
                   list2, selected = "Factor 2")
     }else{
       temp = fname()
       temp2 = setdiff(temp,input$xaxis)
-      selectInput("yaxis", "Choose Factor for plotting on Y axis",
+      selectInput("yaxis", "Choose Y axis for factor map",
                   temp2, selected = temp2[1])
       
     }

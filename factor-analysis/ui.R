@@ -30,14 +30,15 @@ shinyUI(fluidPage(
     uiOutput("colList"),
     #numericInput("fselect", "Number of Factors:", 2, min=2),
     htmlOutput("fselect"),
-    textInput('fname',label = "Optional: enter factor names (seperated by comma)"),
-    sliderInput("cutoff", "Cut-off for factor loadings(for plotting only)", min = 0,  max = 1, value = 0.25),
-    htmlOutput("xaxis"),
-    htmlOutput("yaxis"),
-    
-    sliderInput("cutoffcorr", "Cut-off for correlation in factors vs variable", min = 0,  max = 1, value = 0.25),
     htmlOutput("samsel"),
     htmlOutput("imputemiss"),
+    hr(),
+    h4("Visualization Options"),
+    sliderInput("cutoffcorr", "Cut-off correlation for factors vs variables tab ", min = 0,  max = 1, value = 0.1),
+    textInput('fname',label = "Optional: enter factor names (seperated by comma)"),
+    htmlOutput("xaxis"),
+    htmlOutput("yaxis"),
+    sliderInput("cutoff", "Cut-off factor loadings for factor map (var)", min = 0,  max = 1, value = 0.25),
     actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),
     # selectInput("scale", "Standardize input data (usually yes)",c("yes","no"), selected = "yes"),
     br()
@@ -117,6 +118,7 @@ downloadButton('downloadData', 'download sample data'),
                           # (p("Remove missing data variable(s) if any, check 'Data Summary' tab", style="color:red")),
                           # (plotOutput("corplot",height = 850, width = 850))
                           br(),br()),
+                tabPanel("Factor vs Variables",plotOutput("plot20",height = 850, width = 850)),
                 tabPanel("Loadings",br(),dataTableOutput("loadings"),br(),br()),
                 
 #                tabPanel("Scores",tableOutput("scores")),   # origi code
@@ -128,9 +130,9 @@ downloadButton('downloadData', 'download sample data'),
 	                      br(),br(),
 	                      dataTableOutput("scores")),
                 
-                tabPanel("Factor vs Variables",plotOutput("plot20",height = 850, width = 850)),
-                tabPanel("Factor vs Variables 2",plotOutput("plot2",height = 850, width = 850)),
-                tabPanel("Factor vs Users",plotOutput("plot3",height = 850, width = 850))
+                
+                tabPanel("Factor Map (var)",plotOutput("plot2",height = 850, width = 850)),
+                tabPanel("Factor Map (obs)",plotOutput("plot3",height = 850, width = 850))
                 #tabPanel("Data",br(),dataTableOutput("table"),br(),br()) 
     )
   ) 
