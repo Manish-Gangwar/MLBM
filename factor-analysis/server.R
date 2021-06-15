@@ -96,11 +96,11 @@ shinyServer(function(input, output) {
   output$imout <- renderUI({
     if (is.null(input$file)) {return(NULL)}
     if (input$imputemiss == "do not impute or drop rows") {
-      p("Note: for missing values check options in the panel on the left.",style="color:black")}
+      p("Note: for missing values (if any) check options in the panel on the left.",style="color:black")}
     else if ((input$imputemiss == "impute missing values")) {
-      p("Note: missing values imputed, check options in the panel on the left.",style="color:black")
+      p("Note: missing values imputed (if any) check options in the panel on the left.",style="color:black")
     }
-    else { p("Note: missing value rows dropped, check options in the panel on the left.",style="color:black") }
+    else { p("Note: missing value rows dropped (if any) check options in the panel on the left.",style="color:black") }
   })
   
   Dataset = reactive({
