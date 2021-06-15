@@ -16,7 +16,6 @@ server <- function(input, output,session) {
   df_data <- reactive({
     req(input$file)
     df = read.csv(input$file$datapath)
-    
   })
   
   #--1.Main Panel O/P
@@ -30,6 +29,27 @@ server <- function(input, output,session) {
     (df_data())
   })
   
+  nu.Dataset = reactive({
+    if (is.null(input$file)) {return(NULL)}
+    data = df_data()[,1:ncol(df_data())]
+    Class = NULL
+    for (i in 1:ncol(data)){
+      c1 = class(data[,i])
+      Class = c(Class, c1)
+    }
+    nu = which(Class %in% c("numeric","integer"))
+    nu.data = data[,nu] 
+    return(nu.data)
+  })
+  
+  output$colList <- renderUI({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      varSelectInput("selVar",label = "Select only numerical X variables",
+                     data = nu.Dataset(),multiple = TRUE,selectize = TRUE,selected = colnames(nu.Dataset()))
+    }
+  })
+  
   # 3. missing plot
   output$miss_plot <- renderPlot({
     req(input$file)
@@ -41,13 +61,16 @@ server <- function(input, output,session) {
   
   list0 <- reactive({
     suppressWarnings({ 
-      df_data <- df_data()%>%drop_na()
-      list0 = build_rmse_mat(df_data()) 
+      df_data1 <- df_data() %>% dplyr::select(!!!input$selVar) %>% drop_na()
+      list0 = build_rmse_mat(df_data1) 
       return(list0)
     })
   })
   
-
+  output$dim1 <- renderPrint({
+    data=df_data() %>% dplyr::select(!!!input$selVar) %>% drop_na()
+    cat("final dataset has ",dim(data)[1],"rows and ",dim(data)[2]," columns")
+  })
   
   #---PCA Loadings Tab---#
  loadings_dt <- reactive({
