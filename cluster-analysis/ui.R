@@ -19,7 +19,7 @@ shinyUI(fluidPage(
                   content = "click here to refresh the app",
                   placement = "right")),
     h4(p("Data Input")),
-    helpText("Note: first column of the input csv file must be an unique obervation id",style="color:darkblue"),
+    helpText("Note: first column of the input csv file must be an unique observation id",style="color:darkblue"),
     fileInput("file", "Upload data (csv file with header)"),
     #submitButton(text = "refresh", icon("refresh")),
     #(p("Click refresh after loading data and every time you make changes",style="color:red")),

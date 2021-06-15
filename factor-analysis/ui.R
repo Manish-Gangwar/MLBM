@@ -25,7 +25,7 @@ shinyUI(fluidPage(
                   placement = "right")),
     # Upload data:
     h4(p("Data Input")),
-    helpText("Note: first column of the input data must be an obervation id",style="color:darkblue"),
+    helpText("Note: first column of the input data must be an unique observation id",style="color:darkblue"),
     fileInput("file", "Upload input data (csv file with observation ID and header)"),  
     uiOutput("colList"),
     #numericInput("fselect", "Number of Factors:", 2, min=2),

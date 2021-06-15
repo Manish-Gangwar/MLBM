@@ -12,7 +12,7 @@ shinyUI(fluidPage(
                       content = "click here to refresh the app",
                       placement = "right")),
         conditionalPanel(condition = "input.tabselected==1",
-                         helpText("Note: first column of the input data must be unique obervation id",style="color:darkblue"),
+                         helpText("Note: first column of the input data must be an unique observation id",style="color:darkblue"),
                          fileInput("file", "Upload Input File"),
                          uiOutput("colList"),
                          numericInput("k","Select number of components",min = 2,max=50,value=2)
