@@ -29,11 +29,13 @@ shinyUI(pageWithSidebar(
    #actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),
    htmlOutput("lxvarselect"),
    htmlOutput("sqvarselect"),
+   htmlOutput("dxvarselect"),
    hr(),
     h4(p("Advance Options")),
+
     htmlOutput("winsor"),
    htmlOutput("winvarselect"),
-    htmlOutput("dxvarselect"),
+  
 
     #submitButton(text = "Apply Changes", icon("refresh")),br(),
     ),
@@ -66,7 +68,7 @@ shinyUI(pageWithSidebar(
                          shinycssloaders::withSpinner(verbatimTextOutput("summary")),
                          #verbatimTextOutput("winhead"),
                          verbatimTextOutput('summ'),
-                         h4("Missing Data (Sample)"),verbatimTextOutput("missing2"),
+                         #h4("Missing Data (Sample)"),verbatimTextOutput("missing2"),
                          #h4("Correlation Table"),verbatimTextOutput("correlation"),br(),
                          br()),
                

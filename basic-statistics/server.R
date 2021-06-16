@@ -361,7 +361,7 @@ output$sqvarselect <- renderUI({
     #selcol=setdiff(colnames(nu.Dataset()),input$lxAttr)
     data=nu.Dataset()
     data1 = data[, !names(data) %in% c(input$fxAttr)]
-    varSelectInput("sqAttr", "Select X square variable(s)",
+    varSelectInput("sqAttr", "Add X square term",
                    data = data1,multiple = TRUE, selected = ""  )
   }
 })
