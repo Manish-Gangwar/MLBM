@@ -11,22 +11,20 @@ shinyUI(fluidPage(
                       title = "", #Reload App", 
                       content = "click here to refresh the app",
                       placement = "right")),
-        conditionalPanel(condition = "input.tabselected==1",
+       # conditionalPanel(condition = "input.tabselected==1",
                          helpText("Note: first column of the input data must be an unique observation id",style="color:darkblue"),
                          fileInput("file", "Upload Input File"),
                          uiOutput("colList"),
-                         numericInput("k","Select number of components",min = 2,max=50,value=2)
-        ),
-        conditionalPanel(condition="input.tabselected==3",
-                         
-        ),
-        
-        
-    ),
+                                br() ),
+        #conditionalPanel(condition="input.tabselected==3",),
+        # ),
+    
+    
+    
     mainPanel(
 
         tabsetPanel(
-            tabPanel("Overview & Example Dataset", value=1, 
+            tabPanel("Overview", value=1, 
                      includeMarkdown("overview.md")
             ),
             tabPanel("Data Summary", value=1,
@@ -37,7 +35,7 @@ shinyUI(fluidPage(
                      DT::dataTableOutput("samp_data"),
                      hr(),
                     h4("Selected Input Data for PCA"),
-                    p("removed missing value rows and factor variables from the analysis (if any)",style="color:red"),
+                    p("dropped missing value rows (if any) and removed factor variables from the analysis",style="color:red"),
                     verbatimTextOutput("summ"),
                     # h4("Missingness Map"),
                      plotOutput("miss_plot")
@@ -50,6 +48,7 @@ shinyUI(fluidPage(
             ),
             
             tabPanel("PCA Loadings",value=1,br(),
+                     uiOutput("dimk"),
                      DT::dataTableOutput("loadings_dt"),
                      plotlyOutput("loading_hm")
             ),

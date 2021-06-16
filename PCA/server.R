@@ -56,7 +56,8 @@ server <- function(input, output,session) {
   # 3. missing plot
   output$miss_plot <- renderPlot({
     req(input$file)
-    Amelia::missmap(df_data())
+    df_data1 <- df_data() %>% dplyr::select(!!!input$selVar)
+    Amelia::missmap(df_data1)
   })
   
   
@@ -77,9 +78,10 @@ server <- function(input, output,session) {
       str(  data  )} 
   })
   
-  output$dim1 <- renderPrint({
+  output$dimk <- renderUI({
     data=df_data() %>% dplyr::select(!!!input$selVar) %>% drop_na()
-    cat("final dataset has ",dim(data)[1],"rows and ",dim(data)[2]," columns")
+    numericInput("k","Select number of components",min = 2,max=dim(data)[2],value=dim(data)[2])
+#    cat("final dataset has ",dim(data)[1],"rows and ",dim(data)[2]," columns")
   })
   
   #---PCA Loadings Tab---#
@@ -101,8 +103,9 @@ server <- function(input, output,session) {
   scores_dt <- reactive({
     df1 = list0()[[2]]
     scores <- pca_outputs(df1)[[2]]
-    sc1=data.frame(rownames(df_data()), scores[, 1:input$k])
-    colnames(sc1)[1]="Obs_id"
+    sc1=data.frame(scores)
+    #sc1=data.frame(scores[, 1:input$k])
+    #colnames(sc1)[1]="Obs_id"
     return(sc1)
   })
   
