@@ -27,6 +27,11 @@ server <- function(input, output,session) {
     cat("Uploaded dataset has ",dim(df_data())[1],"rows and ",dim(df_data())[2]," columns")
   })
   
+  output$yout <- renderPrint({
+    if (is.null(input$file)) { return(NULL) }
+    p("dropped missing value rows (if any) and removed factor variables from the analysis",style="color:red")
+  })
+  
   # 2. sample data
   output$samp_data <- DT::renderDataTable({
     (df_data())
@@ -116,6 +121,7 @@ server <- function(input, output,session) {
   output$downloadDataX <- downloadHandler(
     filename = function() { "pca_scores.csv" },
     content = function(file) {
+      if (is.null(input$file)) { return(NULL) }
       write.csv(scores_dt(), file, row.names = F)
     }
   )

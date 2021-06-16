@@ -34,8 +34,8 @@ shinyUI(fluidPage(
                      h4("Review Input Dataset"),
                      DT::dataTableOutput("samp_data"),
                      hr(),
-                    h4("Selected Input Data for PCA"),
-                    p("dropped missing value rows (if any) and removed factor variables from the analysis",style="color:red"),
+                    h4("Selected Input Data Summary for PCA"),
+                    htmlOutput("yout"),
                     verbatimTextOutput("summ"),
                     # h4("Missingness Map"),
                      plotOutput("miss_plot")
