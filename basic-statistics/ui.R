@@ -29,10 +29,11 @@ shinyUI(pageWithSidebar(
    #actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),
    htmlOutput("lxvarselect"),
    htmlOutput("sqvarselect"),
+   hr(),
     h4(p("Advance Options")),
     htmlOutput("winsor"),
    htmlOutput("winvarselect"),
-    #htmlOutput("dxvarselect"),
+    htmlOutput("dxvarselect"),
 
     #submitButton(text = "Apply Changes", icon("refresh")),br(),
     ),

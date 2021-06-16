@@ -34,13 +34,13 @@ shinyUI(fluidPage(
                      h4("Review Input Dataset"),
                      DT::dataTableOutput("samp_data"),
                      hr(),
+                    h4("Missing Values in Selected Input Data"),
+                    verbatimTextOutput("miss_plot"),
                     h4("Selected Input Data Summary for PCA"),
                     htmlOutput("yout"),
                     verbatimTextOutput("summ"),
-                    # h4("Missingness Map"),
-                     plotOutput("miss_plot")
-                     
-            ),
+                    br()),
+            
             tabPanel("Variance Explained", value=1,
                     plotlyOutput("var_exp"),
                     plotlyOutput("cum_var_exp") 

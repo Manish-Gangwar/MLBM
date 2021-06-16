@@ -14,18 +14,19 @@ shinyUI(fluidPage(
     h4(p("Data Selection")),
     uiOutput("y_ui"),
     uiOutput("x_ui"),
+   # h4(p("Advance Options")),
     sliderInput("tr_per",
-                label = "Percentage of test data",
+                label = "Set test sample percentage",
                 min = 0,
                 max = 40,
                 value = 25,
                 step=5),
     sliderInput("n_tree",
                 label = "Number of trees",
-                min = 100,
-                max = 1000,
-                value = 100,
-                step = 100),
+                min = 50,
+                max = 500,
+                value = 50,
+                step = 50),
     
   br()),
   mainPanel(
@@ -33,16 +34,17 @@ shinyUI(fluidPage(
     # id argument is important in the tabsetPanel()
     # value argument is important in the tabPanle()
     tabsetPanel(
-      tabPanel("Overview & Example Dataset", value=1, 
+      tabPanel("Overview", value=1, 
                includeMarkdown("overview.md")
       ),
       tabPanel("Data Summary", br(),
                DT::dataTableOutput("samp"),
                hr(),
-               h4("Data Summary"),
+               h4("Data Summary of Selected X Variables"),
                verbatimTextOutput("data_str"),
+               #shinycssloaders::withSpinner(plotOutput("corplot1")),br(),
                #h4("Missingness Map"),
-               #plotOutput("miss_plot")
+               verbatimTextOutput("miss_plot")
               
               
       ),
@@ -69,9 +71,9 @@ shinyUI(fluidPage(
               #uiOutput("test_res"),
               #plotOutput('conf_test_plot'),
               verbatimTextOutput("conf_test"),br(),
-             # h4("ROC Curve"),
-             p("ROC for each Class"),
-              plotOutput("roc"),
+             h4("ROC Curve"),
+             p("ROC curve is available for only binary classification problem"),
+             plotOutput("roc"),
 
                #tags$div(id="demo1",class="collapse",)
               br() ),

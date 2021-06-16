@@ -12,11 +12,12 @@ if (!require('ggplot2')){install.packages('ggplot2')}; library(ggplot2)
 if (!require('e1071')){install.packages('e1071')}; library(e1071)
 if (!require('dplyr')){install.packages('dplyr')}; library(dplyr)
 if (!require('tidyr')){install.packages('tidyr')}; library(tidyr)
-if(!require("shinyBS")) {install.packages("shinyBS")}
+if(!require("shinyBS")) {install.packages("shinyBS")}; library(shinyBS)
+if(!require("corrplot")) {install.packages("corrplot")};library(corrplot)
 
 server <- function(input, output,session) {
   
-  tr_data <-  reactive({
+  tr_data1 <-  reactive({
     req(input$tr_data$datapath)
     df <- read.csv(input$tr_data$datapath,stringsAsFactors = FALSE)
     return(df)
@@ -30,17 +31,15 @@ server <- function(input, output,session) {
   
   tr_cols <- reactive({
     req(input$tr_data$datapath)
-    return(colnames(tr_data()))
+    return(colnames(tr_data1()))
     })
-  
-
-  
+ 
   
   #----Tab-2 Data Summary----#
   
   output$samp <- DT::renderDataTable({
     req(input$tr_data$datapath)
-    DT::datatable(tr_data(),
+    DT::datatable(tr_data1(),
                   #filter = "top"
                   options = list(lengthMenu = list(c(5,25,50,-1),c("5","25","50","All")),
                                 autoWidth = TRUE),
@@ -58,16 +57,7 @@ server <- function(input, output,session) {
     )
   })
   
-  output$data_str <- renderPrint({
-    str(tr_data())
-  })
-  
-  output$miss_plot <- renderPlot({
-    req(input$tr_data$datapath)
-    Amelia::missmap(tr_data())
-  })
-  
-  
+
   #-------------#
   output$y_ui <- renderUI({
     req(input$tr_data$datapath)
@@ -84,6 +74,26 @@ server <- function(input, output,session) {
   output$x_ui <- renderUI({
     req(input$tr_data$datapath)
     selectInput(inputId = "sel_x",label="Select X",choices = x_col(),multiple = TRUE,selected = x_col())
+  })
+  
+  tr_data <- reactive({
+    tr_data1()[,c(input$sel_y,input$sel_x)]
+  })
+  
+  output$data_str <- renderPrint({
+    str(tr_data())
+  })
+  
+  output$miss_plot1 <- renderPlot({
+    req(input$tr_data$datapath)
+    Amelia::missmap(tr_data())
+  })
+  
+  if(!require("descriptr")) {install.packages("descriptr")}
+  library(descriptr)
+  output$miss_plot <- renderPrint({
+    if (is.null(input$tr_data)) {return(NULL)}
+    else {  ds_screener(  tr_data() )} 
   })
  
   output$chry <- renderUI({ 
@@ -140,7 +150,9 @@ server <- function(input, output,session) {
       train_conf = caret::confusionMatrix(p1, train_data[,1])
       test_conf = caret::confusionMatrix(p2, test_data[,1])
       output$roc <- renderPlot({
+        suppressWarnings({
                           plot_roc(rf,test_data$y,test_data[,-1])
+        })
                     })
       output$roc_val <- renderPrint({
                         auc_l <- print_roc(rf,test_data$y,test_data[,-1])
@@ -154,6 +166,33 @@ server <- function(input, output,session) {
     }
     
   })
+  
+  
+  corplot1 = renderPlot({
+    if (identical(tr_data(), '') || identical(tr_data(),data.frame())) return(NULL)
+    if (is.null(input$tr_data)) {return(NULL)}
+    else {
+    data1 <- na.omit(data.frame(tr_data()[,c(input$sel_y,input$sel_x)]))
+    if (nrow(data1)>1000){ samp= sample(1:nrow(data1), 1000 )
+    data = data1[samp,]}
+    Class = NULL
+    for (i in 1:ncol(data)){
+      c1 = class(data[,i])
+      Class = c(Class, c1)
+    }
+    nu = which(Class %in% c("numeric","integer"))
+    #fa = which(Class %in% c("factor","character"))
+    my_data = (data[,nu])
+    cor.mat <- round(cor(my_data),3)
+    corrplot.mixed(cor.mat, lower.col="black", number.cex=0.7)
+    #          type = "upper",    # upper triangular form
+    #          order = "hclust",  # ordered by hclust groups
+    #          tl.col = "black",  # text label color
+    #          tl.srt = 45)  
+    }
+  })
+    
+    
   
   output$mod_sum <- renderPrint({
     return(data()[[1]])
@@ -196,7 +235,7 @@ server <- function(input, output,session) {
     if(input$task=="clf"){
       return(data()[[2]])
     }else{
-      cat("RMSE on Train data is ",data()[[2]])
+      return(cat("RMSE on Train data is ",data()[[2]]))
     }
     }
   })
@@ -207,7 +246,7 @@ server <- function(input, output,session) {
     if(input$task=="clf"){
       return(data()[[3]])
     }else{
-      cat("RMSE on Test data is ",data()[[3]])
+      return(cat("RMSE on Test data is ",data()[[3]]))
     }
     }
   })

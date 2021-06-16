@@ -161,7 +161,7 @@ output$fxvarselect <- renderUI({
   else {
   checkboxGroupInput("fxAttr", "Select factor (categorical) variables",
                     #colnames(Dataset.temp()) )
-                    colnames(Dataset.temp()), chr.Dataset())#setdiff(colnames(Dataset.temp()),c(colnames(nu.Dataset()))) )
+                    colnames(Dataset.temp()), colnames(chr.Dataset()))#setdiff(colnames(Dataset.temp()),c(colnames(nu.Dataset()))) )
   }
 })
 

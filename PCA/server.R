@@ -59,12 +59,20 @@ server <- function(input, output,session) {
   })
   
   # 3. missing plot
-  output$miss_plot <- renderPlot({
+  output$miss_plot1 <- renderPlot({
     req(input$file)
     df_data1 <- df_data() %>% dplyr::select(!!!input$selVar)
     Amelia::missmap(df_data1)
   })
   
+  if(!require("descriptr")) {install.packages("descriptr")}
+  library(descriptr)
+  output$miss_plot <- renderPrint({
+    if (is.null(input$file)) {return(NULL)}
+    else {  
+      df_data1 <- df_data() %>% dplyr::select(!!!input$selVar)
+      ds_screener(  df_data1 )} 
+  })
   
   #----build rmse mat -----#
   
