@@ -191,7 +191,7 @@ shinyServer(function(input, output){
   output$Clust <- renderUI({
     if (input$select %in% c("Spectral", "HDBSCAN")) { return(NULL) }
     else{
-      numericInput("Clust", "Choose number of clusters:", 3, min=2)  # unlist((nS())[1])[3])
+      numericInput("Clust", "Choose number of clusters:", 3, min=1)  # unlist((nS())[1])[3])
     }
   })
   
