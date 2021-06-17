@@ -647,7 +647,7 @@ output$downloadDataX <- downloadHandler(
 	)
 
 output$downloadData <- downloadHandler(
-  filename = function() { "mtcars_dataset.csv" },
+  filename = function() { "cars_93.csv" },
   content = function(file) {
     write.csv(read.csv("data/cars_93.csv"), file, row.names=F, col.names=F)
   }
