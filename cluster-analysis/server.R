@@ -919,7 +919,7 @@ shinyServer(function(input, output){
           data = data1[dup,-1]
           class= data1[dup,1]
   #      }
-        set.seed(12345)
+        set.seed(1234)
         y = Rtsne::Rtsne(as.matrix(data), num_threads=0, dim=3, perplexity = as.integer(input$perp)  )#max_iter=as.integer(input$iter),
         scatter3D(y$Y[,1],y$Y[,2],y$Y[,3], phi = 0, #bty = "g", ex = 2,
                   ticktype = "detailed", colvar = class,
@@ -960,7 +960,7 @@ shinyServer(function(input, output){
         data = data1[dup,-1]
         cluster = data1[dup,1]
         #      }
-        #set.seed(12345)
+        set.seed(1234)
         umap.out=(umap(data))
         umap.cor=as.data.frame(umap.out$layout)
         colnames(umap.cor) = c("UMAP1", "UMAP2")

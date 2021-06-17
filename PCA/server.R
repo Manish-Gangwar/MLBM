@@ -7,6 +7,7 @@
   if (!require('DT')){install.packages("DT")}; library("DT")
   if (!require('dplyr')){install.packages("dplyr")}; library("dplyr")
   if (!require('tidyr')){install.packages("tidyr")}; library("tidyr")
+  if (!require("umap")) {install.packages("umap")}; library("umap")
 
 
 #---------Staring Server code--------#
@@ -72,6 +73,20 @@ server <- function(input, output,session) {
     else {  
       df_data1 <- df_data() %>% dplyr::select(!!!input$selVar)
       ds_screener(  df_data1 )} 
+  })
+  
+  # 2. umap data
+  output$umap <- DT::renderDataTable({
+    df_data1 <-df_data() %>% dplyr::select(!!!input$selVar) %>% drop_na()
+    umap.out=(umap(df_data1))
+    as.data.frame(umap.out$layout)
+  })
+  
+  # 2. umap data
+  output$umapprint <- renderPrint({
+    df_data1 <-df_data() %>% dplyr::select(!!!input$selVar) %>% drop_na()
+    (umap(df_data1))
+    #as.data.frame(umap.out$layout)
   })
   
   #----build rmse mat -----#

@@ -33,6 +33,7 @@ shinyUI(fluidPage(
                     # hr(),
                      h4("Review Input Dataset"),
                      DT::dataTableOutput("samp_data"),
+                   # htmlOutput("umapprint"),
                      hr(),
                     h4("Missing Values in Selected Input Data"),
                     verbatimTextOutput("miss_plot"),
