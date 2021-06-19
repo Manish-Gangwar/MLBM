@@ -138,10 +138,10 @@ downloadButton('downloadData', 'download sample data'),
                 
                 tabPanel("Factor Loading Map",br(),
                          sliderInput("cutoff", "Cut-off loadings for factor laoding map", min = 0,  max = 1, value = 0.5),
-                         p("Plot of original variables on factor axis; angle between variable and factor represents loading"),
+                         p("Plot of original variables on factor axis."),
                          plotOutput("plot2",height = 850, width = 850),br()),
                 tabPanel("Factor Scores Map",br(),
-                         p("Plot of observations on selected factors"),
+                         p("Plot of observations on selected factors."),
                          plotOutput("plot3",height = 850, width = 850),br())
                 #tabPanel("Data",br(),dataTableOutput("table"),br(),br()) 
     )
