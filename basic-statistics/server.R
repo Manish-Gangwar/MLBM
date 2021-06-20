@@ -18,10 +18,10 @@ if(!require("ggpubr")) {install.packages("ggpubr")}
 if(!require("mice")) {install.packages("mice")}
 if(!require("DescTools")) {install.packages("DescTools")}
 if(!require("descriptr")) {install.packages("descriptr")}
-if (!require("shinycssloaders")) {install.packages("shinycssloaders")}; 
+if (!require("shinycssloaders")) {install.packages("shinycssloaders")}; library(shinycssloaders)
 if(!require("shinyBS")) {install.packages("shinyBS")}
 
-library(shinycssloaders)
+
 library(tidyr)
 library(shiny)
 library(pastecs)

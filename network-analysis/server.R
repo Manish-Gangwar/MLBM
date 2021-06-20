@@ -16,7 +16,9 @@ if (!require("shiny")) {install.packages("shiny")};  library("shiny")
 if (!require("visNetwork")) {install.packages("visNetwork")};  library("visNetwork")
 if (!require("randomcoloR")) {install.packages("randomcoloR")};  library("randomcoloR")
 if (!require("stringr")) {install.packages("stringr")};  library("stringr")
-
+if(!require("shinyBS")) {install.packages("shinyBS")}; library(shinyBS)
+if(!require("DT")) {install.packages("DT")}; library(DT)
+if (!require("shinycssloaders")) {install.packages("shinycssloaders")}; library(shinycssloaders)
 
 shinyServer(function(input, output,session) {
   
@@ -38,6 +40,13 @@ Dataset <- reactive({
     return(Dataset)
   }
 })
+
+output$readdata <- renderDataTable({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    Dataset()
+  }
+}, options = list(lengthMenu = c(10, 30, 50,100), pageLength = 10))
 
 Dataset2 <- reactive({
   if (is.null(input$file1)) { return(NULL) }
@@ -188,6 +197,7 @@ output$graph2 = renderPlot({
 })
 
 output$graph3 <- renderUI({
+  if (is.null(input$file)) { return(NULL) }
   plot_output_list <- lapply(1:max(wc()$membership), function(i) {
     plotname <- paste("plot", i, sep="")
     visNetworkOutput(plotname, height = '800px', width = '800px')
@@ -407,9 +417,9 @@ output$com_net = renderVisNetwork({
   E(com_graph)$weight=as.numeric(com_el[,3]) 
   E(com_graph)$width <- E(com_graph)$weight
   cut.off <- mean(E(com_graph)$weight) 
-  print(cut.off)
+  #print(cut.off)
   com_graph_1<-delete.edges(com_graph, which(E(com_graph)$weight<=cut.off))
-  visIgraph(com_graph_1)#,
+  return(visIgraph(com_graph_1))#,
        # layout=layout.fruchterman.reingold,
        # edge.width=E(com_graph)$weight/2,
        # vertex.size = (input$cex)/5)
@@ -420,8 +430,14 @@ com_cent = reactive({
   com_el <- network_structure(centralities(),Dataset())
   com_el_1 <- com_el[com_el[,3]!=0,]
   com_graph <- graph_from_data_frame(com_el_1)
-  metrics <- data.frame(Community.Name = make.names(V(com_graph)$name, unique = TRUE),Degree=igraph::degree(com_graph), Out.Degree =igraph::degree(com_graph, v=V(com_graph), mode=c("out")),In.Degree =igraph::degree(com_graph, v=V(com_graph), mode=c("in")),
-                        Betweenness=igraph::betweenness(com_graph), Closeness = igraph::closeness(com_graph), Eigenvector.Centrality.Scores = eigen_centrality(com_graph)$vector, Graph.Coreness = igraph::graph.coreness(com_graph))
+  metrics <- data.frame(Community.Name = make.names(V(com_graph)$name, unique = TRUE),
+                        Degree=igraph::degree(com_graph), 
+                        Out.Degree =igraph::degree(com_graph, v=V(com_graph), mode=c("out")),
+                        In.Degree =igraph::degree(com_graph, v=V(com_graph), mode=c("in")),
+                        Betweenness=igraph::betweenness(com_graph), 
+                        Closeness = igraph::closeness(com_graph), 
+                        Eigenvector.Centrality.Scores = eigen_centrality(com_graph)$vector, 
+                        Graph.Coreness = igraph::graph.coreness(com_graph))
   # row.names(metrics) = V(graph)$name
   
   metrics = metrics[(order(metrics[,1],metrics[,2],metrics[,3],metrics[,4],metrics[,5],metrics[,6],metrics[,7], decreasing= T)),]
@@ -433,7 +449,7 @@ output$com_cent = renderDataTable({
   if (is.null(input$file)) { return(NULL) }
   
   com_cent()
-}, options = list(lengthMenu = c(5, 30, 50), pageLength = 5))
+}, options = list(lengthMenu = c(10, 30, 50), pageLength = 10))
 
 })
 

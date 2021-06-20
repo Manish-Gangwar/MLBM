@@ -6,7 +6,9 @@ try(require("shiny")||install.packages("shiny"))
 try(require("igraph")||install.packages("igraph"))
 try(require("tm")||install.packages("tm"))
 try(require("stringr")||install.packages("stringr"))
-
+if(!require("shinyBS")) {install.packages("shinyBS")}; library(shinyBS)
+if(!require("DT")) {install.packages("DT")}; library(DT)
+if (!require("shinycssloaders")) {install.packages("shinycssloaders")}; library(shinycssloaders)
 library("shiny")
 library("igraph")
 library("tm")
@@ -116,10 +118,26 @@ shinyServer(function(input, output,session) {
   } # func ends
   #---------------------------------------------
   
-  Dataset <- reactive({
+  Dataset0 <- reactive({
     if (is.null(input$file)) { return(NULL) }
     else{
       Dataset <- read.csv(input$file$datapath ,header=TRUE, sep = ",", stringsAsFactors = F)
+      return(Dataset)
+    }
+  })
+  
+  output$readdata <- renderDataTable({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      data.frame(Dataset0())
+    }
+  })
+  
+  Dataset <- reactive({
+    if (is.null(input$file)) { return(NULL) }
+    else{
+      #Dataset <- read.csv(input$file$datapath ,header=TRUE, sep = ",", stringsAsFactors = F)
+      Dataset=Dataset0()
       Dataset[,1] <- str_to_title(Dataset[,1])
       Dataset[,1] <- make.names(Dataset[,1], unique=TRUE)
       Dataset[,1] <- tolower(Dataset[,1])
@@ -135,6 +153,7 @@ shinyServer(function(input, output,session) {
       return(Dataset)
     }
   })
+  
   #---------------------------------------------  
     dtm = reactive({
       
@@ -401,7 +420,7 @@ shinyServer(function(input, output,session) {
                               else{
                                 
                                 max_slider = sort(colSums(bi_graph_df()),decreasing = TRUE)[[2]]
-                                sliderInput("cutoff", "Filter all brands selected by atleast following no of users", 
+                                sliderInput("cutoff", "Term must be present in atleast _x_ docs", 
                                         min = 1,
                                         max = max_slider-1,
                                         value = floor(max_slider/2),

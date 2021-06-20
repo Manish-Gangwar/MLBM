@@ -4,7 +4,8 @@
     #rownames(input_df) <- input_df[,id_var]
     input_df[,id_var] <- NULL
     # first, retain only metric colms
-    a0_logi = apply(input_df, 2, function(x) {is.numeric(x)}); a0_logi
+    a0_logi = apply(input_df, 2, function(x) {is.numeric(x)}); 
+    #a0_logi
     df0 = input_df[, a0_logi]
     n1 = nrow(df0); n1
     
@@ -32,7 +33,8 @@
     
     ## set threshold in percentile terms (can be slider based widget in shiny app)
     #thresh0=0.25  # say. top 25% closest rows only form links
-    thresh1 = quantile(unlist(full_dmat), cutoff_percentile,na.rm = TRUE) %>% as.numeric(); thresh1
+    thresh1 = quantile(unlist(full_dmat), cutoff_percentile,na.rm = TRUE) %>% as.numeric(); 
+    #thresh1
     adj_mat = map_dfc(full_dmat, function(x) {1*(x < thresh1)}) # 0.03s
     adj_mat1 = matrix(adj_mat, n1, n1) # adj_mat1[1:8,1:8]
     

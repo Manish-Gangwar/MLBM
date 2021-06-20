@@ -19,7 +19,8 @@ try(require("wordcloud")||install.packages("wordcloud"))
 try(require("plotly")||install.packages("plotly"))
 try(require("tidytext")||install_github("juliasilge/tidytext"))
 try(require("tidytext")||install.packages("tidytext"))
-
+try(require("tools")||install.packages("tools"))
+library("tools")
 library("shiny")
 library("tidytext")
 library("tidyr")
@@ -247,16 +248,16 @@ lexicon_data<-read.csv('sentiments.csv',stringsAsFactors=FALSE)# read lexcicons 
     if (input$lexicon  %in% c("bing","loughran")) {
       sent.df() %>%
       count(word, sentiment, sort = TRUE) %>%
-      acast(word ~ sentiment, value.var = "n", fill = 0) %>%
-       comparison.cloud( #colors = c("#F8766D", "#00BFC4"),
-                       max.words = 300)
+      acast(word ~ sentiment, value.var = "n", fill = 0)  %>% comparison.cloud(#colors = c("#F8766D", "#00BFC4"),
+                       max.words = 100)
+
     } else {
       
         sent.df() %>%
         count(word, score, sort = TRUE) %>%
-        acast(word ~ score, value.var = "n", fill = 0) %>%
-        comparison.cloud( #colors = c("#F8766D", "#00BFC4"),
+        acast(word ~ score, value.var = "n", fill = 0) %>%  comparison.cloud( #colors = c("#F8766D", "#00BFC4"),
         max.words = 100)
+
     }
     }
   })

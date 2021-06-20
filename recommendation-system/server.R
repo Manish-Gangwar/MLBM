@@ -4,7 +4,9 @@ if (!require(quanteda)) {install.packages("quanteda")};  library(quanteda)
 if (!require(ggplot2)) {install.packages("ggplot2")};  library(ggplot2)
 if (!require(magrittr)) {install.packages("magrittr")};  library(magrittr)
 if (!require(text2vec)) {install.packages("text2vec")};  library(text2vec)
-
+if(!require("shinyBS")) {install.packages("shinyBS")}; library(shinyBS)
+if(!require("DT")) {install.packages("DT")}; library(DT)
+if (!require("shinycssloaders")) {install.packages("shinycssloaders")}; library(shinycssloaders)
 
 shinyServer(function(input, output,session) {
   

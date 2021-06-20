@@ -15,8 +15,12 @@ try(require(dplyr) || install.packages("dplyr"));library(dplyr)
 try(require(tidyr) || install.packages("tidyr"));library(tidyr)
 try(require(igraph)|| install.packages("igraph"));library(igraph)
 try(require(visNetwork)|| install.packages('visNetwork'));library(visNetwork)
+try(require("tools")||install.packages("tools"));library("tools")
 if (!require(shinyWidgets)) {install.packages("shinyWidgets")};  library(shinyWidgets)
 if (!require(stringr)) {install.packages("stringr")};  library(stringr)
+if(!require("shinyBS")) {install.packages("shinyBS")}; library(shinyBS)
+if(!require("DT")) {install.packages("DT")}; library(DT)
+if (!require("shinycssloaders")) {install.packages("shinycssloaders")}; library(shinycssloaders)
 
 # Update test 123
 
@@ -38,6 +42,8 @@ shinyServer(function(input, output,session) {
         return(calib)}
     else{
       Document = read.csv(input$file$datapath ,header=TRUE, sep = ",", stringsAsFactors = F)
+      Doc.id=seq(1:nrow(Document))
+      calib=data.frame(Doc.id,Document)
       # Document[,1] <- str_to_title(Document[,1])
       # Document[,1] <- make.names(Document[,1], unique=TRUE)
       # Document[,1] <- tolower(enc2utf8(Document[,1]))
@@ -45,10 +51,32 @@ shinyServer(function(input, output,session) {
       # Document<-Document[complete.cases(Document), ]
       # Document <- Document[!(duplicated(Document[,1])), ]
       # rownames(Document) <- Document[,1]
-      return(Document)
+      return(calib)
       }
       
     }
+  })
+  
+  dataset101 <- reactive({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      if(file_ext(input$file$datapath)=="txt"){
+        text  = readLines(input$file$datapath)
+        text = text[text!=""]
+        
+        if (length(text[text !=""]) == 0 ) stop (print("Null Vector :( "))
+        
+        if (length(text) == 1) {
+          textdf = data_frame(text0 = text) %>% 
+            unnest_tokens(text, text0, token = "sentences")
+        } else {
+          textdf = data_frame(text = text)  
+        } }
+      else{
+        textdf = read.csv(input$file$datapath ,header=TRUE, sep = ",", stringsAsFactors = F)
+      }
+    }
+    return(textdf)
   })
   
   
@@ -60,7 +88,7 @@ shinyServer(function(input, output,session) {
   }, options = list(lengthMenu = c(5, 30, 50,100), pageLength = 5))
   
   
-  cols <- reactive({colnames(dataset())})
+  cols <- reactive({colnames(dataset())[-1]})
   
   output$pre_proc1 <- renderUI({if(is.null(dataset())){
     return(NULL)
@@ -82,8 +110,8 @@ shinyServer(function(input, output,session) {
   
   y_col <- reactive({if(is.null(dataset())){  return(NULL)}
     else{
-    x <- match(input$x,cols())
-    y_col <- cols()[-x]
+    #x <- match(input$x,cols())
+    y_col <- cols()#[-x]
     return(y_col)
     }
     })
@@ -101,7 +129,8 @@ shinyServer(function(input, output,session) {
    dtm_tcm =  eventReactive(input$apply,{
     
     textb = dataset()[,input$y]
-    ids = dataset()[,input$x]
+    #ids = dataset()[,input$x]
+    ids = dataset()[,1]
     
     dtm.tcm = dtm.tcm.creator(text = textb,
                               id = ids,
@@ -140,7 +169,8 @@ shinyServer(function(input, output,session) {
   dtm_idf =  eventReactive(input$apply,{
     
     textb = dataset()[,input$y]
-    ids = dataset()[,input$x]
+    #ids = dataset()[,input$x]
+    ids = dataset()[,1]
     
     dtm.tcm = dtm.tcm.creator(text = textb,
                               id = ids,
@@ -202,10 +232,13 @@ shinyServer(function(input, output,session) {
   output$idf_table <- renderDataTable({if(is.null(dataset())){
     return(NULL)
   }else{
-    temp <- ordered_dtm_idf()[1:10,1:10]
+    temp <- ordered_dtm_idf()#[1:10,1:10]
+    nr=min(nrow(temp),50)
+    nc=min(ncol(temp),50)
+    temp1 <- temp[,1:nc]
     #  temp <- tem[1:10,1:10]
     }
-    return(temp)
+    return(temp1)
     
     # a = colSums(mat1)  # collect colsums into a vector obj a
     
@@ -219,10 +252,12 @@ shinyServer(function(input, output,session) {
   output$dtm_table <- renderDataTable({if(is.null(dataset())){
     return(NULL)
   }else{
-    temp <- ordered_dtm()[1:10,1:10]
-    #  temp <- tem[1:10,1:10]
+    temp <- ordered_dtm()#[1:10,1:10]
+    nr=min(nrow(temp),50)
+    nc=min(ncol(temp),50)
+    temp1 <- temp[,1:nc]
   }
-    return(temp)
+    return(temp1)
     
     # a = colSums(mat1)  # collect colsums into a vector obj a
     
@@ -330,7 +365,8 @@ shinyServer(function(input, output,session) {
     if (is.null(input$file)|input$apply==0) {return(NULL)}
     else {
       size = dim(t(dtm_idf()$dtm))
-      dtm_size = paste("TF-IDF matrix size is ", size[1]," X ", size[2],". Below are the first 10 docs X top 10 tokens")
+   #   dtm_size = paste("TF-IDF matrix size is ", size[1]," X ", size[2],". Below are the first 10 docs X top 10 tokens")
+      dtm_size = paste("TF-IDF matrix has ", size[2]," documents (rows) and ", size[1],"tokens (columns). Below are the top tokens")
       return(dtm_size)
     }
   })
@@ -340,7 +376,7 @@ shinyServer(function(input, output,session) {
     if (is.null(input$file)|input$apply==0) {return(NULL)}
     else {
       size = dim(t(dtm_tcm()$dtm))
-      dtm_size = paste("Term Document Matrix (TDM) size is ", size[1]," X ", size[2],". Below are the first 10 docs X top 10 tokens")
+      dtm_size = paste("Document Term Matrix has ", size[2]," documents (rows) and ", size[1],"tokens (columns). Below are the top tokens")
       return(dtm_size)
     }
   })
@@ -364,10 +400,11 @@ shinyServer(function(input, output,session) {
   
   
   # This is your reactive element.
-  df_reactive <- eventReactive(input$apply,{
+  df_reactive <- eventReactive(input$apply1,{
     
-    if (is.null(input$file)|input$apply==0) {return(NULL)}
+    if (is.null(input$file)|input$apply1==0) {return(NULL)}
     else{
+      #a0 = concordance.r(dataset()[,input$y],input$concord.word, input$window,FALSE)
       a0 = concordance.r(dataset()[,input$y],input$concord.word, input$window,input$regx)
       a0
       # a0 %>%

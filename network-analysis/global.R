@@ -43,10 +43,10 @@ network_structure <- function(centralities,adj_mat){
     filtered_community_mat <- adj_mat[rownames(adj_mat) %in% filtered_community$Resp.Name,] # filter adjacency matrix of 
     final_df <- data.frame() #empty dataframe to store all results
     
-    print(i)
+    #print(i)
     for(j in 1:nrow(filtered_community)){
       resp <- filtered_community$Resp.Name[j] 
-      print(resp)
+     # print(resp)
       respondent_network <- data.frame(adj_mat[rownames(adj_mat)==resp,])
       
       # respondent_network_T <- data.frame(t(respondent_network))

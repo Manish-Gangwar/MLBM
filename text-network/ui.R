@@ -7,6 +7,7 @@ library("igraph")
 library("tm")
 library('visNetwork')
 library('stringr')
+library("shinyBS")
 #library("foreign")
 
 shinyUI(fluidPage(
@@ -15,6 +16,11 @@ shinyUI(fluidPage(
   titlePanel(title=div(img(src="logo.png",align='right'),"Text Network App"), windowTitle	='Text Network'),
   # Input in sidepanel:
   sidebarPanel(
+    tags$a(href="javascript:history.go(0)", 
+           popify(tags$i(class="fa fa-refresh fa-1x"),
+                  title = "", #Reload App", 
+                  content = "click here to refresh the app",
+                  placement = "right")),
     
    # h5(p("Data Input")),
     fileInput("file", "Upload Data"),
@@ -25,15 +31,17 @@ shinyUI(fluidPage(
     # sliderInput("cex", "Data point labels font size", min = 0.1,  max = 3, value = 1,round = FALSE),
     # sliderInput("cex2", "Vertex Size", min = 0.1,  max = 20, value = 5,round = FALSE),
     
-    numericInput("npoint", "Number of max users in graph", 50),
-    uiOutput("interactive_slider"),
+
     #sliderInput("cutoff", " Minimum number of times brand is selected", min = 1,max = 50,value = 5,step = 1),
-    sliderInput("cex", "Data point labels font size", min = 0.1,  max = 3, value = 1,round = FALSE),
+    hr(),
+    #h4("Options for COG"),
+
     #sliderInput("cex2", "Vertex Size", min = 0.1,  max = 20, value = 5,round = FALSE),
     
     
     numericInput("nodes", "Number of Central Nodes in COG graph", 4),
     numericInput("connection", "Number of Max Connection with Central Node in COG graph", 5),
+    sliderInput("cex", "Font size for labels in COG graph", min = 0.1,  max = 3, value = 1,round = FALSE),
     
     br()
   ),
@@ -50,10 +58,14 @@ shinyUI(fluidPage(
                 tabPanel("Overview & Example Dataset",
                          
                          h4(p("Overview")),
-                         p("Network analysis refers to a family of methods that describe relationships between units of analysis. A network is comprised of nodes as well as the edges or connections between them.
+                         p("Network analysis refers to a family of methods that describe relationships between units of analysis. 
+                         A network is comprised of nodes as well as the edges or connections between them.
                            ", align = "Justify"),
                          
-                         p("one can represent a corpus of documents as a network where each node is a document, and the thickness or strength of the edges between them describes similarities between the words used in any two documents. Or, one can create a textnetwork where individual words are the nodes, and the edges between them describe the regularity with which they co-occur in documents."
+                         p("one can represent a corpus of documents as a network where each node is a document, 
+                           and the thickness or strength of the edges between them describes similarities between 
+                           the words used in any two documents. Or, one can create a text network where individual words 
+                           are the nodes, and the edges between them describe the regularity with which they co-occur in documents."
                            ,align="Justify"),
                          tags$a(href="https://sicss.io/2018/materials/day3-text-analysis/text-networks/rmarkdown/SICSS_Text_Networks.html#:~:text=What%20is%20a%20Text%20Network%3F,-Network%20analysis%20refers&text=For%20example%2C%20one%20can%20represent,used%20in%20any%20two%20documents",
                                 "-Source",target="_blank"),
@@ -73,20 +85,30 @@ shinyUI(fluidPage(
                         # p("Please note that download will not work with RStudio interface. Download will work only in web-browsers. So open this app in a web-browser and then download the example file. For opening this app in web-browser click on \"Open in Browser\" as shown below -"),
                         # img(src = "example1.png"),
                          #, height = 280, width = 400
-                         
-                         
                          ),
-                tabPanel("Bipartite Graph",visNetworkOutput("graph5", height = 800, width = 840)),
-                tabPanel("Doc-Doc COG",visNetworkOutput("graph3", height = 800, width = 840),
+                tabPanel("Input Data",
+                         h4("Review Input Data"), 
+                         # shinycssloaders::withSpinner(dataTableOutput("readdata"),tags$head(tags$style("tfoot {display: table-header-group;}"))),br(),
+                         shinycssloaders::withSpinner(DT::dataTableOutput("readdata")),br(), 
+                         br()),
+                tabPanel("Bipartite Graph",
+                         numericInput("npoint", "Maximum number of terms in the graph", 10),
+                         uiOutput("interactive_slider"),
+                         shinycssloaders::withSpinner(visNetworkOutput("graph5", height = 700, width = 700)),
+                         br()),
+                tabPanel("Doc-Doc COG",
+                         shinycssloaders::withSpinner(visNetworkOutput("graph3", height = 700, width = 700)),
                          h4("Download Doc-Doc Matrix"),
-                         downloadButton('downloadData2', 'Download Doc-Doc Matrix'),h4("Sample Doc-Doc Matrix"),tableOutput('doc_doc')),
+                         downloadButton('downloadData2', 'Download Doc-Doc Matrix'),h4("Sample Doc-Doc Matrix"),tableOutput('doc_doc'),
+                         br()),
                 tabPanel("Term-Term COG",
-                         visNetworkOutput("graph4", height = 800, width = 840),
-                         h4("Download Term-Term Matrix (Top 200)"),
-                         downloadButton('downloadData3', 'Download Term-Term Matrix'),h4("Sample Term-Term Matrix"),tableOutput('term_term')
-                         ),
+                         shinycssloaders::withSpinner(visNetworkOutput("graph4", height = 700, width = 700)),
+                         h4("Download Term-Term Matrix"),
+                         downloadButton('downloadData3', 'Download Term-Term Matrix'),h4("Sample Term-Term Matrix"),tableOutput('term_term'),
+                         br()),
                 tabPanel("Download DTM", h4(p("Download DTM for network analyis")), 
-                downloadButton('downloadData1', 'Download DTM'),h4("Sample DTM"),tableOutput('dtm'))
+                downloadButton('downloadData1', 'Download DTM'),h4("Sample DTM"),tableOutput('dtm'),
+                br())
                 # tabPanel("Network Centralities",dataTableOutput("centdata"))
     )
   ) 

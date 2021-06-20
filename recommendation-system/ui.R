@@ -1,10 +1,15 @@
-
+library("shinyBS")
 shinyUI(fluidPage(
   
   #titlePanel(title=div(img(src="logo.png",align='right'),"Recommendation System")),
   headerPanel(title=div(img(src="logo.png",align = "right"), h2("Recommendation System", style="bold")), windowTitle	='Recommendation System'),
   # Input in sidepanel:
   sidebarPanel(
+    tags$a(href="javascript:history.go(0)", 
+           popify(tags$i(class="fa fa-refresh fa-1x"),
+                  title = "", #Reload App", 
+                  content = "click here to refresh the app",
+                  placement = "right")),
     
     fileInput("file", "Upload Input DTM file"),
     uiOutput("focal_list"),
@@ -44,9 +49,8 @@ shinyUI(fluidPage(
                 tabPanel("DTM Data Summary", 
                          h4("Summary Report"),
                          verbatimTextOutput("dim"),
-                         br(),
                          h4("Input Dataset"),
-                         dataTableOutput("dtm_head"),
+                         shinycssloaders::withSpinner(dataTableOutput("dtm_head")),
                          br(),
                          h4("Word Frequency Table"),
                          dataTableOutput("freq_table")
@@ -54,23 +58,18 @@ shinyUI(fluidPage(
                          ),
                 tabPanel("IBCF Recommendation",
                         h4("Item-based collaborative filtering (IBCF)"),
-                        DT::dataTableOutput('ibfc_re')
-                         
-                ),
+                        shinycssloaders::withSpinner(DT::dataTableOutput('ibfc_re')),
+                        br()),
                 tabPanel("UBCF Recommendation",
                          h4("User-based collaborative filtering (UBCF)"),
-                         DT::dataTableOutput('ubfc_re')
-                         
-                ),
+                         shinycssloaders::withSpinner(DT::dataTableOutput('ubfc_re')),
+                         br() ),
                tabPanel("Similar Users",
                         h4("Similar Users"),
-                        DT::dataTableOutput("sim_usr")
-               )
+                        shinycssloaders::withSpinner(DT::dataTableOutput("sim_usr")),
+                        br())
               
-                
-                
-                
-                
+
     )
   )
 )

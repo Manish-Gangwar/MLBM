@@ -9,6 +9,7 @@ library('dplyr')
 library("tidyverse")
 library('randomcoloR')
 library("stringr")
+library("shinyBS")
 #library("foreign")
 
 fluidPage(
@@ -20,7 +21,12 @@ fluidPage(
   
   # Input in sidepanel:
   sidebarPanel(
-    h4(p("Data Input")),
+    tags$a(href="javascript:history.go(0)", 
+           popify(tags$i(class="fa fa-refresh fa-1x"),
+                  title = "", #Reload App", 
+                  content = "click here to refresh the app",
+                  placement = "right")),
+   # h4(p("Data Input")),
     fileInput("file", "Upload 'Adjacency Matrix' (csv file with header)"),
     fileInput("file1", "Upload optional 'Demographics Data' (csv file with header)"),
     # htmlOutput("yvarselect"),
@@ -46,7 +52,7 @@ fluidPage(
                             h4(p(tags$b("Data Input"))),
                             
                             p("This shiny application requires following two different types of data input from the users"),
-                            tags$b("1. Adjacency Matrix"),
+                            tags$b("1. NxN Adjacency Matrix"),
                             p("It represents the relationship between the nodes"),
                             
                             img(src = "input_adj.png", height = 180, width = 600),
@@ -76,19 +82,30 @@ fluidPage(
                          
                 ),
                 #
+                tabPanel("Input Data",
+                         h4("Review Input Data"), 
+                         # shinycssloaders::withSpinner(dataTableOutput("readdata"),tags$head(tags$style("tfoot {display: table-header-group;}"))),br(),
+                         shinycssloaders::withSpinner(DT::dataTableOutput("readdata")),br(), 
+                         br()),
+                tabPanel("Network Centralities",br(),
+                         shinycssloaders::withSpinner(downloadButton('downloadData1', 'download centralities file')), br(),
+                         dataTableOutput("centdata"),br()),
                 tabPanel('Network Plot',br(),htmlOutput("yvarselect"),
-                         plotOutput("graph1", height = 800, width = 840),
-                         visNetworkOutput('int_net',width = '800px',height = '600px')),
+                         shinycssloaders::withSpinner(plotOutput("graph1", height = 700, width = 700)),
+                         visNetworkOutput('int_net',width = '800px',height = '600px'),br()),
                 #tabPanel("Network Plot",plotOutput("graph1", height = 800, width = 840)),
-                tabPanel("Communities Plot",plotOutput("graph2", height = 800, width = 840),uiOutput("graph3"),helpText("Note: Seperate plot for community with size = 1 won't be shown")),
+                tabPanel("Network Communities",
+                         shinycssloaders::withSpinner(visNetworkOutput("com_net",height = 700, width = 700)),
+                         dataTableOutput('com_cent'),
+                         br()),
+                tabPanel("Communities Plot",
+                         shinycssloaders::withSpinner(plotOutput("graph2", height = 700, width = 700)),
+                         uiOutput("graph3"),helpText("Note: Seperate plot for community with size = 1 won't be shown"),
+                         br())
                 #visNetworkOutput('comm_plot')),
                 #plotOutput("graph2", height = 800, width = 840),
                 #uiOutput("graph3")), #, height = 800, width = 840
-                tabPanel("Network Centralities",br(),
-                         downloadButton('downloadData1', 'Download Centralities file (Works only in browser)'), br(),br(),
-                         dataTableOutput("centdata")),
-                tabPanel("Network Structure",visNetworkOutput("com_net",height = 800, width = 840),dataTableOutput('com_cent'))
-                )
+              )
             ) 
         ) 
     

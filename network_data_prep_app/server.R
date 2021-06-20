@@ -14,7 +14,8 @@ shinyServer(function(input, output,session) {
   Datasetf0 <- reactive({
     if (is.null(input$file)) { 
       return(NULL)
-    }else if(input$id_col==FALSE){
+    }else if (1==1) {
+    #}else if (input$id_col==FALSE){
       df <- read.csv(input$file$datapath,
                      stringsAsFactors = TRUE,
                      header = TRUE)
@@ -75,14 +76,29 @@ shinyServer(function(input, output,session) {
     (data())})
   output$df_size <- renderText({
     if (is.null(input$file)) {return(NULL)}
-    paste0("Uploaded data has ",dim(data())[1]," rows and ", dim(data())[2]," columns")})
+    paste0("only numerical data is used for adjacency matrix calculations; final data has ",dim(nu.data())[1]," rows and ", dim(nu.data())[2]," columns")})
+  
+  nu.data = reactive({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      data = data()
+      Class = NULL
+      for (i in 1:ncol(data)){
+        c1 = (class(data[,i]))
+        Class = c(Class, c1)
+      }
+      nu = which(Class %in% c("numeric","integer"))
+      nu.data = data[,nu] 
+      return(nu.data)
+    }
+  })
   
   output$summ <- renderDataTable(
     if (is.null(input$file)) { 
       return(NULL)
     }else{
-      summry_df(data())
-      },options = list(lengthMenu = c(20, 50,100), pageLength = 20)
+      summry_df(nu.data())
+      },options = list(lengthMenu = c(20,50,100), pageLength = 20)
     )
  # output$summ <- renderText(summary_table(mtcars))
   
@@ -94,7 +110,7 @@ shinyServer(function(input, output,session) {
       selectInput("id","Select Identity column",
                   choices = colnames(data()),
                   multiple = FALSE,
-                  selected = colnames(data()))
+                  selected = colnames(data())[1])
     }
   })
   
@@ -121,19 +137,19 @@ shinyServer(function(input, output,session) {
     }
   })
   
-  values <- reactiveValues(df_data = NULL) 
-  
-  observeEvent(input$apply,{
+  values <- reactive({ 
     input_df <- data()
     adj0 = df2adjacency(input_df,
                         cutoff_percentile = input$cut_off,
                         id_var = input$id)
-    values$df_data <- adj0
+    values <- adj0
   })
   
   
   output$sample_adj <- renderDataTable({
-    datatable(values$df_data[1:8,1:8], rownames = TRUE )
+    if (is.null(input$file)) { return(NULL) }
+    
+    datatable(values(), rownames = TRUE )
     
   })
   
@@ -155,7 +171,7 @@ shinyServer(function(input, output,session) {
     content = function(file) {
       #df_csv <- values$df_data
       #rownames(df_csv) <- colnames(df_csv)
-      write.csv(values$df_data, file,row.names=TRUE)
+      write.csv(values(), file,row.names=TRUE)
     }
   )
   

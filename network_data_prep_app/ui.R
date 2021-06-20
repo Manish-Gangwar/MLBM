@@ -6,7 +6,7 @@ library(descriptr)
 library("shinyBS")
 
 shinyUI(fluidPage(
-  
+  title = "Network Data Prep App",
   titlePanel(title=div(img(src="logo.png",align='right'),"Network Data Prep App")),
   
   # Input in sidepanel:
@@ -17,15 +17,11 @@ shinyUI(fluidPage(
                   content = "click here to refresh the app",
                   placement = "right")),
     fileInput("file", "Upload CSV"),
-    checkboxInput('id_col',"Create ID variable",value = FALSE),
+   # checkboxInput('id_col',"Create ID variable",value = FALSE),
     uiOutput("sel_id_var"),
     #uiOutput("sel_fac_to_dumm"),
-    helpText("selected top x percentile rows will only form links"),
-    sliderInput(inputId = "cut_off",label = "cut-off percentile",min = 0,max=1,step = 0.01,value = 0.25),
     htmlOutput("imputemiss"),
-    actionButton(inputId = "apply",label = "Apply Changes", icon("refresh"))
-    
-  ),
+    br()),
   
   # Main Panel:
   mainPanel( 
@@ -46,29 +42,32 @@ shinyUI(fluidPage(
                          img(src = "dataset.png"),
                          hr(),
                          h4(p("Download Sample file")),
-                         
                          downloadButton('downloadData1', 'Download Sample Input file'),br(),br(),
                        #  p("Please note that download will not work with RStudio interface. Download will work only in web-browsers. So open this app in a web-browser and then download the example file. For opening this app in web-browser click on \"Open in Browser\" as shown below -"),
                        #  img(src = "example1.png")
                          #, height = 280, width = 400
-                         
-                         
-                )  ,
-                tabPanel("Column Summary Stats",
-                         h4("Dimensions"),
-                         textOutput("df_size"),
-                         hr(),
-                         h4("Input Data Columns Summary Report"),
-                         #verbatimTextOutput("summ"),
-                         dataTableOutput("summ"),
-                         htmlOutput("imout"),
-                         verbatimTextOutput("screen_summary")
-                         #helpText("Note: In case of missing values, use data pre-proc app for imputation"),
-                         ),
-                
-                tabPanel("Download Dataset", 
+                        br()),
+                tabPanel("Input  Data", 
                          h4("Review Input Data"),
                          dataTableOutput("sample_data"),
+                         htmlOutput("imout"),
+                         verbatimTextOutput("screen_summary"),
+                         br()),
+                tabPanel("Numerical Data Columns Summary",br(),
+                        # h4("Dimensions"),
+                         textOutput("df_size"),
+                         h4("Numerical Data Columns Summary Report"),
+                         dataTableOutput("summ"),
+                         #verbatimTextOutput("summ"),
+                         #helpText("Note: In case of missing values, use data pre-proc app for imputation"),
+                         br()),
+                
+              tabPanel("Download Adjaceny Matrix", br(),
+                       #  p("to generate adjacency matrix, click on 'Apply Changes' in the panel on the left"),
+                       helpText("selected top x percentile rows will form a link"),
+                       sliderInput(inputId = "cut_off",label = "cut-off top x percentile",min = 0,max=1,step = 0.01,value = 0.25),
+                       #actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),
+                       hr(),
                          h4("Sample Adjaceny Matrix"),
                          dataTableOutput("sample_adj"),
                          hr(),
@@ -77,8 +76,8 @@ shinyUI(fluidPage(
                          hr(),
                          h4(p("Download Node Attributes")),
                          uiOutput("node_attr"),
-                         downloadButton('download_node_attr', 'Download Node Attributes')
-                )
+                         downloadButton('download_node_attr', 'Download Node Attributes'),
+                          br(),br(),br() )
                 
                 
                 

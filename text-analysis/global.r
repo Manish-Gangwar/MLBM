@@ -255,7 +255,7 @@ bigram.collocation <- function(text1){   # text1 from readLines() is input
     unnest_tokens(word, text1) %>%
     anti_join(stop_words) %>% 
    dplyr::count(word, sort = TRUE) #%>% 
-  text_df
+#  text_df
   
   # create bigrams df
   bigram_df <- data_frame(text1) %>% 
@@ -268,7 +268,7 @@ bigram.collocation <- function(text1){   # text1 from readLines() is input
     dplyr::filter(!(word1 %in% stop_words$word)) %>%
     dplyr::filter(!(word2 %in% stop_words$word)) #%>%
   
-  bigram_df              
+#  bigram_df              
   
   # create a merged df
   new_df = bigram_df %>% dplyr::mutate(k1 = 0) %>% dplyr::mutate(k2 = 0) # %>%
@@ -416,10 +416,6 @@ drop_stopwords_corpus <- function(raw_corpus, custom.stopwords=NULL, use.tidy.st
   
   return(doc_corpus) }    # drop_stopwords_corpus() func ends 
 
-# # testing above func
-# speech = readLines('https://raw.githubusercontent.com/sudhir-voleti/sample-data-sets/master/PM%20speech%202014.txt')
-# system.time({  new_corpus = drop_stopwords_corpus(speech, use.tidy.stopwords=TRUE)  })    # 0.26 secs
-# 
 # 
 # a21 <- a2
 
@@ -542,9 +538,6 @@ replace_bigram <- function(raw_corpus, stopw_list, min_freq = 2){
   
   return(doc_corpus) }    # replace_bigrams() func ends 
 # 
-# # testing on speech
-#speech = readLines('https://raw.githubusercontent.com/sudhir-voleti/sample-data-sets/master/PM%20speech%202014.txt')
-
 
 # stopw_list <- c("dear","countrymen")
 # system.time({ bigrammed_corpus = replace_bigram(speech, min_freq = 2,stopw_list = stopw_list) }) # 0.66 secs
