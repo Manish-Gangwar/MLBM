@@ -14,8 +14,8 @@ library("shinyBS")
 #library("foreign")
 
 shinyUI(fluidPage(
-  #titlePanel(title=div(img(src="logo.png",align='right'),"Factor analysis")),
-  headerPanel(title=div(img(src="logo.png",align = "right"), h2("Factor Analysis App", style="bold")), windowTitle	='Factor analysis'),
+ # titlePanel(title=div(img(src="isb.png",align='right'),"Factor analysis")),
+  headerPanel(title=div(img(src="isb.png",align='right'), h2("Factor Analysis App", style="bold")), windowTitle	='Factor analysis'),
   # Input in sidepanel:
   sidebarPanel(
     tags$a(href="javascript:history.go(0)", 
@@ -25,8 +25,8 @@ shinyUI(fluidPage(
                   placement = "right")),
     # Upload data:
     h4(p("Data Input")),
-    helpText("Note: input data must be an unique observation id",style="color:darkblue"),
-    fileInput("file", "Upload input data (csv/text file)"),  
+    helpText("Note: first column of the input data must be an unique observation id",style="color:darkblue"),
+    fileInput("file", "Upload input data (csv file with observation ID and header)"),  
     uiOutput("colList"),
     #numericInput("fselect", "Number of Factors:", 2, min=2),
     htmlOutput("fselect"),
@@ -99,7 +99,7 @@ downloadButton('downloadData', 'download sample data'),
                   #          br(),br(),
                   #          br()),
                 tabPanel("Factor vs Variables",
-                         sliderInput("cutoffcorr", "Cut-off correlation for factors vs variables", min = 0,  max = 1, value = 0.5),
+                         sliderInput("cutoffcorr", "Cut-off correlation for factors vs variables", min = 0,  max = 1, value = 0.25),
                          h4("Grouping variables based on highest factor loading"),
                          p("lines represent correlation and color of dots represent factors"),
                          plotOutput("plot20",height = 850, width = 850)),
@@ -137,7 +137,7 @@ downloadButton('downloadData', 'download sample data'),
                 
                 
                 tabPanel("Factor Loading Map",br(),
-                         sliderInput("cutoff", "Cut-off loadings for factor laoding map", min = 0,  max = 1, value = 0.5),
+                         sliderInput("cutoff", "Cut-off loadings for factor laoding map", min = 0,  max = 1, value = 0.25),
                          p("Plot of original variables on factor axis."),
                          plotOutput("plot2",height = 850, width = 850),br()),
                 tabPanel("Factor Scores Map",br(),
