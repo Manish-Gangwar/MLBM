@@ -9,6 +9,7 @@ library(tokenizers)
 library(wordcloud)
 library(slam)
 library(maptpx)
+library("shinyBS")
 
 shinyUI(fluidPage(
   
@@ -16,27 +17,28 @@ shinyUI(fluidPage(
   titlePanel(title=div(img(src="logo.png",align='right'),"Text Topic Analysis")),
   # Input in sidepanel:
   sidebarPanel(
-    
-    fileInput("file", "Upload text file"),
-    uiOutput('id_var'),
+    tags$a(href="javascript:history.go(0)", 
+           popify(tags$i(class="fa fa-refresh fa-1x"),
+                  title = "", #Reload App", 
+                  content = "click here to refresh the app",
+                  placement = "right")),
+    fileInput("file", "Upload input data (text/csv file)"),
+    #uiOutput('id_var'),
     uiOutput("doc_var"),
     
     textInput("stopw", ("Enter stop words separated by comma(,)"), value = "will,can"),
     
     # selectInput("ws", "Weighing Scheme", 
     #             c("weightTf","weightTfIdf"), selected = "weightTf"), # weightTf, weightTfIdf, weightBin, and weightSMART.
-    
-    sliderInput("freq", "Minimum Frequency in DTM:", min = 1,  max = 50, value = 2),
-    
-    sliderInput("max",  "Maximum Number of Words in Wordcloud:", min = 1,  max = 300,  value = 100),  
-    
-    numericInput("topic", "Number of Topics to fit:", 2),
-    
-    numericInput("nodes", "Number of Central Nodes in co-occurrence graph", 4),
-    numericInput("connection", "Number of Max Connection with Central Node", 5),
-    
-    actionButton(inputId = "apply",label = "Apply Changes", icon("refresh"))    
-  ),
+    #htmlOutput("pre_proc1"),
+    #htmlOutput("pre_proc2"),
+    sliderInput("freq", "Minimum frequency of word:", min = 1,  max = 50, value = 2),
+    numericInput("topic", "Number of topics to fit:", 2),
+    actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),  
+    hr(),
+    #h4("Word Cloud Option"),
+    sliderInput("max",  "Maximum number of words in wordcloud:", min = 1,  max = 200,  value = 100),
+    br()),
   
   # Main Panel:
   mainPanel( 
@@ -44,7 +46,7 @@ shinyUI(fluidPage(
     
     tabsetPanel(type = "tabs",
                 #
-                tabPanel("Overview & Example Dataset",h4(p("How to use this App")),
+                tabPanel("Overview & Example Dataset",h4(p("How to Use this App")),
                          
                          p("To use this app you need a document corpus in txt file format. Make sure each document is separated from another document with a new line character.
                            To do basic Text Analysis in your text corpus, click on Browse in left-sidebar panel and upload the txt file. Once the file is uploaded it will do the computations in 
@@ -57,41 +59,46 @@ shinyUI(fluidPage(
                            align = "justify"),
                           #, height = 280, width = 400
                          verbatimTextOutput("start"),
-                         h4(p("Download Sample text file")), 
+                         h4(p("Download Sample Text File")), 
                          downloadButton('downloadData1', 'Download Nokia Lumia reviews txt file'),br(),br(),
-                         p("Please note that download will not work with RStudio interface. Download will work only in web-browsers. So open this app in a web-browser and then download the example file. For opening this app in web-browser click on \"Open in Browser\" as shown below -"),
-                         img(src = "example1.png")
-                         ),
-                tabPanel("Data Summary",
-                         h4("Uploaded data size"),
-                         verbatimTextOutput("up_size"),
-                         h4("Sample of uploaded datasest"),
-                         DT::dataTableOutput("samp_data")
-                         ),
-                tabPanel("TDM & Word Cloud",
+                         #p("Please note that download will not work with RStudio interface. Download will work only in web-browsers. So open this app in a web-browser and then download the example file. For opening this app in web-browser click on \"Open in Browser\" as shown below -"),
+                         #img(src = "example1.png")
+                         br()),
+                tabPanel("Input Data",
+                         #h4("Uploaded data size"),
+                        # verbatimTextOutput("up_size"),
+                         h4("Review Input Data"),
+                         DT::dataTableOutput("samp_data"),
+                        br()),
+                tabPanel("DTM & Word Cloud",
                          h4("DTM Size"),
                          verbatimTextOutput("dtm_size"),
                          hr(),
-                         h4("Term Document Matrix [1:10,1:10]"),
+                         h4("Document Term Matrix"),
                          DT::dataTableOutput("dtmsummary"),
                          hr(),
                          h4("Word Cloud"),
-                         plotOutput("wordcloud",height = 700, width = 700),
+                         plotOutput("wordcloud",height = 500, width = 500),
                          hr(),
                          h4("Weights Distribution of Wordcloud"),
-                         DT::dataTableOutput("dtmsummary1")),
+                         DT::dataTableOutput("dtmsummary1"),br()),
                 
                 #tabPanel("Topic Model - Summary",verbatimTextOutput("summary")),
-                tabPanel("Topics Wordcloud",uiOutput("plots2")),
-                tabPanel("Topics Co-occurrence",uiOutput("plots3")),
+                tabPanel("Topics Wordcloud",
+                         
+                         uiOutput("plots2"),br()),
+                tabPanel("Topics Co-occurrence",
+                         numericInput("nodes", "Number of central nodes in a graph", 4),
+                         numericInput("connection", "Number of max connection with central node", 5),
+                         uiOutput("plots3"),br()),
                 # tabPanel("Topics eta values",tableOutput("summary2")),
                 
                 #                         
-                tabPanel("Token-Topic Loadings",h4("Top terms for each topic"), DT::dataTableOutput("score")),
+                tabPanel("Token-Topic Loadings",h4("Top terms for each topic"), DT::dataTableOutput("score"),br()),
                 
                 tabPanel("Topic Scores as Doc Proportions",br(),br(),
-                         downloadButton('downloadData2', 'Download Topic Proportions file (Works only in browser)'), br(),br(),
-                         dataTableOutput("table"))
+                         downloadButton('downloadData2', 'Download Topic Proportions file'), br(),br(),
+                         dataTableOutput("table"),br())
                 
                          )
            )

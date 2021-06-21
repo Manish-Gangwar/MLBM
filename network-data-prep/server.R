@@ -6,7 +6,9 @@ if (!require(descriptr)) {install.packages("descriptr")};  library(descriptr)
 if (!require(dplyr)) {install.packages("dplyr")};  library(dplyr)
 if (!require(purrr)) {install.packages("purrr")};  library(purrr)
 if (!require("mice")) {install.packages("mice")}; library(mice)
-
+if(!require("shinyBS")) {install.packages("shinyBS")}; library(shinyBS)
+if(!require("DT")) {install.packages("DT")}; library(DT)
+if (!require("shinycssloaders")) {install.packages("shinycssloaders")}; library(shinycssloaders)
 
 options(qwraps2_markup = "markdown")
 
@@ -19,15 +21,14 @@ shinyServer(function(input, output,session) {
       df <- read.csv(input$file$datapath,
                      stringsAsFactors = TRUE,
                      header = TRUE)
-      
-      return(df)
+      return(data.frame(df))
     }else{
       df <- read.csv(input$file$datapath,
                      stringsAsFactors = TRUE,
                      header = TRUE)
       df <- tibble::rowid_to_column(df, "ID")
       df$ID = paste0('ID_', df$ID)
-      return(df)
+      return(data.frame(df))
       }
     })
   
@@ -50,7 +51,7 @@ shinyServer(function(input, output,session) {
     else { p("Note: missing value rows dropped (if any), check options in the panel on the left.",style="color:black") }
   })
   
-  data = reactive({
+  data0 = reactive({
     if (input$imputemiss == "do not impute or drop rows") 
     { mydataimp=Datasetf0() }
     else if (input$imputemiss == "impute missing values") 
@@ -63,64 +64,82 @@ shinyServer(function(input, output,session) {
     return(mydataimp)
   })
   
+  # output$summ <- renderText(summary_table(mtcars))
+  
+  output$sel_id_var <- renderUI({
+    if(is.null(input$file)){
+      return(NULL)
+    }else{
+      #print(colnames(data()))
+      selectInput("id","Select Identity column",
+                  choices = colnames(data0()),
+                  multiple = FALSE,
+                  selected = colnames(data0())[1])
+    }
+  })
+  
+  data1 = reactive({
+    df=data0()
+    df[,input$id]<-as.factor(df[,input$id])
+    return(df)
+  })
+  
   if(!require("descriptr")) {install.packages("descriptr")}
   library(descriptr)
   output$screen_summary <- renderPrint({
     if (is.null(input$file)) {return(NULL)}
     #else {  ds_screener(mydata())}
-    else {  str(data())} 
+    else {  str(data1())} 
   })
   
   output$sample_data <- renderDataTable({
     if (is.null(input$file)) {return(NULL)}
-    (data())})
-  output$df_size <- renderText({
-    if (is.null(input$file)) {return(NULL)}
-    paste0("only numerical data is used for adjacency matrix calculations; final data has ",dim(nu.data())[1]," rows and ", dim(nu.data())[2]," columns")})
+    (data1())
+    })
   
   nu.data = reactive({
     if (is.null(input$file)) {return(NULL)}
     else {
-      data = data()
+      data = data1()
       Class = NULL
       for (i in 1:ncol(data)){
         c1 = (class(data[,i]))
         Class = c(Class, c1)
       }
       nu = which(Class %in% c("numeric","integer"))
-      nu.data = data[,nu] 
+      nu.data = data.frame(data[,nu])
       return(nu.data)
     }
+  })
+  
+  data = reactive({
+    df=data1()[,c(input$id,colnames(nu.data()))]
+    return(df)
   })
   
   output$summ <- renderDataTable(
     if (is.null(input$file)) { 
       return(NULL)
     }else{
-      summry_df(nu.data())
-      },options = list(lengthMenu = c(20,50,100), pageLength = 20)
-    )
- # output$summ <- renderText(summary_table(mtcars))
+      data=nu.data()
+      summry_df(data[,1:100])
+    },options = list(lengthMenu = c(20,50,100), pageLength = 20)
+  )
   
-  output$sel_id_var <- renderUI({
-    if(is.null(input$file)){
-      return(NULL)
-    }else{
-    #print(colnames(data()))
-      selectInput("id","Select Identity column",
-                  choices = colnames(data()),
-                  multiple = FALSE,
-                  selected = colnames(data())[1])
-    }
+  output$df_size <- renderText({
+    if (is.null(input$file)) {return(NULL)}
+    paste0("only numerical data is used for adjacency matrix calculations; final data has ",dim(data())[1],
+           " rows and ", dim(data())[2]," columns. We show only first 100 numercial columns")
   })
   
+
   
   output$node_attr <- renderUI({
     if(is.null(input$file)){
       return(NULL)
     }else{
       #print(colnames(data()))
-      df <- data()#[,-(input$id)]
+      df <- data1()#[,-c(input$id)]
       df <- df %>%
         as_tibble() %>%
         mutate_if(is.character, factor) 

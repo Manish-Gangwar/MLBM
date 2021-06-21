@@ -106,7 +106,7 @@ shinyUI(fluidPage(
                          h4("Download Term-Term Matrix"),
                          downloadButton('downloadData3', 'Download Term-Term Matrix'),h4("Sample Term-Term Matrix"),tableOutput('term_term'),
                          br()),
-                tabPanel("Download DTM", h4(p("Download DTM for network analyis")), 
+                tabPanel("Download DTM", h4(p("Download DTM for network analysis")), 
                 downloadButton('downloadData1', 'Download DTM'),h4("Sample DTM"),tableOutput('dtm'),
                 br())
                 # tabPanel("Network Centralities",dataTableOutput("centdata"))

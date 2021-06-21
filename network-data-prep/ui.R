@@ -6,8 +6,8 @@ library(descriptr)
 library("shinyBS")
 
 shinyUI(fluidPage(
-  title = "Network Data Prep App",
-  titlePanel(title=div(img(src="logo.png",align='right'),"Network Data Prep App")),
+  title = "Network Data App",
+  titlePanel(title=div(img(src="logo.png",align='right'),"Network Data App")),
   
   # Input in sidepanel:
   sidebarPanel(
@@ -47,17 +47,17 @@ shinyUI(fluidPage(
                        #  img(src = "example1.png")
                          #, height = 280, width = 400
                         br()),
-                tabPanel("Input  Data", 
+                tabPanel("Input Data", 
                          h4("Review Input Data"),
-                         dataTableOutput("sample_data"),
+                         shinycssloaders::withSpinner(dataTableOutput("sample_data")),
                          htmlOutput("imout"),
                          verbatimTextOutput("screen_summary"),
                          br()),
-                tabPanel("Numerical Data Columns Summary",br(),
+                tabPanel("Data for Adjacency",br(),
                         # h4("Dimensions"),
                          textOutput("df_size"),
                          h4("Numerical Data Columns Summary Report"),
-                         dataTableOutput("summ"),
+                        shinycssloaders::withSpinner(dataTableOutput("summ")),
                          #verbatimTextOutput("summ"),
                          #helpText("Note: In case of missing values, use data pre-proc app for imputation"),
                          br()),
@@ -65,11 +65,11 @@ shinyUI(fluidPage(
               tabPanel("Download Adjaceny Matrix", br(),
                        #  p("to generate adjacency matrix, click on 'Apply Changes' in the panel on the left"),
                        helpText("selected top x percentile rows will form a link"),
-                       sliderInput(inputId = "cut_off",label = "cut-off top x percentile",min = 0,max=1,step = 0.01,value = 0.25),
+                       sliderInput(inputId = "cut_off",label = "top x percentile",min = 0,max=1,step = 0.01,value = 0.25),
                        #actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),
                        hr(),
                          h4("Sample Adjaceny Matrix"),
-                         dataTableOutput("sample_adj"),
+                         shinycssloaders::withSpinner(dataTableOutput("sample_adj")),
                          hr(),
                          h4(p("Download Adjacency Matrix")),
                          downloadButton('download_adj_mat', 'Download Adjaceny Matrix'),br(),br(),

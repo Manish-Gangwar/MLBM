@@ -7,7 +7,8 @@
     a0_logi = apply(input_df, 2, function(x) {is.numeric(x)}); 
     #a0_logi
     df0 = input_df[, a0_logi]
-    n1 = nrow(df0); n1
+    n1 = nrow(df0);
+    #n1
     
     # calc dist mat
     dist_mat = dist(as.matrix(scale(df0)))
@@ -19,10 +20,14 @@
     counter0 = 1
     for (i in 1:(n1-1)){
       
-      counter1 = counter0 + (n1 - i) - 1; counter1
-      vals = dist_mat[counter0: counter1]; vals
-      full_dmat[(i+1):n1, i] = vals; full_dmat
-      counter0 = counter1+1; counter0
+      counter1 = counter0 + (n1 - i) - 1; 
+      #counter1
+      vals = dist_mat[counter0: counter1]; 
+      #vals
+      full_dmat[(i+1):n1, i] = vals; 
+      #full_dmat
+      counter0 = counter1+1; 
+      #counter0
       
     } # 0.01s for 32x32 mat
     

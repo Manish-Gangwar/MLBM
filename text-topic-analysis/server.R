@@ -19,24 +19,26 @@ shinyServer(function(input, output,session) {
         #colnames(Document) <- c("Doc.id","Document")
         Doc.id=seq(1:length(Document))
         calib=data.frame(Doc.id,Document)
-        print(input$file$name)
+        #print(input$file$name)
         return(calib)}
       else{
         Document = read.csv(input$file$datapath ,header=TRUE, sep = ",", stringsAsFactors = F)
-        Document[,1] <- str_to_title(Document[,1])
-        Document[,1] <- make.names(Document[,1], unique=TRUE)
-        Document[,1] <- tolower(Document[,1])
-        Document[,1] <- str_replace_all(Document[,1],"\\.","_")
-        Document<-Document[complete.cases(Document), ]
-        Document <- Document[!(duplicated(Document[,1])), ]
-        rownames(Document) <- Document[,1]
+        Doc.id=seq(1:nrow(Document))
+        calib=data.frame(Doc.id,Document)
+        # Document[,1] <- str_to_title(Document[,1])
+        # Document[,1] <- make.names(Document[,1], unique=TRUE)
+        # Document[,1] <- tolower(Document[,1])
+        # Document[,1] <- str_replace_all(Document[,1],"\\.","_")
+        # Document<-Document[complete.cases(Document), ]
+        # Document <- Document[!(duplicated(Document[,1])), ]
+        # rownames(Document) <- Document[,1]
         
         # colnames(Document) <- c("Doc.id","Document")
         #Doc.id=seq(1:length(Document))
         # calib=data.frame(Doc.id,Document)
         #print(input$file$name)
         
-        return(Document)
+        return(calib)
       }
       
     }
@@ -49,35 +51,50 @@ shinyServer(function(input, output,session) {
   
   
   output$samp_data <- DT::renderDataTable({
-    DT::datatable(head(dataset()),rownames = FALSE)
+    DT::datatable((dataset()),rownames = FALSE)
   })
   
-  cols <- reactive({colnames(dataset())})
-  y_col <- reactive({
-    x <- match(input$x,cols())
-    y_col <- cols()[-x]
-    return(y_col)
-    
-  })
-  
+  cols <- reactive({colnames(dataset())[-1]})
+
   output$id_var <- renderUI({
     print(cols())
-    selectInput("x","Select ID Column",choices = cols())
+    selectInput("x","Select ID Column",choices = colnames(dataset()))
   })
   
+  
+  y_col <- reactive({
+    #x <- match(input$x,cols())
+    y_col <- cols()#[-x]
+    return(y_col)
+  })
   
   output$doc_var <- renderUI({
     selectInput("y","Select Text Column",choices = y_col())
   })
   
+  output$pre_proc1 <- renderUI({if(is.null(dataset())){
+    return(NULL)
+  }else{
+    
+    checkboxInput('html',"Remove HTML tags",value = TRUE)
+    
+  }
+  })
   
+  output$pre_proc2 <- renderUI({if(is.null(dataset())){
+    return(NULL)
+  }else{
+    checkboxInput('num',"Remove Numbers",value = TRUE)
+    
+  }
+  })
   
   
 dtm_tcm =  eventReactive(input$apply,{
   
   textb = dataset()[,input$y]
-  ids = dataset()[,input$x]
-
+  #ids = dataset()[,input$x]
+  ids = dataset()[,1]
   dtm.tcm = dtm.tcm.creator(text = textb,
                             id = ids,
                             std.clean = TRUE,
@@ -86,7 +103,9 @@ dtm_tcm =  eventReactive(input$apply,{
                             bigram.encoding = TRUE,
                             # bigram.min.freq = 20,
                             min.dtm.freq = input$freq,
-                            skip.grams.window = 10)
+                            skip.grams.window = 10
+                        #    html_tags=input$html,numbers = input$num
+                            )
   # if (input$ws == "weightTf") {
 
     dtm = as.matrix(dtm.tcm$dtm)#, weighting = weightTf)  
@@ -105,7 +124,9 @@ dtm_tcm =  eventReactive(input$apply,{
 
 output$dtm_size <- renderPrint({
   size <- dim(dtm_tcm()$dtm)
-  paste0("Dimensions of DTM: ",size[1]," (rows) X ", size[2]," (Columns)")
+  #paste0("Dimensions of DTM: ",size[1]," (rows) X ", size[2]," (Columns)")
+  dtm_size = paste("Document Term Matrix has ", size[1]," documents (rows) and ", size[2],"tokens (columns). Below are the top tokens")
+  return(dtm_size)
 })
 
 
@@ -140,9 +161,11 @@ output$dtmsummary  <- DT::renderDataTable({
   else {
     # sortedobj = dtm_tcm()$dtm[,order(wordcounts(), decreasing = T)]
     # t(sortedobj[1:10,1:10])
-    temp <- ordered_dtm()[1:10,1:10]
+    temp <- ordered_dtm()#[1:10,1:10]
     #  temp <- tem[1:10,1:10]
-    return(temp)
+    nc=min(ncol(temp),50)
+    temp1 <- temp[,1:nc]
+    return(temp1)
   }
       })
 
@@ -296,7 +319,7 @@ for (j in 1:max_plots) {
   
 # Show table:
 output$score <- DT::renderDataTable({
- DT::datatable(da2(),options = list(lengthMenu = c(10, 30, 50), pageLength = 100),rownames = FALSE)
+ DT::datatable(da2(),options = list(lengthMenu = c(10, 30, 50,100), pageLength = 10),rownames = FALSE)
 })  # my edits here
   
 # }, digits = 3)   # my edit
@@ -305,19 +328,21 @@ da1 = reactive({
   if (is.null(input$file)) {return(NULL)}
   {
     dataset <- dataset()
-    dataset[,input$x] <- as.character(dataset[,input$x])
+    #xname=input$x
+    xname=colnames(dataset)[1]
+    dataset[,xname] <- as.character(dataset[,xname])
     tb = lda()$kappa*100
     tb = data.frame(rownames(tb), round(tb, 2))   # my edit
-    colnames(tb) = c(input$x,paste("Topic",1:(ncol(tb)-1)))
     
-    test =  tb %>% dplyr::left_join(dataset,by = input$x)
+    colnames(tb) = c(xname,paste("Topic",1:(ncol(tb)-1)))
+    test =  tb %>% dplyr::left_join(dataset,by = xname)
     #test = merge(tb, dataset(), by.x =input$x, by.y= input$x, all=T)
     return(test)}
 })
 # Show table:
 output$table <- renderDataTable({
   da1()
-}, options = list(lengthMenu = c(5, 30, 50), pageLength = 30))
+}, options = list(lengthMenu = c(10, 30, 50,100), pageLength = 10))
 
 
 #---------------
