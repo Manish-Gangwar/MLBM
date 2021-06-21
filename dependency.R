@@ -1,5 +1,9 @@
 if(!require("shiny")) {install.packages("shiny")}
 if(!require("shinyBS")) {install.packages("shinyBS")}
+if (!require('datasets')){install.packages('datasets')}
+if (!require('markdown')){install.packages('markdown')}
+if (!require('Amelia')){install.packages('Amelia')}
+if (!require('ggplot2')){install.packages('ggplot2')}
 if(!require("devtools")) {install.packages("devtools")}
 if(!require("magick")) {install.packages("magick")}
 if(!require("text2vec")) {install.packages("text2vec")}
