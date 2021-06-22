@@ -20,6 +20,11 @@ try(require("plotly")||install.packages("plotly"))
 try(require("tidytext")||install_github("juliasilge/tidytext"))
 try(require("tidytext")||install.packages("tidytext"))
 try(require("tools")||install.packages("tools"))
+
+if(!require("shinyBS")) {install.packages("shinyBS")}; library(shinyBS)
+if(!require("DT")) {install.packages("DT")}; library(DT)
+if (!require("shinycssloaders")) {install.packages("shinycssloaders")}; library(shinycssloaders)
+
 library("tools")
 library("shiny")
 library("tidytext")

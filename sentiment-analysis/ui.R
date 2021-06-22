@@ -11,7 +11,7 @@ library("DT")
 library("reshape2")
 library("wordcloud")
 library("plotly")
-
+library("shinyBS")
 #--------------------------------------------#
 
 shinyUI(fluidPage(
@@ -23,6 +23,11 @@ shinyUI(fluidPage(
   
   # Input in sidepanel:
   sidebarPanel(
+    tags$a(href="javascript:history.go(0)", 
+           popify(tags$i(class="fa fa-refresh fa-1x"),
+                  title = "", #Reload App", 
+                  content = "click here to refresh the app",
+                  placement = "right")),
     fileInput("file", "Upload input text/csv file"),  
     uiOutput("doc_var"),
     selectInput("lexicon", "Sentiment Dictionary",
@@ -77,18 +82,18 @@ shinyUI(fluidPage(
                 #          ),
                 tabPanel("Sentiments - Stats",br(),
                          downloadButton('downloadData2', 'Download Sentiment Scores'), br(),br(),
-                         plotOutput("word.cloud", height=920, width=900),
+                         shinycssloaders::withSpinner(plotOutput("word.cloud", height=920, width=900)),
                          br(),
                          dataTableOutput("count"),
                          br(),br()
                          ),
 
                 tabPanel("Document Level Analysis",br(),
-                         uiOutput("sent.plots"),
+                         shinycssloaders::withSpinner(uiOutput("sent.plots")),
                          hr(),
                          numericInput("index", "Choose Document Index", 3),
                          h4("List of the most frequent sentiment words at each level"),
-                         dataTableOutput("table"),
+                         (dataTableOutput("table")),
                          br(),
                          h4("Document parsed into sentences and sentiment score for each sentence"),
                          # downloadButton('downloadData4', 'Downlaod Sentiemnt Scores (Works only in browser)'), br(),br(),
