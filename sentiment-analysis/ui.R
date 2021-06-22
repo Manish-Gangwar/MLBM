@@ -77,7 +77,7 @@ shinyUI(fluidPage(
                 #          ),
                 tabPanel("Sentiments - Stats",br(),
                          downloadButton('downloadData2', 'Download Sentiment Scores'), br(),br(),
-                         plotOutput("word.cloud", height="700", width="700"),
+                         plotOutput("word.cloud", height=920, width=900),
                          br(),
                          dataTableOutput("count"),
                          br(),br()
@@ -85,6 +85,7 @@ shinyUI(fluidPage(
 
                 tabPanel("Document Level Analysis",br(),
                          uiOutput("sent.plots"),
+                         hr(),
                          numericInput("index", "Choose Document Index", 3),
                          h4("List of the most frequent sentiment words at each level"),
                          dataTableOutput("table"),

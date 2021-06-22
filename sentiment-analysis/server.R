@@ -249,14 +249,16 @@ lexicon_data<-read.csv('sentiments.csv',stringsAsFactors=FALSE)# read lexcicons 
       sent.df() %>%
       count(word, sentiment, sort = TRUE) %>%
       acast(word ~ sentiment, value.var = "n", fill = 0)  %>% comparison.cloud(#colors = c("#F8766D", "#00BFC4"),
-                       max.words = 100)
+                       max.words = 200
+                       )
 
     } else {
       
         sent.df() %>%
         count(word, score, sort = TRUE) %>%
         acast(word ~ score, value.var = "n", fill = 0) %>%  comparison.cloud( #colors = c("#F8766D", "#00BFC4"),
-        max.words = 100)
+        max.words = 200
+        )
 
     }
     }
