@@ -6,8 +6,8 @@ library(descriptr)
 library("shinyBS")
 
 shinyUI(fluidPage(
-  title = "Network Data App",
-  titlePanel(title=div(img(src="logo.png",align='right'),"Network Data App")),
+  title = "Adjacency Matrix (Network) App",
+  titlePanel(title=div(img(src="logo.png",align='right'),"Adjacency Matrix (Network) App")),
   
   # Input in sidepanel:
   sidebarPanel(
@@ -19,6 +19,7 @@ shinyUI(fluidPage(
     fileInput("file", "Upload CSV"),
    # checkboxInput('id_col',"Create ID variable",value = FALSE),
     uiOutput("sel_id_var"),
+    uiOutput("colList"),
     #uiOutput("sel_fac_to_dumm"),
     htmlOutput("imputemiss"),
     br()),
@@ -56,7 +57,7 @@ shinyUI(fluidPage(
                 tabPanel("Data for Adjacency",br(),
                         # h4("Dimensions"),
                          textOutput("df_size"),
-                         h4("Numerical Data Columns Summary Report"),
+                         h4("Numerical Data Columns for Adjacency Matrix"),
                         shinycssloaders::withSpinner(dataTableOutput("summ")),
                          #verbatimTextOutput("summ"),
                          #helpText("Note: In case of missing values, use data pre-proc app for imputation"),
@@ -77,7 +78,7 @@ shinyUI(fluidPage(
                          h4(p("Download Node Attributes")),
                          uiOutput("node_attr"),
                          downloadButton('download_node_attr', 'Download Node Attributes'),
-                          br(),br(),br() )
+                          br(),br(),hr() )
                 
                 
                 

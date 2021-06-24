@@ -19,13 +19,16 @@ dtm2CF <- function(dtm, focal.user, n0){
   
   ## Find unrated items focal.user i0 might most like.
   i0 = which(rownames(a5a) == focal.user) # doc index num of focal.user
+ # if (length(dtm[i0,1] == 0)>0){
   a6 = a5a[i0, (dtm[i0,] == 0)] # retain only brands focal.user hasn't yet rated
+#  }  else {a6 = a5a[i0,]}
+  
   a7 = sort(a6, decreasing=TRUE, index.return=TRUE) # sort by predicted ratings
-  output0_ibcf = data.frame(IBCF.Recommended.brands = names(a6[a7$ix[1:n0]]), 
+  output0_ibcf = data.frame(IBCF.recommended.Items = names(a6[a7$ix[1:n0]]), 
                             Pref.Prob = as.matrix(round(a6[a7$ix[1:n0]], 3)))
   
   rownames(output0_ibcf) = NULL  
-  test = dplyr::left_join(output0_ibcf, token_freqs, by = c("IBCF.Recommended.brands" = "brands"))
+  test = dplyr::left_join(output0_ibcf, token_freqs, by = c("IBCF.recommended.Items" = "brands"))
   output0_ibcf = test
   
   ## same for UBCF
@@ -33,13 +36,17 @@ dtm2CF <- function(dtm, focal.user, n0){
   a9 = a4 %*% rep(1, nrow(a4))
   a10 = matrix(rep(as.vector(a9)), nrow(a4), ncol(a8))
   a11 = a8 / a10
-  a12 = a11[i0, (dtm[i0,] == 0)] 
+  
+#  if (length(dtm[i0,1] == 0)>0){
+    a12 = a11[i0, (dtm[i0,] == 0)] # retain only brands focal.user hasn't yet rated
+#  }  else {a12 = a11[i0,]}
+  
   a13 = sort(a12, decreasing=TRUE, index.return=TRUE) # 
-  output0_ubcf = data.frame(UBCF.Recommended.brands = names(a12[a13$ix[1:n0]]), 
+  output0_ubcf = data.frame(UBCF.recommended.Items = names(a12[a13$ix[1:n0]]), 
                             Pref.Prob = as.matrix(round(a12[a13$ix[1:n0]], 3)))
   
   rownames(output0_ubcf) = NULL
-  test = dplyr::left_join(output0_ubcf, token_freqs, by = c("UBCF.Recommended.brands" = "brands"))
+  test = dplyr::left_join(output0_ubcf, token_freqs, by = c("UBCF.recommended.Items" = "brands"))
   output0_ubcf = test
   
   ## find most similar users to focal.user

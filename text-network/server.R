@@ -1,5 +1,5 @@
 #################################################
-#     Text Network App    #
+#     Text Network Input for Recommendation     #
 #################################################
 # update.packages(ask = FALSE)
 try(require("shiny")||install.packages("shiny"))

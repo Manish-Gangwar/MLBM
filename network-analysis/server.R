@@ -55,6 +55,7 @@ Dataset2 <- reactive({
     colnames(Dataset) <- make.names(colnames(Dataset),unique=TRUE)
     #normalize categorical data
     for(cn in colnames(Dataset[,-1])) {
+     # class(Dataset[,cn]) %in% c("factor","character")
       Dataset[,cn] = apply(Dataset[,cn,drop=F],2, function(x)  tolower(x))
       Dataset[,cn] = apply(Dataset[,cn,drop=F],2 ,function(x) trimws(x))
       Dataset[cn] <- lapply(Dataset[cn], factor) 
@@ -68,12 +69,19 @@ Dataset2 <- reactive({
   }
 })
 
+output$readdata2 <- renderDataTable({
+  if (is.null(input$file)) {return(NULL)}
+  else {
+    Dataset2()
+  }
+}, options = list(lengthMenu = c(10, 30, 50,100), pageLength = 10))
+
 # Select variables:
 output$yvarselect <- renderUI({
   if (is.null(input$file1)) { return(NULL) }
   else{
   
-  selectInput("colattr", "Select color variable",
+  selectInput("colattr", "Select group variable (color)",
               colnames(Dataset2()[-1]), colnames(Dataset2())[1])
   }
 })

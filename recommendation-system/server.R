@@ -29,11 +29,30 @@ output$focal_list <- renderUI({
     
     users_list <- rownames(dataset())
     pickerInput(
-      inputId = "Id084",
+      inputId = "user",
       label = "Select Focal User", 
       choices = users_list,
       options = list(`live-search` = TRUE)
     )
+  }
+})
+
+output$yout <- renderUI({
+  if (is.null(input$file)) {return(NULL)}
+  else{
+    (p(paste0("recommendation for - ",input$user),style="color:red"))
+  }
+}) 
+output$yout1 <- renderUI({
+  if (is.null(input$file)) {return(NULL)}
+  else{
+    (p(paste0("recommendation for - ",input$user),style="color:red"))
+  }
+})
+output$yout2 <- renderUI({
+  if (is.null(input$file)) {return(NULL)}
+  else{
+    (p(paste0("similar users like - ",input$user),style="color:red"))
   }
 })
   
@@ -43,10 +62,8 @@ output$dim <- renderText({
   if (is.null(input$file)) {return(NULL)}
   else{
     size <- dim(dataset())
-    return(paste0("Uploaded Dataset has ",size[1]," (rows) "," X ",size[2]," (columns)"))
+    return(paste0("uploaded dataset has ",size[1]," users (rows) "," X ",size[2]," items (columns)"))
   }
-  
-  
 })  
   
 
@@ -65,9 +82,9 @@ output$freq_table <- renderDataTable({
     a1 = sort(a0, decreasing=TRUE, index.return=TRUE)
     a2 = as.matrix(a0[a1$ix])
     token_freqs = data.frame(freq = a2)
-    token_freqs$word = rownames(token_freqs)
+    token_freqs$item = rownames(token_freqs)
     # reorder by column name
-    token_freqs <- token_freqs[c("word", "freq")]  #return(as.data.frame(head(token_freqs, 10))) # 2nd output. Sorted freqs
+    token_freqs <- token_freqs[c("item", "freq")]  #return(as.data.frame(head(token_freqs, 10))) # 2nd output. Sorted freqs
     rownames(token_freqs) <- NULL
     (token_freqs)
 
@@ -78,8 +95,8 @@ output$freq_table <- renderDataTable({
   output$ibfc_re <- DT::renderDataTable({
     if (is.null(input$file)) {return(NULL)}
     else{
-      system.time({ CF.list = dtm2CF(dataset(), input$Id084, 12) })
-      #CF.list = dtm2CF(dataset(), input$Id084, 12)
+      system.time({ CF.list = dtm2CF(dataset(), input$user, 12) })
+      #CF.list = dtm2CF(dataset(), input$user, 12)
       ibcf.brands = CF.list[[1]]
       DT::datatable(ibcf.brands, options = list(pageLength = 10))
     }
@@ -89,8 +106,8 @@ output$freq_table <- renderDataTable({
 output$ubfc_re <- DT::renderDataTable({
   if (is.null(input$file)) {return(NULL)}
   else{
-    system.time({ CF.list = dtm2CF(dataset(), input$Id084, 12) })
-    #CF.list = dtm2CF(dataset(), input$Id084, 12)
+    system.time({ CF.list = dtm2CF(dataset(), input$user, 12) })
+    #CF.list = dtm2CF(dataset(), input$user, 12)
     ibcf.brands = CF.list[[2]]
     DT::datatable(ibcf.brands, options = list(pageLength = 10))
   }
@@ -100,8 +117,8 @@ output$ubfc_re <- DT::renderDataTable({
 output$sim_usr <- DT::renderDataTable({
   if (is.null(input$file)) {return(NULL)}
   else{
-    system.time({ CF.list = dtm2CF(dataset(), input$Id084, 12) })
-    #CF.list = dtm2CF(dataset(), input$Id084, 12)
+    system.time({ CF.list = dtm2CF(dataset(), input$user, 12) })
+    #CF.list = dtm2CF(dataset(), input$user, 12)
     simil.users = CF.list[[3]]
     DT::datatable(simil.users, options = list(pageLength = 10))
   }

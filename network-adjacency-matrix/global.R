@@ -4,9 +4,9 @@
     #rownames(input_df) <- input_df[,id_var]
     input_df[,id_var] <- NULL
     # first, retain only metric colms
-    a0_logi = apply(input_df, 2, function(x) {is.numeric(x)}); 
-    #a0_logi
-    df0 = input_df[, a0_logi]
+    df0 <- input_df %>% select_if(is.numeric)
+  #  a0_logi = apply(input_df, 2, function(x) {is.numeric(x)}); 
+  #  df0 = input_df[, a0_logi]
     n1 = nrow(df0);
     #n1
     

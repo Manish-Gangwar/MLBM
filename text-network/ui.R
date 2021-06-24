@@ -1,5 +1,5 @@
 ####################################################
-#      Text Network App    #
+#      Text Network Input for Recommendation    #
 ####################################################
 
 library("shiny")
@@ -12,8 +12,8 @@ library("shinyBS")
 
 shinyUI(fluidPage(
   # Header:
-  #headerPanel("Text Network App"),
-  titlePanel(title=div(img(src="logo.png",align='right'),"Text Network App"), windowTitle	='Text Network'),
+  #headerPanel("Text Input for Recommendation App"),
+  titlePanel(title=div(img(src="logo.png",align='right'),"Text Network App"), windowTitle	='Text Network App'),
   # Input in sidepanel:
   sidebarPanel(
     tags$a(href="javascript:history.go(0)", 
@@ -67,8 +67,8 @@ shinyUI(fluidPage(
                            the words used in any two documents. Or, one can create a text network where individual words 
                            are the nodes, and the edges between them describe the regularity with which they co-occur in documents."
                            ,align="Justify"),
-                         tags$a(href="https://sicss.io/2018/materials/day3-text-analysis/text-networks/rmarkdown/SICSS_Text_Networks.html#:~:text=What%20is%20a%20Text%20Network%3F,-Network%20analysis%20refers&text=For%20example%2C%20one%20can%20represent,used%20in%20any%20two%20documents",
-                                "-Source",target="_blank"),
+                         h4(tags$a(href="https://sicss.io/2018/materials/day3-text-analysis/text-networks/rmarkdown/SICSS_Text_Networks.html#:~:text=What%20is%20a%20Text%20Network%3F,-Network%20analysis%20refers&text=For%20example%2C%20one%20can%20represent,used%20in%20any%20two%20documents",
+                                "Text Networks",target="_blank")),
                          hr(),
                          h4(p("How to use this App")),
                          p("", align = "justify"),
@@ -91,9 +91,10 @@ shinyUI(fluidPage(
                          # shinycssloaders::withSpinner(dataTableOutput("readdata"),tags$head(tags$style("tfoot {display: table-header-group;}"))),br(),
                          shinycssloaders::withSpinner(DT::dataTableOutput("readdata")),br(), 
                          br()),
-                tabPanel("Bipartite Graph",
+                tabPanel("Bipartite Graph",br(),
                          numericInput("npoint", "Maximum number of terms in the graph", 10),
                          uiOutput("interactive_slider"),
+                         tags$a(href="https://en.wikipedia.org/wiki/Bipartite_graph","Bipartite Graph - Wikipedia",target="_blank"),
                          shinycssloaders::withSpinner(visNetworkOutput("graph5", height = 700, width = 700)),
                          br()),
                 tabPanel("Doc-Doc COG",
@@ -106,7 +107,7 @@ shinyUI(fluidPage(
                          h4("Download Term-Term Matrix"),
                          downloadButton('downloadData3', 'Download Term-Term Matrix'),h4("Sample Term-Term Matrix"),tableOutput('term_term'),
                          br()),
-                tabPanel("Download DTM", h4(p("Download DTM for network analysis")), 
+                tabPanel("Download Matrix", h4(p("Download DTM for Recommendation Analysis")), 
                 downloadButton('downloadData1', 'Download DTM'),h4("Sample DTM"),tableOutput('dtm'),
                 br())
                 # tabPanel("Network Centralities",dataTableOutput("centdata"))

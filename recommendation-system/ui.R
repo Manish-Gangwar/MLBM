@@ -24,15 +24,15 @@ shinyUI(fluidPage(
                          h4(p("Overview")),
                          p("A recommender system, or a recommendation system, is a subclass of information filtering system that seeks to predict the 'rating' or 'preference' a user would give to an item.
                            ", align = "Justify"),
-                         tags$a(href="https://en.wikipedia.org/wiki/Recommender_system#:~:text=A%20recommender%20system%2C%20or%20a,primarily%20used%20in%20commercial%20applications", 
-                                "-Wikipedia",target="_blank"),
+                         h4(tags$a(href="https://en.wikipedia.org/wiki/Recommender_system#:~:text=A%20recommender%20system%2C%20or%20a,primarily%20used%20in%20commercial%20applications", 
+                                "Recommender System - Wikipedia",target="_blank")),
                          hr(),
                          h4(p("How to use this App")),
                          p("", align = "justify"),
                          p("Upload data to sidebar panel and select focal user for which recommendation is require. Once you change the user, App will automatically refresh and display recommendation for respective user in different output tabs.
                            ", align = "Justify"),
                          h4(p("Input Data Format")),
-                         p("Application takes DTM (Document Term Matrix) as an input.", align = "Justify"),
+                         p("Application takes user-item matrix as an input.", align = "Justify"),
                          img(src = "dataset.png",height = 180, width = 400),
                          hr(),
                          h4(p("Download sample text file")),
@@ -46,26 +46,31 @@ shinyUI(fluidPage(
                 )  ,
             
                 
-                tabPanel("DTM Data Summary", 
+                tabPanel("Data Summary", 
                          h4("Summary Report"),
                          verbatimTextOutput("dim"),
                          h4("Input Dataset"),
                          shinycssloaders::withSpinner(dataTableOutput("dtm_head")),
                          br(),
-                         h4("Word Frequency Table"),
+                         h4("Item Frequency Table"),
                          dataTableOutput("freq_table")
                          
                          ),
                 tabPanel("IBCF Recommendation",
                         h4("Item-based collaborative filtering (IBCF)"),
+                        (tags$a(href="https://en.wikipedia.org/wiki/Item-item_collaborative_filtering", 
+                                  "Item Based Collaborative Filtering - Wikipedia",target="_blank")),
+                        br(),br(),htmlOutput("yout"),
                         shinycssloaders::withSpinner(DT::dataTableOutput('ibfc_re')),
                         br()),
                 tabPanel("UBCF Recommendation",
                          h4("User-based collaborative filtering (UBCF)"),
+                         htmlOutput("yout1"),
                          shinycssloaders::withSpinner(DT::dataTableOutput('ubfc_re')),
                          br() ),
                tabPanel("Similar Users",
                         h4("Similar Users"),
+                        htmlOutput("yout2"),
                         shinycssloaders::withSpinner(DT::dataTableOutput("sim_usr")),
                         br())
               

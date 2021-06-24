@@ -97,24 +97,70 @@ shinyServer(function(input, output,session) {
     (data1())
     })
   
-  nu.data = reactive({
+  nu0.data = reactive({
     if (is.null(input$file)) {return(NULL)}
     else {
-      data = data1()
+      coln=setdiff(colnames(data1()),input$id)
+      data = data1()[,coln]
       Class = NULL
       for (i in 1:ncol(data)){
         c1 = (class(data[,i]))
         Class = c(Class, c1)
       }
-      nu = which(Class %in% c("numeric","integer"))
+      nu = which(Class %in% c("numeric","integer","double"))
       nu.data = data.frame(data[,nu])
       return(nu.data)
     }
   })
   
+  
+  output$colList <- renderUI({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      coln=setdiff(colnames(data1()),input$id)
+      varSelectInput("selVar",label = "Select X variables for adjacency",
+                     data = data1()[,coln],multiple = TRUE,selectize = TRUE,selected = colnames(nu0.data()))
+    }
+  })
+  
+  filtered_dataset11 <- reactive({if (is.null(input$file)) { return(NULL) }
+    else{
+      coln=setdiff(colnames(data1()),input$id)
+      Dataset <- data1() %>% dplyr::select(!!!c(input$id,input$selVar))
+      return(Dataset)
+    }})
+  
+  nu1.data = reactive({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      #coln=setdiff(colnames(data1()),input$id)
+      x01 = filtered_dataset11()
+      #x01 = fastDummies::dummy_cols(x01, remove_first_dummy = FALSE,remove_selected_columns = TRUE)
+    return(x01)
+    }
+  })
+  
   data = reactive({
-    df=data1()[,c(input$id,colnames(nu.data()))]
+    #df=data1()[,c(input$id,colnames(nu1.data()))]
+    df=nu1.data()
+    #df=data.frame(c(data1()[,input$id],nu1.data()))
     return(df)
+  })
+  
+  nu.data = reactive({
+    if (is.null(input$file)) {return(NULL)}
+    else {
+      coln=setdiff(colnames(data()),input$id)
+      data = data()[,coln]
+      Class = NULL
+      for (i in 1:ncol(data)){
+        c1 = (class(data[,i]))
+        Class = c(Class, c1)
+      }
+      nu = which(Class %in% c("numeric","integer","double"))
+      nu.data = data.frame(data[,nu])
+      return(nu.data)
+    }
   })
   
   output$summ <- renderDataTable(
@@ -122,30 +168,28 @@ shinyServer(function(input, output,session) {
       return(NULL)
     }else{
       data=nu.data()
-      summry_df(data[,1:100])
+      maxc=min(ncol(data),100)
+      summry_df(data[,1:maxc])
     },options = list(lengthMenu = c(20,50,100), pageLength = 20)
   )
   
   output$df_size <- renderText({
     if (is.null(input$file)) {return(NULL)}
-    paste0("only numerical data is used for adjacency matrix calculations; final data has ",dim(data())[1],
-           " rows and ", dim(data())[2]," columns. We show only first 100 numercial columns")
+    paste0("data for adjacency matrix calculations; data has ",dim(nu.data())[1],
+           " observations (rows) and ", dim(nu.data())[2]," columns (shown below)")
   })
   
 
-  
   output$node_attr <- renderUI({
     if(is.null(input$file)){
       return(NULL)
     }else{
       #print(colnames(data()))
-      df <- data1()#[,-c(input$id)]
+      coln=setdiff(colnames(data1()),input$id)
+      df <- data1()[,coln] # data1 for all columns ..
       df <- df %>%
         as_tibble() %>%
         mutate_if(is.character, factor) 
-       
-       
-      
       factor_var <- df %>%  select_if(function(col) is.factor(col) &
                                                  nlevels(col) < 4) %>% colnames()
       
