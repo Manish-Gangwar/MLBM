@@ -107,7 +107,7 @@ fluidPage(
                 #tabPanel("Network Plot",plotOutput("graph1", height = 800, width = 840)),
                 
                 
-                tabPanel("Network Communities",
+                tabPanel("Communities Network",
                          shinycssloaders::withSpinner(visNetworkOutput("com_net",height = 700, width = 700)),
                          dataTableOutput('com_cent'),
                          br()),
