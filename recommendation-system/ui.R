@@ -11,7 +11,7 @@ shinyUI(fluidPage(
                   content = "click here to refresh the app",
                   placement = "right")),
     
-    fileInput("file", "Upload Input DTM file"),
+    fileInput("file", "Upload Input user-item file"),
     uiOutput("focal_list"),
   ),
   

@@ -70,7 +70,7 @@ fluidPage(
                             
                             img(src = "input_demo.png", height = 180, width = 400),
                             tags$br(),br(),
-                            downloadButton('downloadData2', 'Download example demographic file'),
+                            downloadButton('downloadData2', 'Download example node properties file'),
                             tags$br(),
                             tags$br(),
                          

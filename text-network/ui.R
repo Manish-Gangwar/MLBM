@@ -39,9 +39,9 @@ shinyUI(fluidPage(
     #sliderInput("cex2", "Vertex Size", min = 0.1,  max = 20, value = 5,round = FALSE),
     
     
-    numericInput("nodes", "Number of Central Nodes in COG graph", 4),
-    numericInput("connection", "Number of Max Connection with Central Node in COG graph", 5),
-    sliderInput("cex", "Font size for labels in COG graph", min = 0.1,  max = 3, value = 1,round = FALSE),
+    numericInput("nodes", "Number of central nodes in co-occurance graph", 5),
+    numericInput("connection", "Number of max connection with central node in co-occurance graph", 10),
+    sliderInput("cex", "Font size for labels in co-occurance graph", min = 0.1,  max = 3, value = 1,round = FALSE),
     
     br()
   ),
@@ -69,6 +69,8 @@ shinyUI(fluidPage(
                            ,align="Justify"),
                          h4(tags$a(href="https://sicss.io/2018/materials/day3-text-analysis/text-networks/rmarkdown/SICSS_Text_Networks.html#:~:text=What%20is%20a%20Text%20Network%3F,-Network%20analysis%20refers&text=For%20example%2C%20one%20can%20represent,used%20in%20any%20two%20documents",
                                 "Text Networks",target="_blank")),
+                         h4(tags$a(href="https://en.wikipedia.org/wiki/Co-occurrence_network",
+                                   "Co-occurance Graph - Wikipedia",target="_blank")),
                          hr(),
                          h4(p("How to use this App")),
                          p("", align = "justify"),
@@ -91,22 +93,27 @@ shinyUI(fluidPage(
                          # shinycssloaders::withSpinner(dataTableOutput("readdata"),tags$head(tags$style("tfoot {display: table-header-group;}"))),br(),
                          shinycssloaders::withSpinner(DT::dataTableOutput("readdata")),br(), 
                          br()),
-                tabPanel("Bipartite Graph",br(),
-                         numericInput("npoint", "Maximum number of terms in the graph", 10),
-                         uiOutput("interactive_slider"),
-                         tags$a(href="https://en.wikipedia.org/wiki/Bipartite_graph","Bipartite Graph - Wikipedia",target="_blank"),
-                         shinycssloaders::withSpinner(visNetworkOutput("graph5", height = 700, width = 700)),
-                         br()),
+
                 tabPanel("Doc-Doc COG",
+                         p("Co-Occurance Graph for Docs"),
                          shinycssloaders::withSpinner(visNetworkOutput("graph3", height = 700, width = 700)),
                          h4("Download Doc-Doc Matrix"),
                          downloadButton('downloadData2', 'Download Doc-Doc Matrix'),h4("Sample Doc-Doc Matrix"),tableOutput('doc_doc'),
                          br()),
                 tabPanel("Term-Term COG",
+                         p("Co-Occurance Graph for Terms"),
                          shinycssloaders::withSpinner(visNetworkOutput("graph4", height = 700, width = 700)),
                          h4("Download Term-Term Matrix"),
                          downloadButton('downloadData3', 'Download Term-Term Matrix'),h4("Sample Term-Term Matrix"),tableOutput('term_term'),
                          br()),
+                
+                tabPanel("Bipartite Graph",br(),
+                         numericInput("npoint", "Maximum number of terms in the graph", 20),
+                         uiOutput("interactive_slider"),
+                         tags$a(href="https://en.wikipedia.org/wiki/Bipartite_graph","Bipartite Graph - Wikipedia",target="_blank"),
+                         shinycssloaders::withSpinner(visNetworkOutput("graph5", height = 700, width = 700)),
+                         br()),
+                
                 tabPanel("Download Matrix", h4(p("Download DTM for Recommendation Analysis")), 
                 downloadButton('downloadData1', 'Download DTM'),h4("Sample DTM"),tableOutput('dtm'),
                 br())
