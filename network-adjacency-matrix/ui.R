@@ -75,8 +75,11 @@ shinyUI(fluidPage(
                          h4(p("Download Adjacency Matrix")),
                          downloadButton('download_adj_mat', 'Download Adjaceny Matrix'),br(),br(),
                          hr(),
+                       uiOutput("node_attr"),
+                       h4("Sample Node Attributes"),
+                       shinycssloaders::withSpinner(dataTableOutput("sample_node")),
                          h4(p("Download Node Attributes")),
-                         uiOutput("node_attr"),
+                         
                          downloadButton('download_node_attr', 'Download Node Attributes'),
                           br(),br(),hr() )
                 
