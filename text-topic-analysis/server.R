@@ -1,6 +1,7 @@
 #################################################
 #               Topic    Analysis             #
 #################################################
+if (!require("shinycssloaders")) {install.packages("shinycssloaders")}; library(shinycssloaders)
 
 # Install / Load relevant packages
 if(!"pacman" %in% installed.packages()[,"Package"]) install.packages("pacman")

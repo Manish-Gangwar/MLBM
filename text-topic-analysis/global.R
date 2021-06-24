@@ -200,7 +200,8 @@ dtm.tcm.creator <- function(text,id = "",
     if (length(replace_list) > 1){    # my edit. was 0, now 1.
       text = paste("",text,"")
       
-      pb <- txtProgressBar(min = 1, max = (length(replace_list)), style = 3) ; i = 0
+      pb <- txtProgressBar(min = 1, max = (length(replace_list)), style = 3) ; 
+      i = 0
       
       # print(paste("Encoding",length(replace_list),"bi-grams as unigram"))
       for (term in replace_list){

@@ -1,6 +1,9 @@
 #################################################
 #               Topic  Analysis             #
 #################################################
+if(!require("shinyBS")) {install.packages("shinyBS")}; library(shinyBS)
+if(!require("DT")) {install.packages("DT")}; library(DT)
+if (!require("shinycssloaders")) {install.packages("shinycssloaders")}; library(shinycssloaders)
 
 library(shiny)
 library(text2vec)
@@ -33,7 +36,7 @@ shinyUI(fluidPage(
     #htmlOutput("pre_proc1"),
     #htmlOutput("pre_proc2"),
     sliderInput("freq", "Minimum frequency of word:", min = 1,  max = 50, value = 2),
-    numericInput("topic", "Number of topics to fit:", 2),
+    numericInput("topic", "Number of topics to fit:", 2, min=2, max=20),
     actionButton(inputId = "apply",label = "Apply Changes", icon("refresh")),  
     hr(),
     #h4("Word Cloud Option"),
@@ -68,17 +71,18 @@ shinyUI(fluidPage(
                          #h4("Uploaded data size"),
                         # verbatimTextOutput("up_size"),
                          h4("Review Input Data"),
-                         DT::dataTableOutput("samp_data"),
+                        shinycssloaders::withSpinner(DT::dataTableOutput("samp_data")),
                         br()),
                 tabPanel("DTM & Word Cloud",
+                         p("click on 'Apply Changes' in the panel on the left", style="color:red"),
                          h4("DTM Size"),
                          verbatimTextOutput("dtm_size"),
                          hr(),
                          h4("Document Term Matrix"),
-                         DT::dataTableOutput("dtmsummary"),
+                         shinycssloaders::withSpinner(DT::dataTableOutput("dtmsummary")),
                          hr(),
                          h4("Word Cloud"),
-                         plotOutput("wordcloud",height = 500, width = 500),
+                         shinycssloaders::withSpinner(plotOutput("wordcloud",height = 700, width = 700)),
                          hr(),
                          h4("Weights Distribution of Wordcloud"),
                          DT::dataTableOutput("dtmsummary1"),br()),
@@ -86,19 +90,20 @@ shinyUI(fluidPage(
                 #tabPanel("Topic Model - Summary",verbatimTextOutput("summary")),
                 tabPanel("Topics Wordcloud",
                          
-                         uiOutput("plots2"),br()),
+                         shinycssloaders::withSpinner(uiOutput("plots2")),br()),
                 tabPanel("Topics Co-occurrence",
                          numericInput("nodes", "Number of central nodes in a graph", 4),
                          numericInput("connection", "Number of max connection with central node", 5),
-                         uiOutput("plots3"),br()),
+                         shinycssloaders::withSpinner(uiOutput("plots3")),br()),
                 # tabPanel("Topics eta values",tableOutput("summary2")),
                 
                 #                         
-                tabPanel("Token-Topic Loadings",h4("Top terms for each topic"), DT::dataTableOutput("score"),br()),
+                tabPanel("Token-Topic Loadings",h4("Top terms for each topic"), 
+                         shinycssloaders::withSpinner(DT::dataTableOutput("score")),br()),
                 
                 tabPanel("Topic Scores as Doc Proportions",br(),br(),
                          downloadButton('downloadData2', 'Download Topic Proportions file'), br(),br(),
-                         dataTableOutput("table"),br())
+                         shinycssloaders::withSpinner(dataTableOutput("table")),br())
                 
                          )
            )
