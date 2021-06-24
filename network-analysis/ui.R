@@ -94,10 +94,11 @@ fluidPage(
                          br()),
                 
                 
-                tabPanel("Network Centralities",br(),
-                         shinycssloaders::withSpinner(downloadButton('downloadData1', 'download centralities file')), br(),
-                         (tags$a(href="https://en.wikipedia.org/wiki/Centrality","Centrality - Wikipedia",target="_blank")),br(),
-                         br(),dataTableOutput("centdata"),br()),
+                tabPanel("Network Centralities",
+                         h4(tags$a(href="https://en.wikipedia.org/wiki/Centrality","Centrality - Wikipedia",target="_blank")),
+                         (downloadButton('downloadData1', 'download centralities output file')), br(),
+                         br(),
+                         shinycssloaders::withSpinner(dataTableOutput("centdata")),br()),
                 
                 
                 tabPanel('Network Plot',
@@ -111,8 +112,8 @@ fluidPage(
                          shinycssloaders::withSpinner(visNetworkOutput("com_net",height = 700, width = 700)),
                          dataTableOutput('com_cent'),
                          br()),
-                tabPanel("Communities Plot",br(),
-                         (tags$a(href="https://en.wikipedia.org/wiki/Community_structure","Community - Wikipedia",target="_blank")),br(),
+                tabPanel("Communities Plot",
+                         h4(tags$a(href="https://en.wikipedia.org/wiki/Community_structure","Community - Wikipedia",target="_blank")),br(),
                          
                          shinycssloaders::withSpinner(plotOutput("graph2", height = 700, width = 700)),
                          uiOutput("graph3"),helpText("Note: Seperate plot for community with size = 1 won't be shown"),

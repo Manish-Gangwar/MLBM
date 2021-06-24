@@ -46,7 +46,7 @@ output$readdata <- renderDataTable({
   else {
     Dataset()
   }
-}, options = list(lengthMenu = c(10, 30, 50,100), pageLength = 10))
+}, options = list(lengthMenu = c(10, 30, 50,100), pageLength = 30))
 
 Dataset2 <- reactive({
   if (is.null(input$file1)) { return(NULL) }
